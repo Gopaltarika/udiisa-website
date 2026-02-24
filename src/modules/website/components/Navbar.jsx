@@ -1,437 +1,478 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
-import { MdSportsCricket, MdEmojiEvents, MdGroups, MdVolunteerActivism, MdContactMail } from "react-icons/md";
-import { FaTrophy, FaMedal, FaChevronDown } from "react-icons/fa";
+import { FaTrophy, FaChevronDown, FaUsers, FaMedal } from "react-icons/fa";
+import { BsStarFill } from "react-icons/bs";
+import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md";
 import { IoFlash } from "react-icons/io5";
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  {
-    label: "About",
-    href: "#about",
-    dropdown: [
-      { label: "Our Story", href: "#story", icon: <FaTrophy className="text-orange-500" /> },
-      { label: "Mission & Vision", href: "#mission", icon: <IoFlash className="text-orange-500" /> },
-      { label: "Our Team", href: "#team", icon: <MdGroups className="text-orange-500" /> },
-    ],
-  },
-  { label: "Sports", href: "#sports", icon: <MdSportsCricket /> },
-  {
-    label: "Programs",
-    href: "#programs",
-    dropdown: [
-      { label: "Talent Hunt", href: "#talent", icon: <FaMedal className="text-orange-500" /> },
-      { label: "Training Camps", href: "#camps", icon: <MdSportsCricket className="text-orange-500" /> },
-      { label: "Scholarships", href: "#scholarship", icon: <MdEmojiEvents className="text-orange-500" /> },
-    ],
-  },
-  { label: "Membership", href: "#membership", icon: <MdVolunteerActivism /> },
-  { label: "Contact", href: "#contact", icon: <MdContactMail /> },
-];
-
-const Navbar = () => {
+export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activeLink, setActiveLink] = useState("Home");
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const [mobileExpanded, setMobileExpanded] = useState(null);
+  const [active, setActive] = useState("Home");
+  const [dropOpen, setDropOpen] = useState(false);
+  const [mobileDropOpen, setMobileDropOpen] = useState(false);
+  const hoverTimer = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (menuOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
+    document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  const handleNavClick = (label) => {
-    setActiveLink(label);
+  const closeAll = (label) => {
+    setActive(label);
     setMenuOpen(false);
-    setOpenDropdown(null);
-    setMobileExpanded(null);
+    setMobileDropOpen(false);
+    setDropOpen(false);
   };
+
+  const onEnter = () => { clearTimeout(hoverTimer.current); setDropOpen(true); };
+  const onLeave = () => { hoverTimer.current = setTimeout(() => setDropOpen(false), 130); };
+
+  const dropItems = [
+    { label: "General Member", href: "#general", icon: <FaUsers />, desc: "Open for everyone" },
+    { label: "Special Member", href: "#special", icon: <BsStarFill />, desc: "By invitation only" },
+  ];
 
   return (
     <>
-      {/* ════════════ NAVBAR ════════════ */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        @keyframes shim { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+        .accent {
+          height: 3px;
+          background: linear-gradient(90deg,#F05A1A,#FFAD5C,#F05A1A,#FFAD5C);
+          background-size: 300% 100%;
+          animation: shim 3s linear infinite;
+        }
+
+        @keyframes dpIn {
+          from { opacity:0; transform:translateX(-50%) translateY(-10px) scale(.96); }
+          to   { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+        }
+        .drop-anim { animation: dpIn .2s cubic-bezier(.16,1,.3,1) both; }
+
+        @keyframes hup {
+          from { opacity:0; transform:translateY(40px); }
+          to   { opacity:1; transform:translateY(0); }
+        }
+        .hero-anim { animation: hup .9s cubic-bezier(.16,1,.3,1) both; }
+
+        @keyframes sb {
+          0%,100%{transform:translateY(0);opacity:1}
+          60%{transform:translateY(10px);opacity:.2}
+        }
+        .scroll-dot { animation: sb 2s ease-in-out infinite; }
+
+        .nl::after {
+          content: '';
+          position: absolute;
+          bottom: 4px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 2px;
+          background: #F05A1A;
+          border-radius: 2px;
+          transition: width .25s;
+        }
+        .nl:hover::after, .nl.on::after { width: calc(100% - 22px); }
+
+        .acc { overflow: hidden; max-height: 0; transition: max-height .32s ease; }
+        .acc.open { max-height: 200px; }
+
+        .hero-grid {
+          position: absolute;
+          inset: 0;
+          background-image:
+            repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,.028) 60px,rgba(255,255,255,.028) 61px),
+            repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,.028) 60px,rgba(255,255,255,.028) 61px);
+        }
+
+        @media(max-width:1024px){
+          .dlinks { display: none !important; }
+          .ham { display: flex !important; }
+        }
+        @media(max-width:640px){
+          .stats-bar { padding: 20px 24px !important; }
+          .stat-div { margin: 0 20px !important; height: 40px !important; }
+        }
+      `}</style>
+
+      {/* ══════════════ NAVBAR ══════════════ */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-xl shadow-slate-900/10 border-b border-gray-100"
-            : "bg-transparent"
-        }`}
+        className="fixed top-0 left-0 right-0 z-[100] bg-[rgba(255,255,255,.97)]"
+        style={{
+          transition: "background .4s, box-shadow .4s",
+        }}
       >
-        {/* Top orange accent line */}
-        <div className="h-[3px] w-full bg-gradient-to-r from-orange-500 via-orange-400 to-yellow-400" />
+        <div className="accent" />
+        <div
+          className="dlinks-wrapper flex items-center justify-between"
+          style={{ maxWidth: 1280, margin: "0 auto", padding: "0 28px", height: 70 }}
+        >
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* LOGO */}
+          <a
+            href="/"
+            className="flex items-center gap-3 no-underline group"
+            style={{ textDecoration: "none" }}
+            onClick={() => closeAll("Home")}
+          >
+            <img src="/src/assets/images/logo.png" alt="logo" className="w-full max-w-2/3" /></a>
 
-            {/* ── LOGO ── */}
+
+          {/* DESKTOP LINKS */}
+          <div className="dlinks flex items-center" style={{ gap: 2 }}>
+
             <a
               href="#home"
-              className="flex items-center gap-3 group"
-              onClick={() => handleNavClick("Home")}
+              className={`nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Home" ? "on" : ""}`}
+              style={{
+                padding: "8px 15px", fontSize: 14, fontWeight: 600,
+                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
+                color: active === "Home"
+                  ? "#F05A1A"
+                  : "#1e293b"
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              onClick={() => closeAll("Home")}
             >
-              <div className="relative">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                  <FaTrophy className="text-white text-lg lg:text-xl" />
-                </div>
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white" />
-              </div>
-              <div className="leading-none">
-                <p
-                  className={`font-black text-xl lg:text-2xl tracking-widest transition-colors duration-300 ${
-                    scrolled ? "text-[#0B1E4B]" : "text-white"
-                  }`}
-                  style={{ fontFamily: "'Bebas Neue', cursive" }}
-                >
-                  UDI <span className="text-orange-500">Sports</span>
-                </p>
-                <p
-                  className={`text-[10px] font-bold tracking-[3px] uppercase transition-colors duration-300 ${
-                    scrolled ? "text-gray-400" : "text-white/50"
-                  }`}
-                >
-                  NGO India
-                </p>
-              </div>
+              Home
             </a>
 
-            {/* ── DESKTOP NAV LINKS ── */}
-            <ul className="hidden lg:flex items-center gap-1 list-none">
-              {navLinks.map((link) => (
-                <li
-                  key={link.label}
-                  className="relative"
-                  onMouseEnter={() => link.dropdown && setOpenDropdown(link.label)}
-                  onMouseLeave={() => setOpenDropdown(null)}
+            {/* MEMBERS DROPDOWN */}
+            <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
+              <button
+                className={`nl relative flex items-center gap-1.5 rounded-xl cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Members" ? "on" : ""}`}
+                style={{
+                  padding: "8px 15px", fontSize: 14, fontWeight: 600,
+                  fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
+                  color: active === "Blogs"
+                    ? "#F05A1A"
+                    : "#1e293b"
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              >
+                Members
+                <FaChevronDown style={{
+                  fontSize: 10, transition: "transform .25s",
+                  transform: dropOpen ? "rotate(180deg)" : "rotate(0)",
+                  color: dropOpen ? "#F05A1A" : "inherit",
+                }} />
+              </button>
+
+              {dropOpen && (
+                <div
+                  className="drop-anim absolute z-[200] bg-white rounded-[18px]"
+                  style={{
+                    top: "calc(100% + 12px)", left: "50%",
+                    transform: "translateX(-50%)",
+                    padding: 8, minWidth: 240,
+                    boxShadow: "0 24px 60px rgba(11,30,75,.16), 0 4px 16px rgba(0,0,0,.06)",
+                    border: "1px solid #eef2f8",
+                  }}
+                  onMouseEnter={onEnter}
+                  onMouseLeave={onLeave}
                 >
-                  <a
-                    href={link.href}
-                    onClick={() => handleNavClick(link.label)}
-                    className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                      activeLink === link.label
-                        ? "bg-orange-500 text-white shadow-md shadow-orange-500/30"
-                        : scrolled
-                        ? "text-gray-700 hover:text-orange-600 hover:bg-orange-50"
-                        : "text-white/90 hover:text-white hover:bg-white/10"
-                    }`}
-                  >
-                    {link.label}
-                    {link.dropdown && (
-                      <FaChevronDown
-                        className={`text-[10px] transition-transform duration-200 ${
-                          openDropdown === link.label ? "rotate-180" : ""
-                        }`}
-                      />
-                    )}
-                  </a>
-
-                  {/* ── Dropdown ── */}
-                  {link.dropdown && (
-                    <div
-                      className={`absolute top-full left-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl shadow-gray-900/15 border border-gray-100 py-2 transition-all duration-200 origin-top-left ${
-                        openDropdown === link.label
-                          ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-                          : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
-                      }`}
+                  <div style={{
+                    position: "absolute", top: -6, left: "50%",
+                    transform: "translateX(-50%) rotate(45deg)",
+                    width: 12, height: 12, background: "#fff",
+                    borderLeft: "1px solid #eef2f8", borderTop: "1px solid #eef2f8",
+                  }} />
+                  {dropItems.map(item => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="flex items-center gap-3 rounded-xl no-underline transition-all duration-150 group/di"
+                      style={{ padding: "11px 12px", color: "#374151", textDecoration: "none" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; }}
+                      onClick={() => closeAll("Members")}
                     >
-                      {/* Dropdown arrow tip */}
-                      <span className="absolute -top-1.5 left-6 w-3 h-3 bg-white border-l border-t border-gray-100 rotate-45" />
-                      {link.dropdown.map((item) => (
-                        <a
-                          key={item.label}
-                          href={item.href}
-                          onClick={() => handleNavClick(link.label)}
-                          className="flex items-center gap-3 mx-1.5 px-3 py-2.5 text-sm text-gray-600 font-medium hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors"
-                        >
-                          <span className="text-base">{item.icon}</span>
-                          {item.label}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-
-            {/* ── DESKTOP CTA ── */}
-            <div className="hidden lg:flex items-center gap-3">
-              <a
-                href="#login"
-                className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
-                  scrolled ? "text-[#0B1E4B] hover:bg-gray-100" : "text-white/90 hover:bg-white/10"
-                }`}
-              >
-                Login
-              </a>
-              <a
-                href="#membership"
-                onClick={() => handleNavClick("Membership")}
-                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-105 active:scale-95 transition-all duration-200"
-              >
-                <MdVolunteerActivism className="text-base" />
-                Join Now
-              </a>
+                      <div
+                        className="flex-shrink-0 flex items-center justify-center rounded-[10px] transition-colors duration-150"
+                        style={{ width: 36, height: 36, background: "#FFF3EC", color: "#F05A1A", fontSize: 15 }}
+                      >
+                        {item.icon}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 700 }}>{item.label}</div>
+                        <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 1 }}>{item.desc}</div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* ── MOBILE HAMBURGER ── */}
-            <button
-              className={`lg:hidden relative w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-105 ${
-                scrolled ? "bg-gray-100 text-[#0B1E4B]" : "bg-white/10 text-white"
-              }`}
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
+            <a
+              href="#blogs"
+              className={`nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Blogs" ? "on" : ""}`}
+              style={{
+                padding: "8px 15px", fontSize: 14, fontWeight: 600,
+                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
+                color: active === "Blogs"
+                  ? "#F05A1A"
+                  : "#1e293b"
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              onClick={() => closeAll("Blogs")}
             >
-              <span
-                className={`absolute transition-all duration-300 ${
-                  menuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-50"
-                }`}
-              >
-                <HiX className="text-xl text-orange-500" />
-              </span>
-              <span
-                className={`absolute transition-all duration-300 ${
-                  menuOpen ? "opacity-0 -rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"
-                }`}
-              >
-                <HiMenu className="text-xl" />
-              </span>
-            </button>
+              Blogs
+            </a>
+
+            <a
+              href="#players"
+              className={` relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Talented Players" ? "on" : ""}`}
+              style={{
+                padding: "8px 15px", fontSize: 14, fontWeight: 600,
+                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
+                color: active === "Talented Players"
+                  ? "#F05A1A"
+                  : "#1e293b"
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              onClick={() => closeAll("Talented Players")}
+            >
+              Talented Players
+            </a>
+
 
           </div>
+          <div className="dlinks flex items-center" style={{ gap: 2 }}>
+            {/* BECOME A MEMBER */}
+            <a
+              href="#become"
+              className="flex items-center gap-1.5 rounded-[10px] no-underline cursor-pointer transition-all duration-[250ms]"
+              style={{
+                padding: "9px 18px", fontSize: 13, fontWeight: 700,
+                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
+                marginLeft: 6,
+                color: "#0B1E4B",
+                background: "transparent",
+                textDecoration: "none",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "#0B1E4B";
+                e.currentTarget.style.color = "#fff";
+                e.currentTarget.style.borderColor = "#0B1E4B";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "#0B1E4B";
+                e.currentTarget.style.borderColor = "#0B1E4B";
+              }}
+              onClick={() => closeAll("Become a Member")}
+            >
+              <MdVolunteerActivism style={{ fontSize: 16 }} />
+              Become a Special Member
+            </a>
+
+            {/* CONTACT US */}
+            <a
+              href="#contact"
+              className="flex items-center gap-1.5 rounded-[10px] no-underline cursor-pointer transition-all duration-[250ms] hover:-translate-y-0.5"
+              style={{
+                padding: "10px 20px", fontSize: 13, fontWeight: 700,
+                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
+                color: "#fff",
+                background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
+                boxShadow: "0 4px 18px rgba(240,90,26,.36)",
+                textDecoration: "none",
+              }}
+              onMouseEnter={e => e.currentTarget.style.boxShadow = "0 10px 28px rgba(240,90,26,.50)"}
+              onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 18px rgba(240,90,26,.36)"}
+              onClick={() => closeAll("Contact")}
+            >
+              <MdContactMail style={{ fontSize: 16 }} />
+              Contact Us
+            </a>
+          </div>
+          {/* HAMBURGER */}
+          <button
+            className="ham hidden items-center justify-center rounded-[11px] border-0 cursor-pointer transition-all duration-200"
+            style={{
+              width: 42, height: 42,
+              background: "#F3F4F6"
+            }}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen
+              ? <HiX style={{ fontSize: 22, color: "#F05A1A" }} />
+              : <HiMenu style={{ fontSize: 22, color: "#0B1E4B" }} />
+            }
+          </button>
         </div>
       </nav>
 
-      {/* ════════════ MOBILE OVERLAY ════════════ */}
+      {/* ══════════════ MOBILE MENU ══════════════ */}
       <div
-        className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${
-          menuOpen ? "visible" : "invisible"
-        }`}
+        className="fixed inset-0 z-[99] transition-all duration-300"
+        style={{ visibility: menuOpen ? "visible" : "hidden", opacity: menuOpen ? 1 : 0 }}
       >
-        {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-[#0B1E4B]/80 backdrop-blur-sm transition-opacity duration-300 ${
-            menuOpen ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0"
+          style={{ background: "rgba(11,30,75,.78)", backdropFilter: "blur(8px)" }}
           onClick={() => setMenuOpen(false)}
         />
-
-        {/* Slide Panel */}
         <div
-          className={`absolute top-0 right-0 h-full w-[300px] bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
-            menuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+          className="absolute top-0 right-0 bottom-0 flex flex-col bg-white"
+          style={{
+            width: 300,
+            boxShadow: "-10px 0 60px rgba(0,0,0,.18)",
+            transform: menuOpen ? "translateX(0)" : "translateX(100%)",
+            transition: "transform .32s cubic-bezier(.4,0,.2,1)",
+          }}
         >
-          {/* Panel top accent */}
-          <div className="h-[3px] bg-gradient-to-r from-orange-500 via-orange-400 to-yellow-400" />
+          <div className="accent" />
 
-          {/* Panel Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md shadow-orange-500/30">
-                <FaTrophy className="text-white text-sm" />
-              </div>
-              <span
-                className="font-black text-[#0B1E4B] text-lg tracking-widest"
-                style={{ fontFamily: "'Bebas Neue', cursive" }}
+          <div className="flex items-center justify-between" style={{ padding: "16px 20px", borderBottom: "1px solid #F1F5F9" }}>
+            <div className="flex items-center" style={{ gap: 10 }}>
+              <div
+                className="flex items-center justify-center rounded-[9px]"
+                style={{ width: 36, height: 36, background: "linear-gradient(135deg,#F05A1A,#FF7D42)", boxShadow: "0 4px 14px rgba(240,90,26,.35)" }}
               >
-                UDI <span className="text-orange-500">Sports</span>
+                <FaTrophy style={{ color: "#fff", fontSize: 16 }} />
+              </div>
+              <span style={{ fontFamily: "'Bebas Neue',cursive", fontSize: 20, letterSpacing: 2, color: "#0B1E4B" }}>
+                UDI <span style={{ color: "#F05A1A" }}>SPORTS</span>
               </span>
             </div>
             <button
               onClick={() => setMenuOpen(false)}
-              className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-red-100 hover:text-red-500 transition-colors"
+              className="flex items-center justify-center rounded-lg border-0 cursor-pointer"
+              style={{ width: 32, height: 32, background: "#F3F4F6" }}
             >
-              <HiX className="text-base" />
+              <HiX style={{ fontSize: 17, color: "#6B7280" }} />
             </button>
           </div>
 
-          {/* Mobile Links */}
-          <div className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
-            {navLinks.map((link) => (
-              <div key={link.label}>
-                {link.dropdown ? (
-                  <>
-                    <button
-                      onClick={() =>
-                        setMobileExpanded(mobileExpanded === link.label ? null : link.label)
-                      }
-                      className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all"
+          <div className="flex-1 overflow-y-auto" style={{ padding: 12 }}>
+            <a
+              href="#home"
+              className={`flex items-center w-full rounded-xl no-underline border-0 cursor-pointer transition-all duration-150 ${active === "Home" ? "is-active" : ""}`}
+              style={{
+                gap: 10, padding: "13px 15px", fontSize: 14, fontWeight: 600,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                color: active === "Home" ? "#F05A1A" : "#374151",
+                background: active === "Home" ? "#FFF3EC" : "transparent",
+                textDecoration: "none",
+              }}
+              onMouseEnter={e => { if (active !== "Home") { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; } }}
+              onMouseLeave={e => { if (active !== "Home") { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; } }}
+              onClick={() => closeAll("Home")}
+            >
+              Home
+            </a>
+
+            <div>
+              <button
+                className="flex items-center justify-between w-full rounded-xl border-0 cursor-pointer transition-all duration-150"
+                style={{
+                  gap: 10, padding: "13px 15px", fontSize: 14, fontWeight: 600,
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: active === "Members" ? "#F05A1A" : "#374151",
+                  background: active === "Members" ? "#FFF3EC" : "transparent",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = active === "Members" ? "#FFF3EC" : "transparent"; e.currentTarget.style.color = active === "Members" ? "#F05A1A" : "#374151"; }}
+                onClick={() => setMobileDropOpen(p => !p)}
+              >
+                <span>Members</span>
+                <FaChevronDown style={{
+                  fontSize: 11, color: mobileDropOpen ? "#F05A1A" : "#94a3b8",
+                  transition: "transform .25s",
+                  transform: mobileDropOpen ? "rotate(180deg)" : "rotate(0)",
+                }} />
+              </button>
+              <div className={`acc ${mobileDropOpen ? "open" : ""}`}>
+                <div style={{ paddingLeft: 10 }}>
+                  {dropItems.map(item => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="flex items-center rounded-xl no-underline transition-all duration-150"
+                      style={{
+                        gap: 10, padding: "13px 12px", fontSize: 13, fontWeight: 600,
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        color: "#374151", textDecoration: "none",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; }}
+                      onClick={() => closeAll("Members")}
                     >
-                      <span>{link.label}</span>
-                      <FaChevronDown
-                        className={`text-xs text-gray-400 transition-transform duration-200 ${
-                          mobileExpanded === link.label ? "rotate-180 text-orange-500" : ""
-                        }`}
-                      />
-                    </button>
-                    <div
-                      className={`overflow-hidden transition-all duration-300 ${
-                        mobileExpanded === link.label ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
-                      }`}
-                    >
-                      <div className="pl-3 pb-1 space-y-0.5">
-                        {link.dropdown.map((item) => (
-                          <a
-                            key={item.label}
-                            href={item.href}
-                            onClick={() => handleNavClick(link.label)}
-                            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-colors font-medium"
-                          >
-                            <span className="text-base">{item.icon}</span>
-                            {item.label}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <a
-                    href={link.href}
-                    onClick={() => handleNavClick(link.label)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                      activeLink === link.label
-                        ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/25"
-                        : "text-gray-700 hover:bg-orange-50 hover:text-orange-600"
-                    }`}
-                  >
-                    {link.icon && (
-                      <span
-                        className={`text-base ${
-                          activeLink === link.label ? "text-white" : "text-orange-500"
-                        }`}
-                      >
-                        {link.icon}
-                      </span>
-                    )}
-                    {link.label}
-                  </a>
-                )}
+                      <span style={{ color: "#F05A1A", fontSize: 14 }}>{item.icon}</span>
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
               </div>
+            </div>
+
+            {["Blogs", "Talented Players"].map((label) => (
+              <a
+                key={label}
+                href={`#${label.toLowerCase().replace(" ", "-")}`}
+                className="flex items-center w-full rounded-xl no-underline border-0 cursor-pointer transition-all duration-150"
+                style={{
+                  gap: 10, padding: "13px 15px", fontSize: 14, fontWeight: 600,
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: active === label ? "#F05A1A" : "#374151",
+                  background: active === label ? "#FFF3EC" : "transparent",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={e => { if (active !== label) { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; } }}
+                onMouseLeave={e => { if (active !== label) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; } }}
+                onClick={() => closeAll(label)}
+              >
+                {label}
+              </a>
             ))}
           </div>
 
-          {/* Mobile CTA Footer */}
-          <div className="px-4 py-5 border-t border-gray-100 space-y-3 bg-gray-50/50">
+          <div className="flex flex-col" style={{ padding: 16, borderTop: "1px solid #F1F5F9", gap: 10 }}>
             <a
-              href="#membership"
-              onClick={() => handleNavClick("Membership")}
-              className="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 active:scale-95 transition-all text-sm"
+              href="#become"
+              className="flex items-center justify-center rounded-xl no-underline transition-all duration-200"
+              style={{
+                gap: 8, padding: 13, fontSize: 14, fontWeight: 700,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                color: "#0B1E4B", border: "2px solid #0B1E4B",
+                textDecoration: "none",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#0B1E4B"; e.currentTarget.style.color = "#fff"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0B1E4B"; }}
+              onClick={() => closeAll("Become a Member")}
             >
-              <MdVolunteerActivism className="text-lg" />
-              Join Now — Become a Member
+              <MdVolunteerActivism style={{ fontSize: 18 }} /> Become a Special Member
             </a>
             <a
-              href="#login"
-              className="flex items-center justify-center w-full py-2.5 border-2 border-gray-200 text-[#0B1E4B] font-semibold rounded-xl text-sm hover:border-orange-300 hover:bg-orange-50 transition-all"
+              href="#contact"
+              className="flex items-center justify-center rounded-xl no-underline"
+              style={{
+                gap: 8, padding: 13, fontSize: 14, fontWeight: 700,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                color: "#fff",
+                background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
+                boxShadow: "0 4px 16px rgba(240,90,26,.35)",
+                textDecoration: "none",
+              }}
+              onClick={() => closeAll("Contact")}
             >
-              Admin Login
+              <MdContactMail style={{ fontSize: 18 }} /> Contact Us
             </a>
-            {/* Social links */}
-            <div className="flex items-center justify-center gap-2 pt-1">
-              {["facebook", "instagram", "twitter", "youtube"].map((s) => (
-                <a
-                  key={s}
-                  href={`#${s}`}
-                  className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 hover:bg-orange-100 hover:text-orange-600 transition-colors text-xs font-bold uppercase"
-                >
-                  {s[0].toUpperCase()}
-                </a>
-              ))}
-            </div>
           </div>
         </div>
       </div>
-
-      {/* ════════════ DEMO HERO SECTION (for preview) ════════════ */}
-      <section
-        id="home"
-        className="min-h-screen flex items-center justify-center relative"
-        style={{ background: "linear-gradient(135deg,#0B1E4B 0%,#152B6B 55%,#1a3560 100%)" }}
-      >
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,1) 60px,rgba(255,255,255,1) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,1) 60px,rgba(255,255,255,1) 61px)",
-          }}
-        />
-        {/* Glow blobs */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative text-center px-6 max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 border border-orange-500/30 rounded-full text-orange-300 text-sm font-semibold mb-6">
-            <IoFlash className="text-orange-400" />
-            India's Premier Sports NGO
-          </div>
-
-          {/* Headline */}
-          <h1
-            className="text-5xl md:text-7xl font-black text-white mb-6 leading-none tracking-wider"
-            style={{ fontFamily: "'Bebas Neue', cursive" }}
-          >
-            UNLEASH THE{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-yellow-400">
-              CHAMPION
-            </span>{" "}
-            WITHIN
-          </h1>
-
-          <p className="text-white/60 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-            UDI Sports NGO — Empowering India's talented athletes from grassroots to national glory
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <a
-              href="#membership"
-              className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl shadow-2xl shadow-orange-500/40 hover:scale-105 active:scale-95 transition-transform text-lg"
-            >
-              <MdVolunteerActivism />
-              Join Us Today
-            </a>
-            <a
-              href="#about"
-              className="flex items-center justify-center gap-2 px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-2xl hover:bg-white/10 transition-colors text-lg"
-            >
-              Learn More
-            </a>
-          </div>
-
-          {/* Stats row */}
-          <div className="flex items-center justify-center gap-8 sm:gap-14">
-            {[
-              { num: "5K+", label: "Athletes" },
-              { num: "28", label: "States" },
-              { num: "200+", label: "Medals" },
-            ].map((stat, i) => (
-              <div key={i} className="flex items-center gap-8 sm:gap-14">
-                {i > 0 && <div className="w-px h-10 bg-white/20" />}
-                <div className="text-center">
-                  <div
-                    className="text-4xl font-black text-white"
-                    style={{ fontFamily: "'Bebas Neue', cursive" }}
-                  >
-                    {stat.num}
-                  </div>
-                  <div className="text-white/50 text-sm mt-0.5">{stat.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   );
-};
-
-export default Navbar;
+}

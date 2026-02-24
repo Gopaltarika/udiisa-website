@@ -1,10 +1,32 @@
+import AboutUs from "./AboutUs";
+import AdvisoryBoard from "./AdvisoryBoard";
+import BecomeAMember from "./Becomeamember";
+import BlogSection from "./Blogsection";
+import ContactUs from "./ContactUs";
+import GeneralMembers from "./GeneralMembers";
+import HeroSection from "./HeroSection";
+import Leadership from "./Leadership";
+import ManagingCommittee from "./ManagingCommitte";
+import Promoters from "./Promoters";
+import SportsCommittee from "./SportsCommittee";
+import WhatWeDo from "./WhatWeDo";
+
 const Home = () => {
   return (
-    <div className="h-screen flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-blue-600">
-        Welcome to UDIISA
-      </h1>
-    </div>
+    <>
+     <HeroSection />
+     <AboutUs />
+     <Leadership />
+     <AdvisoryBoard />
+     <WhatWeDo />
+     <ManagingCommittee />
+     <BecomeAMember />
+     <Promoters />
+     <GeneralMembers />
+     <ContactUs />
+     <SportsCommittee />
+     <BlogSection />
+    </>
   );
 };
 
