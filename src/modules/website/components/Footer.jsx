@@ -23,6 +23,7 @@ const contactInfo = [
   { icon: <FaMapMarkerAlt />, value: '123 Sports Complex, Sector 12, New Delhi – 110001' },
   { icon: <FaPhone />,        value: '+91 98765 43210' },
   { icon: <FaEnvelope />,     value: 'info@sportforce.org' },
+  { icon: <FaEnvelope />,     value: 'CIN NUmber' },
 ]
 
 const socials = [
