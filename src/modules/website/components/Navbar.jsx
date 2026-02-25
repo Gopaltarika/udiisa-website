@@ -121,7 +121,7 @@ export default function Navbar() {
             style={{ textDecoration: "none" }}
             onClick={() => closeAll("Home")}
           >
-            <img src="/src/assets/images/logo.png" alt="logo" className="w-full max-w-2/3" /></a>
+            <img src="./src/assets/images/Logo.png" alt="logo" className="w-full max-w-2/3" /></a>
 
 
           {/* DESKTOP LINKS */}
