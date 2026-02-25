@@ -4,8 +4,6 @@ import { FaChevronDown, FaAngleDoubleRight } from 'react-icons/fa'
 const memberTypes = [
   { value: 'special', label: 'Special Member' },
   { value: 'general', label: 'General Member' },
-  { value: 'patron', label: 'Patron Member' },
-  { value: 'associate', label: 'Associate Member' },
 ]
 
 const BecomeAMember = () => {
@@ -81,34 +79,23 @@ const BecomeAMember = () => {
         }
       `}</style>
 
-      <section className="bam-section !bg-[#f4f6fb] !py-12 !px-4 sm:!px-6 lg:!px-10">
+      <section className="!py-12 !px-4 sm:!px-6 lg:!px-10">
         <div className="!max-w-[1100px] !mx-auto">
 
           {/* ── Card ── */}
           <div
-            className="bam-card bam-grid !relative !overflow-hidden !flex !items-center !justify-between"
+            className=" !p-[0px_2px_24px_20px] grid grid-cols-1 md:grid-cols-2 rounded-xl max-md:![background:_linear-gradient(54.51deg,_#20569C_3.18%,_#7CA6B1_107.73%)] [background-size:_100%_100%] bg-center bg-no-repeat !relative h-full w-full"
             style={{
-              background: 'linear-gradient(120deg,#1a3fad 0%,#1e4fd8 50%,#1a3fad 100%)',
-              borderRadius: 22,
-              minHeight: 260,
-              boxShadow: '0 24px 64px rgba(29,78,216,.28)',
+              backgroundImage: 'url(./src/assets/images/bg-become_A_Member.png)',
             }}
           >
 
-            {/* Left glow blob */}
-            <div
-              className="!absolute !pointer-events-none"
-              style={{
-                top: -60, left: -60, width: 240, height: 240,
-                borderRadius: '50%',
-                background: 'radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%)',
-              }}
-            />
+          
 
             {/* ── Left Content ── */}
             <div
-              className="!relative !z-10 !flex !flex-col !justify-center"
-              style={{ padding: '44px 40px', maxWidth: 520, flex: '1 1 auto' }}
+              className=" !relative  !z-10 !flex !flex-col !justify-center"
+              style={{ padding: '0px 40px 20px 40px', maxWidth: 520, flex: '1 1 auto' }}
             >
               {/* Heading */}
               <h2
@@ -221,34 +208,15 @@ const BecomeAMember = () => {
 
             {/* ── Right Person Image ── */}
             <div
-              className="person-wrap !absolute !right-0 !bottom-0 !z-10 !pointer-events-none"
-              style={{ height: '110%', display: 'flex', alignItems: 'flex-end' }}
+              className="person- wrap hidden md:block !mb-15 !pointer-events-none flex items-center"
             >
               <img
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85&fit=crop&crop=top"
+                src="./src/assets/images/member-card-img.png"
                 alt="Member"
-                className="person-img"
-                style={{
-                  height: '100%',
-                  width: 'auto',
-                  maxWidth: 380,
-                  objectFit: 'cover',
-                  objectPosition: 'top',
-                  filter: 'drop-shadow(-8px 0 24px rgba(11,30,75,.3))',
-                }}
+                className="person-img w-full max-h-[432px] !-mb-4 h-full"
+               
               />
             </div>
-
-            {/* Right glow */}
-            <div
-              className="!absolute !pointer-events-none"
-              style={{
-                bottom: -40, right: 300,
-                width: 200, height: 200,
-                borderRadius: '50%',
-                background: 'radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%)',
-              }}
-            />
           </div>
 
         </div>

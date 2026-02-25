@@ -7,19 +7,19 @@ const promoters = [
     id: 1,
     name: 'Sh. Chander Kanta',
     role: 'Senior founder & promotor',
-    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=85&fit=crop&crop=face',
+    img: './src/assets/images/chander-kanta.jpeg',
   },
   {
     id: 2,
     name: 'Mr. Lakshaya',
     role: 'Young Founder & Promoter',
-    img: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=600&q=85&fit=crop&crop=top',
+    img: './src/assets/images/lakshaya.jpeg',
   },
   {
     id: 3,
     name: 'Mrs. Udita',
     role: 'Young Promoter',
-    img: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&q=85&fit=crop&crop=face',
+    img: './src/assets/images/udita.jpeg',
   },
 ]
 
@@ -149,7 +149,7 @@ const Promoters = () => {
                   <img
                     src={p.img}
                     alt={p.name}
-                    className="promo-photo !w-full !h-full !object-cover !object-top"
+                    className=" !w-full !h-full !object-cover !object-top"
                   />
 
                   {/* Bottom fade overlay */}

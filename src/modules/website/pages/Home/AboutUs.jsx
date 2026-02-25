@@ -77,7 +77,7 @@ const AboutUs = () => {
       style={{ aspectRatio: "4/3" }}
     >
       <img
-        src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80&fit=crop"
+        src="./src/assets/images/about1.png"
         alt="Team collaboration"
         className="w-full h-full object-cover"
       />
@@ -89,7 +89,7 @@ const AboutUs = () => {
       style={{ aspectRatio: "4/3" }}
     >
       <img
-        src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80&fit=crop"
+        src="./src/assets/images/about2.png"
         alt="Planning session"
         className="w-full h-full object-cover"
       />
@@ -104,7 +104,7 @@ const AboutUs = () => {
       style={{ aspectRatio: "4/3" }}
     >
       <img
-        src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80&fit=crop"
+        src="./src/assets/images/about3.png"
         alt="Team high five"
         className="w-full h-full object-cover"
       />
@@ -146,7 +146,7 @@ const AboutUs = () => {
 
               {/* Badge */}
               <div
-                className="inline-flex items-center rounded-full border mb-5"
+                className="inline-flex items-center rounded-full border !mb-5"
                 style={{
                   padding: "5px 16px",
                   fontSize: 11,
@@ -171,11 +171,8 @@ const AboutUs = () => {
                   color: "#0B1E4B",
                   margin: 0,
                 }}
-              >
-                We Champion{" "}
-                <span style={{ color: "#F05A1A" }}>Every</span>
-                <br />
-                Athlete's Dream
+              >Where Talent Meets                 <span style={{ color: "#F05A1A" }}>Opportunity</span> 
+          
               </h2>
 
               {/* Underline accent */}
@@ -183,17 +180,15 @@ const AboutUs = () => {
 
               {/* Description */}
               <p
-                className="mb-7"
+                className="!mb-7"
                 style={{
                   fontSize: "clamp(14px, 1.6vw, 15.5px)",
                   color: "#475569",
-                  lineHeight: 1.8,
+                  lineHeight: 1.6,
                   maxWidth: 520,
                 }}
               >
-                SportForce NGO is a non-profit organization dedicated to identifying
-                extraordinary sporting talent and providing comprehensive support to
-                transform raw potential into national glory.
+         UDIISA works at the grassroots level to discover hidden sporting talent and provide structured support including coaching, mentorship, financial assistance, and academy placements. Our mission is to bridge the gap between talent and opportunity, ensuring that no athlete’s dream goes unnoticed or unsupported.
               </p>
 
               {/* Feature Cards */}

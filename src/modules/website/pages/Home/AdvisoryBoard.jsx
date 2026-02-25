@@ -3,29 +3,25 @@ import { FaArrowRight, FaTimes } from 'react-icons/fa'
 
 const chairmen = [
   {
-    name: 'Sunil Jalan',
+    name: 'Mr. Sunil Jalan',
     role: 'Advisory Board Chairman',
     roleBadege: 'Chairman',
-    desc: 'A visionary leader with 25+ years in sports administration and philanthropy, bringing unparalleled expertise to our strategic direction.',
-    img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=85&fit=crop&crop=face',
-    modalTitle: 'Visionary Leader of Sports Administration',
+    desc: 'Whole time Chairman, Advisory Board. UDIISA.',
+    img: './src/assets/images/sunil-jalan.jpeg',
+    modalTitle: 'Whole time Chairman, Advisory Board. UDIISA.',
     modalContent: [
-      'Sunil Jalan brings over 25 years of unmatched experience in sports administration and philanthropy to SportForce NGO. His journey began on the fields of grassroots cricket, where he witnessed firsthand the struggles of talented athletes without financial backing.',
-      'His contribution spans across policy-making, athlete welfare programs, and establishing national-level sports infrastructure. He has been instrumental in designing frameworks that ensure long-term sustainability for underprivileged athletes across 28 states.',
-      'A former state-level player himself, Sunil ensures that every decision made at the board level reflects the ground realities faced by aspiring champions at the grassroots level.',
+      'He is also co-founder and Chairman of A-One Steel Group. He is proactive in providing assistance to the talented and gifted players in recognized way at all level in sports mission. He  lends his expertise to each significant aspect in growing up the managing of Association, strategy, operations and finance objectives. He is responsible for the successful leadership and management of Association which is registered under secton 8 of company Act. He implements comprehensive industry  plans in sports, enhances the company culture, and ensures a safe working environment for unpleasing dreams industry, for creating future champions, in sports.',
     ],
   },
   {
-    name: 'Suresh Jindal',
+    name: 'Mr. Suresh Jindal',
     role: 'Advisory Board Vice Chairman',
     roleBadege: ' Vice Chairman',
-    desc: 'A seasoned industrialist and sports patron, instrumental in establishing financial frameworks that support athletes at every stage.',
-    img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=85&fit=crop&crop=face',
-    modalTitle: 'Industrial Patron of Sports Excellence',
+    desc: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
+    img: './src/assets/images/suresh-jindal.jpeg',
+    modalTitle: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
     modalContent: [
-      'Suresh Jindal brings the discipline and vision of a seasoned industrialist to the world of sports welfare. With a successful manufacturing empire spanning 30 years, he recognized that the principles of identifying talent, investing wisely, and nurturing growth apply equally to sports and business.',
-      'His contribution goes beyond financial patronage — Suresh has established direct pipelines to corporate sponsors, helped create job placement programs for retired athletes, and championed girl athletes in regions where cultural barriers remain high.',
-      'A former state-level cricket player himself, Suresh ensures our programs remain grounded in the practical realities athletes face at the grassroots level.',
+      'Shri Suresh Jindal Ji remained as prominent and proactive Industrialist.He started serving for talented and gifted players after handing over the business activities to his children. He is noble and kindhearted person in contributing his best for creating future champions. UDIISA is thankful for his support of mission.',
     ],
   },
 ]

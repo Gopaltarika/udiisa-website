@@ -91,7 +91,7 @@ const Leadership = () => {
 
                 {/* Photo */}
                 <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=85&fit=crop&crop=face"
+                  src="./src/assets/images/satishkumarjain.jpeg"
                   alt="Satish Kumar Jain"
                   className="w-full h-full object-cover object-top"
                 />
@@ -144,7 +144,7 @@ const Leadership = () => {
                   margin: "0 0 12px 0",
                 }}
               >
-                Satish Kumar Jain
+                Mr.Satish Kumar Jain
               </h2>
 
               {/* Orange underline */}
@@ -165,12 +165,7 @@ const Leadership = () => {
                   lineHeight: 1.85,
                 }}
               >
-                With over two decades of dedication to grassroots sports development,
-                Satish Kumar Jain founded SportForce NGO with a singular vision — to
-                ensure no talent goes unnoticed due to financial barriers. His tireless
-                efforts have transformed hundreds of young lives, providing them with
-                the platform, resources, and mentorship needed to reach the pinnacle of
-                their athletic careers.
+                Mr. Satish Kumar Jain, aged 76 years, is a prominent and proactive personality who transformed his vision into quality construction work by implementing the latest techniques in developing large-scale buildings into reality at project sites. He has instilled strong values of ethical leadership, responsible decision-making, and a culture of healthy governance. He firmly believes in the Karma theory of hard work and continues to apply his wisdom and vision in all his endeavors. A devoted follower of Jainism, he is deeply committed to nurturing excellence among talented and gifted sports players. He also dedicates his hard-earned resources to noble causes and charitable activities for the betterment of society.
               </p>
             </div>
 

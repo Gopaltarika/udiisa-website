@@ -91,47 +91,84 @@ const HeroSection = () => {
           Discover talent. Build champions. Change lives.
         </p>
 
-        <div className="flex justify-center flex-wrap" style={{ gap: 14, marginBottom: 64 }}>
-          <a
-            href="#become"
-            className="flex items-center no-underline transition-all duration-[250ms]"
-            style={{
-              gap: 9,
-              padding: "15px 34px",
-              borderRadius: 14,
-              fontSize: 15,
-              fontWeight: 800,
-              color: "#fff",
-              background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
-              boxShadow: "0 8px 32px rgba(240,90,26,.44)",
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              textDecoration: "none",
-            }}
-          >
-            <MdVolunteerActivism style={{ fontSize: 20 }} /> Become a Special Member
-          </a>
+       {/* CSS inject karo ek baar apne component ke top ya global styles mein */}
+<style>{`
+  @keyframes shine-sweep {
+    0%   { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(250%) skewX(-15deg); }
+  }
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,0.35),
+      transparent
+    );
+    transform: translateX(-100%) skewX(-15deg);
+    transition: none;
+  }
+  .btn-shine:hover::after {
+    animation: shine-sweep 0.55s ease forwards;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(240,90,26,.60) !important;
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,.12) !important;
+    border-color: rgba(255,255,255,.55) !important;
+    transform: translateY(-2px);
+  }
+`}</style>
 
-          <a
-            href="#contact"
-            className="flex items-center no-underline transition-all duration-[250ms]"
-            style={{
-              gap: 9,
-              padding: "15px 34px",
-              borderRadius: 14,
-              fontSize: 15,
-              fontWeight: 700,
-              color: "#fff",
-              border: "2px solid rgba(255,255,255,.32)",
-              background: "rgba(255,255,255,.06)",
-              backdropFilter: "blur(8px)",
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              textDecoration: "none",
-            }}
-          >
-            <MdContactMail style={{ fontSize: 20 }} /> Contact Us
-          </a>
-        </div>
+<div className="flex justify-center flex-wrap" style={{ gap: 14, marginBottom: 64 }}>
+  <a    href="#become"
+    className="btn-shine btn-primary flex items-center no-underline transition-all duration-[250ms]"
+    style={{
+      gap: 9,
+      padding: "15px 34px",
+      borderRadius: 14,
+      fontSize: 15,
+      fontWeight: 800,
+      color: "#fff",
+      background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
+      boxShadow: "0 8px 32px rgba(240,90,26,.44)",
+      fontFamily: "'Plus Jakarta Sans', sans-serif",
+      textDecoration: "none",
+    }}
+  >
+    <MdVolunteerActivism style={{ fontSize: 20 }} /> Become a Special Member
+  </a>
 
+  <a
+    href="#contact"
+    className="btn-shine btn-secondary flex items-center no-underline transition-all duration-[250ms]"
+    style={{
+      gap: 9,
+      padding: "15px 34px",
+      borderRadius: 14,
+      fontSize: 15,
+      fontWeight: 700,
+      color: "#fff",
+      border: "2px solid rgba(255,255,255,.32)",
+      background: "rgba(255,255,255,.06)",
+      backdropFilter: "blur(8px)",
+      fontFamily: "'Plus Jakarta Sans', sans-serif",
+      textDecoration: "none",
+    }}
+  >
+    <MdContactMail style={{ fontSize: 20 }} /> Contact Us
+  </a>
+</div>
         {/* Stats */}
         <div
           className="stats-bar flex justify-center items-center flex-wrap mx-auto"
