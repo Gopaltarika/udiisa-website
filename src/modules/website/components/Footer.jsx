@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaLinkedinIn, FaMapMarkerAlt, FaPhone, FaEnvelope, FaChevronRight, FaTrophy, FaMusic } from 'react-icons/fa'
-import logo from ".@/assets/images/logo.png";
+import logo from "@/assets/images/logo.png";
 const quickLinks = [
   { label: 'Home',    href: '/' },
   { label: 'Members', href: '/members' },
