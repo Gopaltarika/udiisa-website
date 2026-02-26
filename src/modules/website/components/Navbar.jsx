@@ -4,7 +4,6 @@ import { FaTrophy, FaChevronDown, FaUsers, FaMedal } from "react-icons/fa";
 import { BsStarFill } from "react-icons/bs";
 import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md";
 import { IoFlash } from "react-icons/io5";
-import logo from "@/assets/images/logo.png";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("Home");
@@ -121,7 +120,7 @@ export default function Navbar() {
             style={{ textDecoration: "none" }}
             onClick={() => closeAll("Home")}
           >
-            <img src={logo} alt="logo" className="w-full max-w-2/3" /></a>
+            <img src="public/logo.png" alt="logo" className="w-full max-w-2/3" /></a>
 
 
           {/* DESKTOP LINKS */}

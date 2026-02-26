@@ -1,6 +1,5 @@
 import React from 'react'
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaLinkedinIn, FaMapMarkerAlt, FaPhone, FaEnvelope, FaChevronRight, FaTrophy, FaMusic } from 'react-icons/fa'
-import logo from "@/assets/images/logo.png";
 const quickLinks = [
   { label: 'Home',    href: '/' },
   { label: 'Members', href: '/members' },
@@ -117,7 +116,7 @@ const Footer = () => {
                   className="flex items-center gap-3 no-underline group"
                   style={{ textDecoration: "none" }}
                 >
-                  <img src={logo} alt="logo" className="w-full max-w-2/3" /></a>
+                  <img src="public/logo.png" alt="logo" className="w-full max-w-2/3" /></a>
 
             {/* About text */}
             <p
