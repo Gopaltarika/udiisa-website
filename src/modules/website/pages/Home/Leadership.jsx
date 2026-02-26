@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaStar, FaUserCircle } from 'react-icons/fa'
 import { FaQuoteLeft } from 'react-icons/fa6'
-
+import satishjain from "./../../../../assets/images/satishkumarjain.jpeg";
 const Leadership = () => {
   return (
     <>
@@ -91,7 +91,7 @@ const Leadership = () => {
 
                 {/* Photo */}
                 <img
-                  src="./src/assets/images/satishkumarjain.jpeg"
+                  src={satishjain}
                   alt="Satish Kumar Jain"
                   className="w-full h-full object-cover object-top"
                 />

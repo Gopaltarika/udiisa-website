@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaLinkedinIn, FaMapMarkerAlt, FaPhone, FaEnvelope, FaChevronRight, FaTrophy, FaMusic } from 'react-icons/fa'
-
+import logo from "../../../assets/images/logo.png";
 const quickLinks = [
   { label: 'Home',    href: '/' },
   { label: 'Members', href: '/members' },
@@ -104,33 +104,20 @@ const Footer = () => {
 
         {/* ── Main Footer Content ── */}
         <div
-          className="!max-w-[1200px] !mx-auto !grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-4 !gap-10"
+          className="!max-w-[1280px] !mx-auto !grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-4 !gap-10"
           style={{ padding: '60px 28px 48px' }}
         >
 
           {/* ── Col 1 — Brand ── */}
           <div>
             {/* Logo */}
-            <div className="!flex !items-center !gap-3 !mb-5">
-              <div
-                className="footer-logo-icon !flex !items-center !justify-center !rounded-xl !flex-shrink-0"
-                style={{
-                  width: 48, height: 48,
-                  background: 'linear-gradient(135deg,#F05A1A,#FF7D42)',
-                  boxShadow: '0 6px 20px rgba(240,90,26,.38)',
-                }}
-              >
-                <FaTrophy style={{ color: '#fff', fontSize: 22 }} />
-              </div>
-              <div
-                style={{
-                  fontFamily: "'Bebas Neue', cursive",
-                  fontSize: 26, letterSpacing: 3, lineHeight: 1, color: '#fff',
-                }}
-              >
-                Sport<span style={{ color: '#F05A1A' }}>Force</span>
-              </div>
-            </div>
+       {/* LOGO */}
+                <a
+                  href="/"
+                  className="flex items-center gap-3 no-underline group"
+                  style={{ textDecoration: "none" }}
+                >
+                  <img src={logo} alt="logo" className="w-full max-w-2/3" /></a>
 
             {/* About text */}
             <p

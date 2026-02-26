@@ -1,5 +1,8 @@
 import React from 'react'
 import { BsStarFill } from 'react-icons/bs'
+import chanderkanta from "./../../../../assets/images/chander-kanta.jpeg";
+import lakshaya from "./../../../../assets/images/lakshaya.jpeg";
+import udita from "./../../../../assets/images/udita.jpeg"; 
 
 // ── Data (baad mein API se replace karein) ──
 const promoters = [
@@ -7,19 +10,19 @@ const promoters = [
     id: 1,
     name: 'Sh. Chander Kanta',
     role: 'Senior founder & promotor',
-    img: './src/assets/images/chander-kanta.jpeg',
+    img: chanderkanta,
   },
   {
     id: 2,
     name: 'Mr. Lakshaya',
     role: 'Young Founder & Promoter',
-    img: './src/assets/images/lakshaya.jpeg',
+    img: lakshaya,
   },
   {
     id: 3,
     name: 'Mrs. Udita',
     role: 'Young Promoter',
-    img: './src/assets/images/udita.jpeg',
+    img: udita,
   },
 ]
 

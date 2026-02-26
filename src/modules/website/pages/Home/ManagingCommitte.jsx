@@ -1,6 +1,11 @@
 import React from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import deepakgarg from "./../../../../assets/images/deepak-garg.jpeg";
+import manishgupta from "./../../../../assets/images/manish-gupta.jpeg";
+import sahiljindal from "./../../../../assets/images/sahil-jindal.jpeg";
+import ankurjain from "./../../../../assets/images/ankur-jain.jpeg";
+import shyamsunder from "./../../../../assets/images/shyam-sunder.jpeg";
 
 // ── Data (baad mein API se replace karein) ──
 const members = [
@@ -9,35 +14,35 @@ const members = [
     name: 'Mr. Deepak Garg',
     role: 'Chairman',
     roleColor: '#F05A1A',
-    img: './src/assets/images/deepak-garg.jpeg',
+    img: deepakgarg,
   },
   {
     id: 2,
     name: 'Mr. Manish Gupta',
     role: 'Vice Chairman',
     roleColor: '#F05A1A',
-    img: './src/assets/images/manish-gupta.jpeg',
+    img: manishgupta,
   },
   {
     id: 3,
     name: 'Mr. Sahil Jindal',
     role: 'Joint Secretary',
     roleColor: '#64748b',
-    img: './src/assets/images/sahil-jindal.jpeg',
+    img: sahiljindal,
   },
   {
     id: 4,
     name: 'Mr. ankur jain',
     role: 'Secretary',
     roleColor: '#F05A1A',
-    img: './src/assets/images/ankur-jain.jpeg',
+    img: ankurjain,
   },
   {
     id: 5,
     name: 'Mr. Shyam Sunder Kocher',
     role: 'Treasurer',
     roleColor: '#64748b',
-    img: './src/assets/images/shyam-sunder.jpeg',
+    img: shyamsunder,
   },
 ]
 

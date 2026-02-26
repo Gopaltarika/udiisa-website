@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { FaArrowRight, FaTimes } from 'react-icons/fa'
+import suniljalan from "./../../../../assets/images/sunil-jalan.jpeg";
+import sureshjindal from "./../../../../assets/images/suresh-jindal.jpeg";
 
 const chairmen = [
   {
@@ -7,7 +9,7 @@ const chairmen = [
     role: 'Advisory Board Chairman',
     roleBadege: 'Chairman',
     desc: 'Whole time Chairman, Advisory Board. UDIISA.',
-    img: './src/assets/images/sunil-jalan.jpeg',
+    img: suniljalan,
     modalTitle: 'Whole time Chairman, Advisory Board. UDIISA.',
     modalContent: [
       'He is also co-founder and Chairman of A-One Steel Group. He is proactive in providing assistance to the talented and gifted players in recognized way at all level in sports mission. He  lends his expertise to each significant aspect in growing up the managing of Association, strategy, operations and finance objectives. He is responsible for the successful leadership and management of Association which is registered under secton 8 of company Act. He implements comprehensive industry  plans in sports, enhances the company culture, and ensures a safe working environment for unpleasing dreams industry, for creating future champions, in sports.',
@@ -18,7 +20,7 @@ const chairmen = [
     role: 'Advisory Board Vice Chairman',
     roleBadege: ' Vice Chairman',
     desc: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
-    img: './src/assets/images/suresh-jindal.jpeg',
+    img: sureshjindal,
     modalTitle: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
     modalContent: [
       'Shri Suresh Jindal Ji remained as prominent and proactive Industrialist.He started serving for talented and gifted players after handing over the business activities to his children. He is noble and kindhearted person in contributing his best for creating future champions. UDIISA is thankful for his support of mission.',

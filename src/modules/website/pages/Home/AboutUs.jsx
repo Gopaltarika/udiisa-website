@@ -1,6 +1,8 @@
 import React from 'react'
 import { FaSearch, FaHandHoldingHeart, FaGraduationCap } from 'react-icons/fa'
-
+import about1 from "./../../../../assets/images/about1.png";
+import about2 from "./../../../../assets/images/about2.png";
+import about3 from "./../../../../assets/images/about3.png";
 const features = [
   {
     icon: <FaSearch />,
@@ -77,7 +79,7 @@ const AboutUs = () => {
       style={{ aspectRatio: "4/3" }}
     >
       <img
-        src="./src/assets/images/about1.png"
+        src={about1}
         alt="Team collaboration"
         className="w-full h-full object-cover"
       />
@@ -89,7 +91,7 @@ const AboutUs = () => {
       style={{ aspectRatio: "4/3" }}
     >
       <img
-        src="./src/assets/images/about2.png"
+        src={about2}
         alt="Planning session"
         className="w-full h-full object-cover"
       />
@@ -104,7 +106,7 @@ const AboutUs = () => {
       style={{ aspectRatio: "4/3" }}
     >
       <img
-        src="./src/assets/images/about3.png"
+        src={about3}
         alt="Team high five"
         className="w-full h-full object-cover"
       />

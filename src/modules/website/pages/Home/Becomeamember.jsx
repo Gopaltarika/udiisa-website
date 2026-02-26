@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FaChevronDown, FaAngleDoubleRight } from 'react-icons/fa'
-
+import becomeMemberImg from "./../../../../assets/images/member-card-img.png";
+import becomeMemberBg from "./../../../../assets/images/bg-become_A_Member.png";
 const memberTypes = [
   { value: 'special', label: 'Special Member' },
   { value: 'general', label: 'General Member' },
@@ -20,10 +21,6 @@ const BecomeAMember = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        .bam-section { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        /* Grid lines texture */
         .bam-grid {
           background-image:
             repeating-linear-gradient(0deg, transparent, transparent 36px, rgba(255,255,255,.05) 36px, rgba(255,255,255,.05) 37px),
@@ -86,7 +83,7 @@ const BecomeAMember = () => {
           <div
             className=" !p-[0px_2px_24px_20px] grid grid-cols-1 md:grid-cols-2 rounded-xl max-md:![background:_linear-gradient(54.51deg,_#20569C_3.18%,_#7CA6B1_107.73%)] [background-size:_100%_100%] bg-center bg-no-repeat !relative h-full w-full"
             style={{
-              backgroundImage: 'url(./src/assets/images/bg-become_A_Member.png)',
+              backgroundImage: `url(${becomeMemberBg})`,
             }}
           >
 
@@ -211,7 +208,7 @@ const BecomeAMember = () => {
               className="person- wrap hidden md:block !mb-15 !pointer-events-none flex items-center"
             >
               <img
-                src="./src/assets/images/member-card-img.png"
+                src={becomeMemberImg}
                 alt="Member"
                 className="person-img w-full max-h-[432px] !-mb-4 h-full"
                
