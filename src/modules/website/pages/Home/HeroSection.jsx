@@ -87,8 +87,7 @@ const HeroSection = () => {
             marginBottom: 44,
           }}
         >
-          Empowering India's gifted athletes from grassroots to national glory.
-          Discover talent. Build champions. Change lives.
+         This is like an unleasing Dream industry' where talented players in sports will achieve their goal  at the level of National & International.
         </p>
 
        {/* CSS inject karo ek baar apne component ke top ya global styles mein */}

@@ -8,6 +8,7 @@ import HeroSection from "./HeroSection";
 import Leadership from "./Leadership";
 import ManagingCommittee from "./ManagingCommitte";
 import Promoters from "./Promoters";
+import SpecialMembersSection from "./SpecialMember";
 import SportsCommittee from "./SportsCommittee";
 import WhatWeDo from "./WhatWeDo";
 
@@ -20,8 +21,9 @@ const Home = () => {
      <AdvisoryBoard />
      <WhatWeDo />
      <ManagingCommittee />
-     <BecomeAMember />
      <Promoters />
+     <SpecialMembersSection />
+     <BecomeAMember />
      <GeneralMembers />
      <ContactUs />
      <SportsCommittee />

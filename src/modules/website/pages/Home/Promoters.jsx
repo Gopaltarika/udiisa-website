@@ -20,7 +20,7 @@ const promoters = [
   },
   {
     id: 3,
-    name: 'Mrs. Udita',
+    name: 'Miss Udita',
     role: 'Young Promoter',
     img: udita,
   },
