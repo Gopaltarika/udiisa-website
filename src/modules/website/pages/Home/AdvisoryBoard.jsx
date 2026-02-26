@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FaArrowRight, FaTimes } from 'react-icons/fa'
-import suniljalan from "./../../../../assets/images/sunil-jalan.jpeg";
-import sureshjindal from "./../../../../assets/images/suresh-jindal.jpeg";
+import suniljalan from "@/assets/images/sunil-jalan.jpeg";
+import sureshjindal from "@/assets/images/suresh-jindal.jpeg";
 
 const chairmen = [
   {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FaChevronDown, FaAngleDoubleRight } from 'react-icons/fa'
-import becomeMemberImg from "./../../../../assets/images/member-card-img.png";
-import becomeMemberBg from "./../../../../assets/images/bg-become_A_Member.png";
+import becomeMemberImg from "@/assets/images/member-card-img.png";
+import becomeMemberBg from "@/assets/images/bg-become_A_Member.png";
 const memberTypes = [
   { value: 'special', label: 'Special Member' },
   { value: 'general', label: 'General Member' },

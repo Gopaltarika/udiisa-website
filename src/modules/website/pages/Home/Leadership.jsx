@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaStar, FaUserCircle } from 'react-icons/fa'
 import { FaQuoteLeft } from 'react-icons/fa6'
-import satishjain from "./../../../../assets/images/satishkumarjain.jpeg";
+import satishjain from "@/assets/images/satishkumarjain.jpeg";
 const Leadership = () => {
   return (
     <>

@@ -1,11 +1,11 @@
 import React from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-import deepakgarg from "./../../../../assets/images/deepak-garg.jpeg";
-import manishgupta from "./../../../../assets/images/manish-gupta.jpeg";
-import sahiljindal from "./../../../../assets/images/sahil-jindal.jpeg";
-import ankurjain from "./../../../../assets/images/ankur-jain.jpeg";
-import shyamsunder from "./../../../../assets/images/shyam-sunder.jpeg";
+import deepakgarg from "@/assets/images/deepak-garg.jpeg";
+import manishgupta from "@/assets/images/manish-gupta.jpeg";
+import sahiljindal from "@/assets/images/sahil-jindal.jpeg";
+import ankurjain from "@/assets/images/ankur-jain.jpeg";
+import shyamsunder from "@/assets/images/shyam-sunder.jpeg";
 
 // ── Data (baad mein API se replace karein) ──
 const members = [

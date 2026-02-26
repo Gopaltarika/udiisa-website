@@ -1,8 +1,8 @@
 import React from 'react'
 import { BsStarFill } from 'react-icons/bs'
-import chanderkanta from "./../../../../assets/images/chander-kanta.jpeg";
-import lakshaya from "./../../../../assets/images/lakshaya.jpeg";
-import udita from "./../../../../assets/images/udita.jpeg"; 
+import chanderkanta from "@/assets/images/chander-kanta.jpeg";
+import lakshaya from "@/assets/images/lakshaya.jpeg";
+import udita from "@/assets/images/udita.jpeg"; 
 
 // ── Data (baad mein API se replace karein) ──
 const promoters = [
