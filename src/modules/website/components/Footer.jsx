@@ -117,7 +117,7 @@ const Footer = () => {
                   className="flex items-center gap-3 no-underline group"
                   style={{ textDecoration: "none" }}
                 >
-                  <img src="./../../../../public/logo.png" alt="logo" className="w-full max-w-2/3" /></a>
+                  <img src="/Logo.png" alt="logo" className="w-full max-w-2/3" /></a>
 
             {/* About text */}
             <p
