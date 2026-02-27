@@ -1,3 +1,4 @@
+import PageHero from "../../../../shared/components/PageHero";
 import AboutUs from "./AboutUs";
 import AdvisoryBoard from "./AdvisoryBoard";
 import BecomeAMember from "./Becomeamember";
@@ -28,6 +29,7 @@ const Home = () => {
      <ContactUs />
      <SportsCommittee />
      <BlogSection />
+
     </>
   );
 };

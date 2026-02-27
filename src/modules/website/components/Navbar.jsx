@@ -27,8 +27,8 @@ export default function Navbar() {
   const onLeave = () => { hoverTimer.current = setTimeout(() => setDropOpen(false), 130); };
 
   const dropItems = [
-    { label: "General Member", href: "#general", icon: <FaUsers />, desc: "Open for everyone" },
-    { label: "Special Member", href: "#special", icon: <BsStarFill />, desc: "By invitation only" },
+    { label: "General Member", href: "/members/general-members", icon: <FaUsers />, desc: "Open for everyone" },
+    { label: "Special Member", href: "/members/special-members", icon: <BsStarFill />, desc: "By invitation only" },
   ];
 
   return (
@@ -102,7 +102,7 @@ export default function Navbar() {
 
       {/* ══════════════ NAVBAR ══════════════ */}
       <nav
-        className="fixed top-0 left-0 right-0 z-[100] bg-[rgba(255,255,255,.97)]"
+        className="sticky top-0 left-0 right-0 z-[100] bg-[rgba(255,255,255,.97)]"
         style={{
           transition: "background .4s, box-shadow .4s",
         }}

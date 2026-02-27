@@ -5,6 +5,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Home from "../modules/website/pages/Home/Home";
 import Dashboard from "../modules/admin/pages/Dashboard/Dashboard";
 import Login from "../modules/auth/pages/Login/Login";
+import Members from "../modules/website/pages/MembersPage/Members";
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,9 @@ const AppRoutes = () => {
         {/* WEBSITE */}
         <Route element={<WebsiteLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/members/managing-committee" element={<Members />} />
+          <Route path="/members/special-members" element={<Members />} />
+          <Route path="/members/general-members" element={<Members />} />
         </Route>
 
         {/* LOGIN */}
