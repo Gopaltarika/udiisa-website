@@ -6,6 +6,7 @@ import Home from "../modules/website/pages/Home/Home";
 import Dashboard from "../modules/admin/pages/Dashboard/Dashboard";
 import Login from "../modules/auth/pages/Login/Login";
 import Members from "../modules/website/pages/MembersPage/Members";
+import TalentedPlayers from "../modules/website/pages/talentedplayers/TalentedPlayers";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
           <Route path="/members/managing-committee" element={<Members />} />
           <Route path="/members/special-members" element={<Members />} />
           <Route path="/members/general-members" element={<Members />} />
+          <Route path="/talented-players" element={<TalentedPlayers />} />
         </Route>
 
         {/* LOGIN */}

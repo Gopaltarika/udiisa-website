@@ -228,7 +228,7 @@ export default function Navbar() {
             </a>
 
             <a
-              href="#players"
+              href="/talented-players"
               className={` relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Talented Players" ? "on" : ""}`}
               style={{
                 padding: "8px 15px", fontSize: 14, fontWeight: 600,
