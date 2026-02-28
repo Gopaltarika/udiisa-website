@@ -277,7 +277,7 @@ export default function Navbar() {
 
             {/* CONTACT US */}
             <a
-              href="#contact"
+              href="/contact-us"
               className="flex items-center gap-1.5 rounded-[10px] no-underline cursor-pointer transition-all duration-[250ms] hover:-translate-y-0.5"
               style={{
                 padding: "10px 20px", fontSize: 13, fontWeight: 700,
@@ -455,7 +455,7 @@ export default function Navbar() {
               <MdVolunteerActivism style={{ fontSize: 18 }} /> Become a Special Member
             </a>
             <a
-              href="#contact"
+              href="/contact-us"
               className="flex items-center justify-center rounded-xl no-underline"
               style={{
                 gap: 8, padding: 13, fontSize: 14, fontWeight: 700,
