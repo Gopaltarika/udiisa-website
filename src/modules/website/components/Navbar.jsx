@@ -127,7 +127,7 @@ export default function Navbar() {
           <div className="dlinks flex items-center" style={{ gap: 2 }}>
 
             <a
-              href="#home"
+              href="/"
               className={`nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Home" ? "on" : ""}`}
               style={{
                 padding: "8px 15px", fontSize: 14, fontWeight: 600,
@@ -249,7 +249,7 @@ export default function Navbar() {
           <div className="dlinks flex items-center" style={{ gap: 2 }}>
             {/* BECOME A MEMBER */}
             <a
-              href="#become"
+              href="/membership/special-member"
               className="flex items-center gap-1.5 rounded-[10px] no-underline cursor-pointer transition-all duration-[250ms]"
               style={{
                 padding: "9px 18px", fontSize: 13, fontWeight: 700,

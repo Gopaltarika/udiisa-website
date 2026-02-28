@@ -7,6 +7,7 @@ import Dashboard from "../modules/admin/pages/Dashboard/Dashboard";
 import Login from "../modules/auth/pages/Login/Login";
 import Members from "../modules/website/pages/MembersPage/Members";
 import TalentedPlayers from "../modules/website/pages/talentedplayers/TalentedPlayers";
+import Main from "../modules/website/pages/BecomeAMember/Main";
 
 const AppRoutes = () => {
   return (
@@ -19,6 +20,8 @@ const AppRoutes = () => {
           <Route path="/members/special-members" element={<Members />} />
           <Route path="/members/general-members" element={<Members />} />
           <Route path="/talented-players" element={<TalentedPlayers />} />
+         <Route path="/membership/general-member" element={<Main />} />
+  <Route path="/membership/special-member" element={<Main />} />
         </Route>
 
         {/* LOGIN */}
