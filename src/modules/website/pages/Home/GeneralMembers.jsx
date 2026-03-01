@@ -260,7 +260,7 @@ const GeneralMembers = () => {
                 boxShadow: '0 6px 20px rgba(11,30,75,.25)',
                 letterSpacing: '0.3px',
               }}
-              onClick={() => navigate('/general-members')}
+              onClick={() => navigate('/members/general-members')}
             >
               View All Members
               <FaArrowRight className="btn-arrow" style={{ fontSize: 13 }} />

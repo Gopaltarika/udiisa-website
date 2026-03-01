@@ -130,7 +130,7 @@ const HeroSection = () => {
 `}</style>
 
 <div className="flex justify-center flex-wrap" style={{ gap: 14, marginBottom: 64 }}>
-  <a    href="#become"
+  <a  href="/members/special-members"
     className="btn-shine btn-primary flex items-center no-underline transition-all duration-[250ms]"
     style={{
       gap: 9,
@@ -149,7 +149,7 @@ const HeroSection = () => {
   </a>
 
   <a
-    href="#contact"
+    href="/contact-us"
     className="btn-shine btn-secondary flex items-center no-underline transition-all duration-[250ms]"
     style={{
       gap: 9,

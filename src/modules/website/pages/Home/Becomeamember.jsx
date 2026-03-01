@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FaChevronDown, FaAngleDoubleRight } from 'react-icons/fa'
 import becomeMemberImg from "@/assets/images/member-card-img.png";
 import becomeMemberBg from "@/assets/images/bg-become_A_Member.png";
+import { useNavigate } from 'react-router-dom';
 const memberTypes = [
   { value: 'special', label: 'Special Member' },
   { value: 'general', label: 'General Member' },
@@ -13,11 +14,14 @@ const BecomeAMember = () => {
 
   const selectedLabel = memberTypes.find(m => m.value === selected)?.label
 
-  const handleSubmit = () => {
-    alert(`Applying as: ${selectedLabel}`)
-    // baad mein API call yahan aayegi
-  }
-
+ const routeMap = {
+  special: "/members/special-members",
+  general: "/members/general-members",
+};
+const navigate = useNavigate();
+const handleSubmit = () => {
+  navigate(routeMap[selected]);
+};
   return (
     <>
       <style>{`

@@ -9,6 +9,7 @@ import Members from "../modules/website/pages/MembersPage/Members";
 import TalentedPlayers from "../modules/website/pages/talentedplayers/TalentedPlayers";
 import Main from "../modules/website/pages/BecomeAMember/Main";
 import ContactUs from "../modules/website/pages/ContactUs/ContactUs";
+import BlogRoutes from "../modules/website/pages/blog/MainBlogs";
 
 const AppRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const AppRoutes = () => {
           <Route path="/membership/general-member" element={<Main />} />
           <Route path="/membership/special-member" element={<Main />} />
           <Route path="/contact-us" element={<ContactUs />} />
+       <Route path="/blogs/*" element={<BlogRoutes />} />
 
         </Route>
 

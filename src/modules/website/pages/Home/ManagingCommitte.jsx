@@ -223,7 +223,7 @@ const ManagingCommittee = () => {
                 boxShadow: '0 6px 20px rgba(37,99,235,.32)',
                 letterSpacing: '0.3px',
               }}
-              onClick={() => navigate('/managing-committee')}
+              onClick={() => navigate('/members/managing-committee')}
             >
               <span>View all</span>
               <FaArrowRight className="btn-arrow" style={{ fontSize: 13 }} />

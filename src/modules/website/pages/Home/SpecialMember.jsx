@@ -3,6 +3,7 @@ import { BsStarFill } from "react-icons/bs";
 import { FaChevronLeft, FaChevronRight, FaArrowRight, FaLinkedin } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import { HiSparkles } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 const MEMBERS = [
   {
@@ -244,6 +245,7 @@ function MemberCard({ member, isCenter }) {
 }
 
 export default function SpecialMembersSection() {
+  const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
@@ -536,7 +538,7 @@ export default function SpecialMembersSection() {
 
         {/* ── VIEW ALL BUTTON ── */}
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <button className="sms-view-all" onClick={() => alert("Navigate to /members/special")}>
+          <button className="sms-view-all" onClick={() => navigate('/members/special-members')}>
             <BsStarFill style={{ fontSize: 14 }} />
             View All Special Members
             <FaArrowRight className="arrow-icon" style={{ fontSize: 13 }} />
