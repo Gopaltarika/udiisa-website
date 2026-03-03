@@ -3,27 +3,24 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaLinkedinIn, FaMapMark
 
 const quickLinks = [
   { label: 'Home',    href: '/' },
-  { label: 'Members', href: '/members' },
-  { label: 'Blogs',   href: '/blogs' },
-  { label: 'Players', href: '/players' },
-  { label: 'Contact', href: '/contact' },
-  { label: 'Join Us', href: '/join' },
+  { label: 'Members', href: '/members/special-members' },
+  { label: 'Blogs',   href: '/blogs/' },
+  { label: 'Players', href: '/talented-players' },
+  { label: 'Contact', href: '/contact-us' },
+  { label: 'Become a member', href: '/membership/special-member' },
 ]
 
 const programs = [
-  { label: 'Talent Hunt',      href: '/programs/talent-hunt' },
-  { label: 'Financial Aid',    href: '/programs/financial-aid' },
-  { label: 'Academy Tie-ups',  href: '/programs/academy' },
-  { label: 'Girl Empowerment', href: '/programs/girl-empowerment' },
-  { label: 'Mentorship',       href: '/programs/mentorship' },
-  { label: 'Sports Events',    href: '/programs/events' },
+  { label: 'Managing Committee',      href: '/members/managing-committee' },
+  { label: 'About us',    href: '/about-us' },
+  { label: 'Terms & Conditions', href: '/programs/girl-empowerment' }
 ]
 
 const contactInfo = [
   { icon: <FaMapMarkerAlt />, value: '123 Sports Complex, Sector 12, New Delhi – 110001' },
-  { icon: <FaPhone />,        value: '+91 98765 43210' },
-  { icon: <FaEnvelope />,     value: 'info@sportforce.org' },
-  { icon: <FaEnvelope />,     value: 'CIN NUmber' },
+  { icon: <FaPhone />,        value: '+91 83075 98050' },
+  { icon: <FaEnvelope />,     value: 'info@udisports.in' },
+  { icon: <FaEnvelope />,     value: 'CIN No. U94990HR2026NPL141182' },
 ]
 
 const socials = [
@@ -117,7 +114,7 @@ const Footer = () => {
                   className="flex items-center gap-3 no-underline group"
                   style={{ textDecoration: "none" }}
                 >
-                  <img src="/Logo.png" alt="logo" className="w-full max-w-2/3" /></a>
+                  <img src="/white-logo.png" alt="logo" className="w-full max-w-2/3" /></a>
 
             {/* About text */}
             <p
@@ -191,7 +188,7 @@ const Footer = () => {
                 color: '#fff',
               }}
             >
-              Programs
+              Info
             </h4>
             <ul className="!m-0 !p-0 !list-none !flex !flex-col !gap-3">
               {programs.map((link) => (

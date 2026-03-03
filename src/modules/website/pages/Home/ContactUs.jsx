@@ -12,13 +12,13 @@ const contactInfo = [
     id: 2,
     icon: <FaPhone />,
     label: 'Phone',
-    value: '+91 98765 43210',
+    value: '+91 83075 98050',
   },
   {
     id: 3,
     icon: <FaEnvelope />,
     label: 'Email',
-    value: 'info@sportforce.org',
+    value: 'info@udisports.in',
   },
 ]
 

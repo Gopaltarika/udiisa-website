@@ -18,6 +18,7 @@ import IncomingMembers from "../modules/admin/pages/incoming/IncomingMembers";
 import IncomingContacts from "../modules/admin/pages/incoming/IncomingContacts";
 import Blogs from "../modules/admin/pages/Blogs";
 import Settings from "../modules/admin/pages/Settings";
+import AboutUs from "../modules/website/pages/about/aboutus";
 
 const AppRoutes = () => {
   function RequireAuth({ children }) {
@@ -38,6 +39,7 @@ const AppRoutes = () => {
           <Route path="/membership/general-member" element={<Main />} />
           <Route path="/membership/special-member" element={<Main />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/about-us" element={<AboutUs />} />
        <Route path="/blogs/*" element={<BlogRoutes />} />
 
         </Route>

@@ -207,12 +207,11 @@ function Preloader({ onDone }) {
         <div
           style={{
             width: 46, height: 46, borderRadius: 13,
-            background: "linear-gradient(135deg, #F05A1A, #FF7D42)",
+          
             display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 0 24px rgba(240,90,26,0.5)",
           }}
         >
-          <span style={{ fontSize: 22 }}>🏆</span>
+          <img src="/short-logo.png" alt="logo" />
         </div>
       </div>
 

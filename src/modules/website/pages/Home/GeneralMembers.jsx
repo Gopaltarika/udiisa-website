@@ -249,7 +249,7 @@ const GeneralMembers = () => {
           {/* ── View All Button ── */}
           <div className="!flex !justify-center !mt-10">
             <button
-              className="view-btn !flex !items-center !gap-2.5 !rounded-xl !border-0 !cursor-pointer"
+              className="view-btn !flex !items-center !gap-2.5 !rounded-xl !border-0 !cursor-pointer !text-white"
               style={{
                 padding: '13px 32px',
                 background: 'linear-gradient(135deg,#0B1E4B,#1e3a8a)',
@@ -262,7 +262,7 @@ const GeneralMembers = () => {
               }}
               onClick={() => navigate('/members/general-members')}
             >
-              View All Members
+              <span className='text-white'>View All Members</span>
               <FaArrowRight className="btn-arrow" style={{ fontSize: 13 }} />
             </button>
           </div>

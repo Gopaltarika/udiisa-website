@@ -444,7 +444,7 @@ export default function SpecialMembersSection() {
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             }}>
               MEMBERS
-            </span>
+            </span> OF UDIISA
           </h2>
 
           <p style={{
