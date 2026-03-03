@@ -1,7 +1,8 @@
 import React from 'react'
 import { FaStar, FaUserCircle } from 'react-icons/fa'
 import { FaQuoteLeft } from 'react-icons/fa6'
-import satishjain from "@/assets/images/satishkumarjain.jpeg";
+import satishjain from "@/assets/images/satishkumarjain.jpeg"
+
 const Leadership = () => {
   return (
     <>
@@ -13,37 +14,12 @@ const Leadership = () => {
         }
         .gold-card { animation: goldPulse 3s ease-in-out infinite; }
 
-        /* Butterfly float */
-        @keyframes floatBf {
-          0%,100% { transform: translate(0,0) rotate(-5deg); }
-          50%      { transform: translate(5px,-8px) rotate(6deg); }
-        }
-        .butterfly { animation: floatBf 4s ease-in-out infinite; }
-
         /* Quote icon bounce */
         @keyframes quoteBounce {
           0%,100% { transform: translateY(0); }
           50%      { transform: translateY(-4px); }
         }
         .quote-icon { animation: quoteBounce 3s ease-in-out infinite; }
-
-        /* Button shine */
-        .achieve-btn {
-          position: relative;
-          overflow: hidden;
-          transition: transform .25s, box-shadow .25s;
-        }
-        .achieve-btn::after {
-          content: '';
-          position: absolute;
-          top: 0; left: -75%;
-          width: 50%; height: 100%;
-          background: linear-gradient(120deg, transparent, rgba(255,255,255,.3), transparent);
-          transform: skewX(-20deg);
-          transition: left .5s;
-        }
-        .achieve-btn:hover::after { left: 130%; }
-        .achieve-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(234,179,8,.45); }
 
         /* Corner brackets */
         .corner { position: absolute; width: 18px; height: 18px; border-color: #F59E0B; border-style: solid; }
@@ -53,18 +29,15 @@ const Leadership = () => {
         .corner-br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
       `}</style>
 
-      <section
-        className="leadership-section !py-16 !px-4 sm:!px-6 lg:!px-8"
-        style={{ background: "linear-gradient(135deg,#0B1E4B 0%,#0f2560 50%,#0B1E4B 100%)" }}
-      >
-        <div className="w-full max-w-[1280px] !m-[0_auto] !px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      <section className="leadership-section !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-[16px] sm:!px-[24px] lg:!px-[32px] bg-gradient-to-br from-[#0B1E4B] via-[#0f2560] to-[#0B1E4B]">
+        <div className="w-full max-w-[1280px] !mx-auto">
+
+          <div className="flex flex-col lg:flex-row items-center !gap-[36px] sm:!gap-[48px] lg:!gap-[64px]">
 
             {/* ══ LEFT — Gold Leadership Card ══ */}
-            <div className="flex-shrink-0 flex justify-center w-[34%] ">
-              <div
-                className="gold-card relative rounded-2xl overflow-hidden w-full max-w-[370px] h-[440px] border-2 border-[#F59E0B] bg-gradient-to-br from-[#1e3a6e] to-[#0B1E4B]"
-              >
+            <div className="flex-shrink-0 flex justify-center w-full sm:w-[60%] lg:w-[34%]">
+              <div className="gold-card relative rounded-[18px] sm:rounded-[20px] overflow-hidden w-full max-w-[300px] sm:max-w-[340px] lg:max-w-[370px] h-[340px] sm:h-[400px] lg:h-[440px] border-2 border-[#F59E0B] bg-gradient-to-br from-[#1e3a6e] to-[#0B1E4B]">
+
                 {/* Corner brackets */}
                 <div className="corner corner-tl" />
                 <div className="corner corner-tr" />
@@ -72,21 +45,10 @@ const Leadership = () => {
                 <div className="corner corner-br" />
 
                 {/* Leadership badge top */}
-                <div
-                  className="absolute top-0 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 rounded-b-xl"
-                  style={{
-                    padding: "5px 14px",
-                    background: "linear-gradient(90deg,#B45309,#F59E0B,#B45309)",
-                    fontSize: 10,
-                    fontWeight: 800,
-                    letterSpacing: "2.5px",
-                    color: "#fff",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  <FaStar style={{ fontSize: 8 }} />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10 flex items-center !gap-[5px] rounded-b-[10px] !px-[12px] sm:!px-[14px] !py-[4px] sm:!py-[5px] bg-gradient-to-r from-[#B45309] via-[#F59E0B] to-[#B45309] text-white text-[9px] sm:text-[10px] font-extrabold tracking-[2.5px] uppercase whitespace-nowrap">
+                  <FaStar className="text-[7px] sm:text-[8px]" />
                   Leadership
-                  <FaStar style={{ fontSize: 8 }} />
+                  <FaStar className="text-[7px] sm:text-[8px]" />
                 </div>
 
                 {/* Photo */}
@@ -97,78 +59,53 @@ const Leadership = () => {
                 />
 
                 {/* Bottom gradient overlay */}
-                <div
-                  className="absolute bottom-0 left-0 right-0"
-                  style={{ height: "30%", background: "linear-gradient(to top,rgba(11,30,75,.85),transparent)" }}
-                />
+                <div className="absolute bottom-0 left-0 right-0 h-[30%] bg-gradient-to-t from-[rgba(11,30,75,.85)] to-transparent" />
               </div>
             </div>
 
             {/* ══ RIGHT — Content ══ */}
-            <div className="flex-1 w-[66%]">
+            <div className="flex-1 w-full lg:w-[66%]">
 
               {/* "Our Leadership" pill */}
-              <div
-                className="inline-flex items-center rounded-full !mb-5"
-                style={{
-                  padding: "6px 18px",
-                  background: "rgba(255,255,255,.08)",
-                  border: "1px solid rgba(255,255,255,.14)",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "2.5px",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,.7)",
-                }}
-              >
+              <div className="inline-flex items-center rounded-full bg-[rgba(255,255,255,.08)] border border-[rgba(255,255,255,.14)] text-[rgba(255,255,255,.7)] !px-[14px] sm:!px-[18px] !py-[5px] sm:!py-[6px] text-[10px] sm:text-[11px] font-extrabold tracking-[2.5px] uppercase !mb-[14px] sm:!mb-[18px] lg:!mb-[20px]">
                 Our Leadership
               </div>
 
               {/* Quote icon */}
-              <div className="quote-icon !mb-3" style={{ color: "#F05A1A", fontSize: 28 }}>
+              <div className="quote-icon !mb-[10px] sm:!mb-[12px] lg:!mb-[14px] text-[#F05A1A] text-[22px] sm:text-[26px] lg:text-[28px]">
                 <FaQuoteLeft />
-              </div>
-
-              {/* Founder badge + butterfly row */}
-              <div className="flex items-center gap-3 !mb-3 flex-wrap">
               </div>
 
               {/* Name */}
               <h2
+                className="text-white !m-0 !mb-[10px] sm:!mb-[12px] leading-[1] tracking-[3px]"
                 style={{
                   fontFamily: "'Bebas Neue', cursive",
-                  fontSize: "clamp(32px, 5vw, 52px)",
-                  letterSpacing: 3,
-                  lineHeight: 1,
-                  color: "#fff",
-                  margin: "0 0 12px 0",
+                  fontSize: "clamp(28px, 5vw, 52px)",
                 }}
               >
-                Mr.Satish Kumar Jain
+                Mr. Satish Kumar Jain
               </h2>
 
               {/* Orange underline */}
-              <div
-                style={{
-                  width: 52, height: 4, borderRadius: 2,
-                  background: "linear-gradient(90deg,#F05A1A,#FF7D42)",
-                  marginBottom: 22,
-                }}
-              />
+              <div className="w-[44px] sm:w-[52px] h-[3px] sm:h-[4px] rounded-full bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] !mb-[16px] sm:!mb-[20px] lg:!mb-[22px]" />
 
               {/* Description */}
-              <p
-                className="!mb-8 w-full"
-                style={{
-                  fontSize: "clamp(14px, 1.5vw, 15.5px)",
-                  color: "rgba(255,255,255,.7)",
-                  lineHeight: 1.85,
-                }}
-              >
-                Mr. Satish Kumar Jain, aged 76 years, is a prominent and proactive personality who transformed his vision into quality construction work by implementing the latest techniques in developing large-scale buildings into reality at project sites. He has instilled strong values of ethical leadership, responsible decision-making, and a culture of healthy governance. He firmly believes in the Karma theory of hard work and continues to apply his wisdom and vision in all his endeavors. A devoted follower of Jainism, he is deeply committed to nurturing excellence among talented and gifted sports players. He also dedicates his hard-earned resources to noble causes and charitable activities for the betterment of society.
+              <p className="text-[rgba(255,255,255,.7)] !m-0 !mb-[0px] w-full leading-[1.8] sm:leading-[1.85] text-[clamp(13px,1.5vw,15.5px)]">
+                Mr. Satish Kumar Jain, aged 76 years, is a prominent and proactive
+                personality who transformed his vision into quality construction work
+                by implementing the latest techniques in developing large-scale
+                buildings into reality at project sites. He has instilled strong
+                values of ethical leadership, responsible decision-making, and a
+                culture of healthy governance. He firmly believes in the Karma theory
+                of hard work and continues to apply his wisdom and vision in all his
+                endeavors. A devoted follower of Jainism, he is deeply committed to
+                nurturing excellence among talented and gifted sports players. He also
+                dedicates his hard-earned resources to noble causes and charitable
+                activities for the betterment of society.
               </p>
-            </div>
 
+            </div>
           </div>
         </div>
       </section>

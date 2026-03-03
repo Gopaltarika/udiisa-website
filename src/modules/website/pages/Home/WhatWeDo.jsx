@@ -48,6 +48,7 @@ const WhatWeDo = () => {
   return (
     <>
       <style>{`
+        /* Bottom orange bar */
         .svc-card {
           position: relative;
           overflow: hidden;
@@ -57,8 +58,6 @@ const WhatWeDo = () => {
                       background .25s ease;
           cursor: default;
         }
-
-        /* Bottom orange bar */
         .svc-card::after {
           content: '';
           position: absolute;
@@ -94,7 +93,7 @@ const WhatWeDo = () => {
           background: rgba(240,90,26,.06) !important;
         }
 
-        /* Icon */
+        /* Icon hover */
         .svc-icon {
           transition: transform .32s cubic-bezier(.16,1,.3,1), box-shadow .3s ease;
         }
@@ -102,15 +101,11 @@ const WhatWeDo = () => {
           transform: scale(1.15) rotate(-6deg);
           box-shadow: 0 12px 32px rgba(240,90,26,.4) !important;
         }
-
-        /* Icon inner svg color on hover */
         .svc-card:hover .svc-icon svg,
         .svc-card:hover .svc-icon-inner { color: #fff !important; }
-
-        /* Title color on hover */
         .svc-card:hover .svc-title { color: #FF8C5A !important; }
 
-        /* Glow top-right */
+        /* Glow */
         .svc-glow {
           position: absolute;
           top: -40px; right: -40px;
@@ -122,99 +117,119 @@ const WhatWeDo = () => {
           pointer-events: none;
         }
         .svc-card:hover .svc-glow { opacity: 1; }
+
+        /* Mobile scroll snap */
+        .svc-scroll-wrap {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .svc-scroll-wrap::-webkit-scrollbar { display: none; }
       `}</style>
 
-      <section
-        className="wwd-section !py-20 !px-4 sm:!px-6 lg:!px-8"
-        style={{ background: 'linear-gradient(160deg,#0B1E4B 0%,#0d2258 50%,#0B1E4B 100%)' }}
-      >
-        <div className="!max-w-[1240px] !mx-auto">
+      <section className="wwd-section !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-0 sm:!px-[24px] lg:!px-[32px] bg-gradient-to-br from-[#0B1E4B] via-[#0d2258] to-[#0B1E4B] overflow-hidden">
+        <div className="max-w-[1240px] !mx-auto">
 
           {/* ── Header ── */}
-          <div className="!text-center !mb-14">
-            <div
-              className="inline-flex items-center !rounded-full !mb-5"
-              style={{
-                padding: '6px 20px',
-                background: 'rgba(240,90,26,.15)',
-                border: '1.5px solid rgba(240,90,26,.45)',
-                fontSize: 11, fontWeight: 700,
-                letterSpacing: '2.5px', textTransform: 'uppercase',
-                color: '#FF8C5A',
-              }}
-            >
+          <div className="text-center !mb-[36px] sm:!mb-[48px] lg:!mb-[56px] !px-[16px] sm:!px-[0]">
+
+            {/* Badge */}
+            <div className="inline-flex items-center rounded-full !mb-[14px] sm:!mb-[18px] lg:!mb-[20px] !px-[14px] sm:!px-[20px] !py-[5px] sm:!py-[6px] bg-[rgba(240,90,26,.15)] border-[1.5px] border-[rgba(240,90,26,.45)] text-[#FF8C5A] text-[10px] sm:text-[11px] font-extrabold tracking-[2.5px] uppercase">
               Our Services
             </div>
 
+            {/* Heading */}
             <h2
-              className="!m-0 !mb-4"
+              className="text-white !m-0 !mb-[14px] sm:!mb-[16px] leading-[1] tracking-[4px]"
               style={{
                 fontFamily: "'Bebas Neue', cursive",
-                fontSize: 'clamp(42px,7vw,72px)',
-                letterSpacing: 4, lineHeight: 1, color: '#fff',
+                fontSize: 'clamp(38px,7vw,72px)',
               }}
             >
-              What We <span style={{ color: '#F05A1A' }}>Do</span>
+              What We <span className="text-[#F05A1A]">Do</span>
             </h2>
 
-            <div
-              className="!mx-auto"
-              style={{
-                width: 56, height: 4, borderRadius: 2,
-                background: 'linear-gradient(90deg,#F05A1A,#FF7D42)',
-              }}
-            />
+            {/* Underline */}
+            <div className="w-[48px] sm:w-[56px] h-[3px] sm:h-[4px] rounded-full bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] !mx-auto" />
+          </div>
+          {/* Mobile scroll wrapper */}
+          <div className="sm:hidden svc-scroll-wrap overflow-x-auto !pb-[16px]">
+            <div className="flex !gap-[12px] !px-[16px] w-max">
+              {services.map((s) => (
+                <div
+                  key={s.title}
+                  className="svc-card flex flex-col items-center text-center rounded-[16px] !p-[20px] bg-[rgba(255,255,255,.04)] border border-[rgba(255,255,255,.08)] shadow-[0_2px_16px_rgba(0,0,0,.18)] w-[220px] flex-shrink-0"
+                >
+                  <div className="svc-glow" />
+
+                  {/* Icon */}
+                  <div className="svc-icon flex items-center justify-center rounded-[14px] !mb-[14px] flex-shrink-0 w-[54px] h-[54px] bg-gradient-to-br from-[#1e2d5a] to-[#2a3d70] shadow-[0_4px_16px_rgba(0,0,0,.3)]">
+                    <span className="svc-icon-inner text-[#F05A1A] text-[22px] flex items-center">
+                      {s.icon}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="svc-title text-white font-extrabold text-[13px] leading-[1.3] tracking-[0.2px] !m-0 !mb-[8px] transition-colors duration-[250ms]">
+                    {s.title}
+                  </h3>
+
+                  {/* Desc */}
+                  <p className="!m-0 text-[rgba(255,255,255,.52)] text-[11.5px] leading-[1.7]">
+                    {s.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+           
           </div>
 
-          {/* ── Grid ── */}
-          <div className="!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-4 !gap-5">
+          {/* Tablet: 2-col grid */}
+          <div className="hidden sm:grid lg:hidden grid-cols-2 !gap-[16px] !px-[0]">
             {services.map((s) => (
               <div
                 key={s.title}
-                className="svc-card !flex !flex-col !items-center !text-center !rounded-2xl !p-7"
-                style={{
-                  background: 'rgba(255,255,255,.04)',
-                  border: '1px solid rgba(255,255,255,.08)',
-                  boxShadow: '0 2px 16px rgba(0,0,0,.18)',
-                }}
+                className="svc-card flex flex-col items-center text-center rounded-[18px] !p-[24px] sm:!p-[26px] bg-[rgba(255,255,255,.04)] border border-[rgba(255,255,255,.08)] shadow-[0_2px_16px_rgba(0,0,0,.18)]"
               >
-                {/* Glow */}
                 <div className="svc-glow" />
 
-                {/* Icon box */}
-                <div
-                  className="svc-icon !flex !items-center !justify-center !rounded-2xl !mb-6 !flex-shrink-0"
-                  style={{
-                    width: 72, height: 72,
-                    background: 'linear-gradient(135deg,#1e2d5a,#2a3d70)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,.3)',
-                  }}
-                >
-                  <span
-                    className="svc-icon-inner"
-                    style={{ color: '#F05A1A', fontSize: 28, display: 'flex', alignItems: 'center' }}
-                  >
+                <div className="svc-icon flex items-center justify-center rounded-[16px] !mb-[18px] flex-shrink-0 w-[60px] h-[60px] bg-gradient-to-br from-[#1e2d5a] to-[#2a3d70] shadow-[0_4px_16px_rgba(0,0,0,.3)]">
+                  <span className="svc-icon-inner text-[#F05A1A] text-[24px] flex items-center">
                     {s.icon}
                   </span>
                 </div>
 
-                {/* Title */}
-                <h3
-                  className="svc-title !mb-3 !mt-0"
-                  style={{
-                    fontSize: 15, fontWeight: 800,
-                    color: '#fff', lineHeight: 1.3, letterSpacing: '0.2px',
-                    transition: 'color .25s ease',
-                  }}
-                >
+                <h3 className="svc-title text-white font-extrabold text-[14px] leading-[1.3] tracking-[0.2px] !m-0 !mb-[10px] transition-colors duration-[250ms]">
                   {s.title}
                 </h3>
 
-                {/* Desc */}
-                <p
-                  className="!m-0"
-                  style={{ fontSize: 13, color: 'rgba(255,255,255,.52)', lineHeight: 1.75 }}
-                >
+                <p className="!m-0 text-[rgba(255,255,255,.52)] text-[12.5px] leading-[1.75]">
+                  {s.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: 4-col grid */}
+          <div className="hidden lg:grid grid-cols-4 !gap-[20px]">
+            {services.map((s) => (
+              <div
+                key={s.title}
+                className="svc-card flex flex-col items-center text-center rounded-[20px] !p-[28px] bg-[rgba(255,255,255,.04)] border border-[rgba(255,255,255,.08)] shadow-[0_2px_16px_rgba(0,0,0,.18)]"
+              >
+                <div className="svc-glow" />
+
+                <div className="svc-icon flex items-center justify-center rounded-[18px] !mb-[22px] flex-shrink-0 w-[72px] h-[72px] bg-gradient-to-br from-[#1e2d5a] to-[#2a3d70] shadow-[0_4px_16px_rgba(0,0,0,.3)]">
+                  <span className="svc-icon-inner text-[#F05A1A] text-[28px] flex items-center">
+                    {s.icon}
+                  </span>
+                </div>
+
+                <h3 className="svc-title text-white font-extrabold text-[15px] leading-[1.3] tracking-[0.2px] !m-0 !mb-[12px] transition-colors duration-[250ms]">
+                  {s.title}
+                </h3>
+
+                <p className="!m-0 text-[rgba(255,255,255,.52)] text-[13px] leading-[1.75]">
                   {s.desc}
                 </p>
               </div>

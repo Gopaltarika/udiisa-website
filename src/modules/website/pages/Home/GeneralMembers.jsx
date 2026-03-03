@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 
-// ── Data (baad mein API se replace karein) ──
 const individualMembers = [
   { id: 1, name: 'Ajay Kumar',     company: 'Individual' },
   { id: 2, name: 'Bindu Sharma',   company: 'Sharma Textiles' },
@@ -61,14 +60,12 @@ const GeneralMembers = () => {
 
         /* Table row hover */
         .gm-row {
-          transition: background .15s ease, transform .15s ease;
+          transition: background .15s ease;
           cursor: default;
         }
-        .gm-row:hover {
-          background: #FFF3EC !important;
-        }
-        .gm-row:hover .gm-row-name  { color: #F05A1A !important; }
-        .gm-row:hover .gm-row-sr    { color: #F05A1A !important; font-weight: 700 !important; }
+        .gm-row:hover { background: #FFF3EC !important; }
+        .gm-row:hover .gm-row-name { color: #F05A1A !important; }
+        .gm-row:hover .gm-row-sr   { color: #F05A1A !important; font-weight: 700 !important; }
 
         /* View All button */
         .view-btn {
@@ -96,20 +93,52 @@ const GeneralMembers = () => {
           to   { opacity:1; transform: translateY(0); }
         }
         .tab-content { animation: tabFade .25s ease both; }
+
+        /* ── Mobile styles ── */
+        @media (max-width: 639px) {
+
+          /* Table: hide company column, show as sub-text under name */
+          .gm-col-company { display: none !important; }
+
+          .gm-table-header {
+            grid-template-columns: 40px 1fr !important;
+            padding: 10px 12px !important;
+          }
+
+          .gm-table-row {
+            grid-template-columns: 40px 1fr !important;
+            padding: 10px 12px !important;
+          }
+
+          .gm-row-name-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+          }
+
+          .gm-row-company-sub {
+            display: block !important;
+            font-size: 11px !important;
+            color: #94a3b8 !important;
+            font-weight: 500 !important;
+          }
+        }
       `}</style>
 
-      <section className="gm-section !bg-[#F4F6FB] !py-20 !px-4 sm:!px-6 lg:!px-8">
+      <section className="gm-section !bg-[#F4F6FB] !py-[36px] sm:!py-[56px] lg:!py-[80px] !px-[12px] sm:!px-[24px] lg:!px-[32px]">
         <div className="!max-w-[1100px] !mx-auto">
 
           {/* ── Header ── */}
-          <div className="!text-center !mb-10">
+          <div className="!text-center !mb-[20px] sm:!mb-[32px] lg:!mb-[40px]">
+
+            {/* Badge */}
             <div
-              className="inline-flex items-center !rounded-full !mb-4"
+              className="inline-flex items-center !rounded-full !mb-[8px] sm:!mb-[14px]"
               style={{
-                padding: '5px 18px',
+                padding: '4px 14px',
                 border: '1.5px solid rgba(240,90,26,.4)',
                 background: 'rgba(240,90,26,.05)',
-                fontSize: 11, fontWeight: 700,
+                fontSize: 10, fontWeight: 700,
                 letterSpacing: '2.5px', textTransform: 'uppercase',
                 color: '#F05A1A',
               }}
@@ -118,10 +147,10 @@ const GeneralMembers = () => {
             </div>
 
             <h2
-              className="!m-0 !mb-3"
+              className="!m-0 !mb-[8px] sm:!mb-[12px]"
               style={{
                 fontFamily: "'Bebas Neue', cursive",
-                fontSize: 'clamp(36px,6vw,60px)',
+                fontSize: 'clamp(28px,6vw,60px)',
                 letterSpacing: 3, lineHeight: 1.05, color: '#0B1E4B',
               }}
             >
@@ -131,7 +160,7 @@ const GeneralMembers = () => {
             <div
               className="!mx-auto"
               style={{
-                width: 52, height: 4, borderRadius: 2,
+                width: 40, height: 3, borderRadius: 2,
                 background: 'linear-gradient(90deg,#F05A1A,#FF7D42)',
               }}
             />
@@ -139,15 +168,15 @@ const GeneralMembers = () => {
 
           {/* ── Tabs ── */}
           <div
-            className="!flex !items-center !gap-0 !mb-6"
+            className="!flex !items-center !mb-[14px] sm:!mb-[20px]"
             style={{ borderBottom: '2px solid #e2e8f0' }}
           >
             {tabs.map(tab => (
               <button
                 key={tab.key}
-                className={`gm-tab !border-0 !bg-transparent !cursor-pointer !pb-3 !mr-6 ${activeTab === tab.key ? 'active' : ''}`}
+                className={`gm-tab !border-0 !bg-transparent !cursor-pointer !pb-[10px] sm:!pb-[12px] !mr-[16px] sm:!mr-[24px] ${activeTab === tab.key ? 'active' : ''}`}
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: activeTab === tab.key ? 800 : 600,
                   color: activeTab === tab.key ? '#0B1E4B' : '#64748b',
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -164,42 +193,37 @@ const GeneralMembers = () => {
           {/* ── Table ── */}
           <div
             key={activeTab}
-            className="tab-content !rounded-2xl !overflow-hidden"
+            className="tab-content !rounded-xl sm:!rounded-2xl !overflow-hidden"
             style={{ boxShadow: '0 4px 24px rgba(11,30,75,.08)', border: '1px solid #e2e8f0' }}
           >
             {/* Table Header */}
             <div
-              className="!grid !items-center"
+              className="gm-table-header !grid !items-center"
               style={{
-                gridTemplateColumns: '80px 1fr 1fr',
+                gridTemplateColumns: '52px 1fr 1fr',
                 background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)',
-                padding: '14px 24px',
+                padding: '12px 20px',
               }}
             >
-              {['SR.', 'NAME', 'COMPANY / ORGANIZATION'].map((h, i) => (
-                <div
-                  key={h}
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 800,
-                    color: 'rgba(255,255,255,.7)',
-                    letterSpacing: '1.8px',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {h}
-                </div>
-              ))}
+              <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,.7)', letterSpacing: '1.8px', textTransform: 'uppercase' }}>
+                SR.
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,.7)', letterSpacing: '1.8px', textTransform: 'uppercase' }}>
+                NAME
+              </div>
+              <div className="gm-col-company" style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,.7)', letterSpacing: '1.8px', textTransform: 'uppercase' }}>
+                COMPANY / ORGANIZATION
+              </div>
             </div>
 
             {/* Table Rows */}
             {data.map((member, index) => (
               <div
                 key={member.id}
-                className="gm-row !grid !items-center"
+                className="gm-row gm-table-row !grid !items-center"
                 style={{
-                  gridTemplateColumns: '80px 1fr 1fr',
-                  padding: '14px 24px',
+                  gridTemplateColumns: '52px 1fr 1fr',
+                  padding: '12px 20px',
                   background: index % 2 === 0 ? '#fff' : '#f8fafc',
                   borderBottom: index < data.length - 1 ? '1px solid #f1f5f9' : 'none',
                 }}
@@ -209,36 +233,29 @@ const GeneralMembers = () => {
                 {/* SR */}
                 <div
                   className="gm-row-sr"
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: '#94a3b8',
-                    transition: 'color .15s ease',
-                  }}
+                  style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', transition: 'color .15s ease' }}
                 >
                   {member.id}
                 </div>
 
-                {/* Name */}
-                <div
-                  className="gm-row-name"
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: '#0B1E4B',
-                    transition: 'color .15s ease',
-                  }}
-                >
-                  {member.name}
+                {/* Name + company sub (mobile only) */}
+                <div className="gm-row-name-wrap" style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div
+                    className="gm-row-name"
+                    style={{ fontSize: 13, fontWeight: 600, color: '#0B1E4B', transition: 'color .15s ease' }}
+                  >
+                    {member.name}
+                  </div>
+                  {/* Shown only on mobile via CSS */}
+                  <span className="gm-row-company-sub" style={{ display: 'none' }}>
+                    {member.company}
+                  </span>
                 </div>
 
-                {/* Company */}
+                {/* Company — hidden on mobile */}
                 <div
-                  style={{
-                    fontSize: 13.5,
-                    fontWeight: 500,
-                    color: '#64748b',
-                  }}
+                  className="gm-col-company"
+                  style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}
                 >
                   {member.company}
                 </div>
@@ -247,13 +264,13 @@ const GeneralMembers = () => {
           </div>
 
           {/* ── View All Button ── */}
-          <div className="!flex !justify-center !mt-10">
+          <div className="!flex !justify-center !mt-[24px] sm:!mt-[36px] lg:!mt-[40px]">
             <button
-              className="view-btn !flex !items-center !gap-2.5 !rounded-xl !border-0 !cursor-pointer !text-white"
+              className="view-btn !flex !items-center !gap-2 !rounded-xl !border-0 !cursor-pointer"
               style={{
-                padding: '13px 32px',
+                padding: '11px 26px',
                 background: 'linear-gradient(135deg,#0B1E4B,#1e3a8a)',
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 700,
                 color: '#fff',
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -263,7 +280,7 @@ const GeneralMembers = () => {
               onClick={() => navigate('/members/general-members')}
             >
               <span className='text-white'>View All Members</span>
-              <FaArrowRight className="btn-arrow" style={{ fontSize: 13 }} />
+              <FaArrowRight className="btn-arrow text-white" style={{ fontSize: 12 }} />
             </button>
           </div>
 

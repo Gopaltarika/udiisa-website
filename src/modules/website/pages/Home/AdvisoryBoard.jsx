@@ -1,29 +1,29 @@
 import React, { useState } from 'react'
 import { FaArrowRight, FaTimes } from 'react-icons/fa'
-import suniljalan from "@/assets/images/sunil-jalan.jpeg";
-import sureshjindal from "@/assets/images/suresh-jindal.jpeg";
+import suniljalan from "@/assets/images/sunil-jalan.jpeg"
+import sureshjindal from "@/assets/images/suresh-jindal.jpeg"
 
 const chairmen = [
   {
     name: 'Mr. Sunil Jalan',
     role: 'Advisory Board Chairman',
-    roleBadege: 'Chairman',
+    roleBadge: 'Chairman',
     desc: 'Whole time Chairman, Advisory Board. UDIISA.',
     img: suniljalan,
     modalTitle: 'Whole time Chairman, Advisory Board. UDIISA.',
     modalContent: [
-      'He is also co-founder and Chairman of A-One Steel Group. He is proactive in providing assistance to the talented and gifted players in recognized way at all level in sports mission. He  lends his expertise to each significant aspect in growing up the managing of Association, strategy, operations and finance objectives. He is responsible for the successful leadership and management of Association which is registered under secton 8 of company Act. He implements comprehensive industry  plans in sports, enhances the company culture, and ensures a safe working environment for unpleasing dreams industry, for creating future champions, in sports.',
+      'He is also co-founder and Chairman of A-One Steel Group. He is proactive in providing assistance to the talented and gifted players in recognized way at all level in sports mission. He lends his expertise to each significant aspect in growing up the managing of Association, strategy, operations and finance objectives. He is responsible for the successful leadership and management of Association which is registered under section 8 of company Act. He implements comprehensive industry plans in sports, enhances the company culture, and ensures a safe working environment for unpleasing dreams industry, for creating future champions, in sports.',
     ],
   },
   {
     name: 'Mr. Suresh Jindal',
     role: 'Advisory Board Vice Chairman',
-    roleBadege: ' Vice Chairman',
+    roleBadge: 'Vice Chairman',
     desc: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
     img: sureshjindal,
     modalTitle: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
     modalContent: [
-      'Shri Suresh Jindal Ji remained as prominent and proactive Industrialist.He started serving for talented and gifted players after handing over the business activities to his children. He is noble and kindhearted person in contributing his best for creating future champions. UDIISA is thankful for his support of mission.',
+      'Shri Suresh Jindal Ji remained as prominent and proactive Industrialist. He started serving for talented and gifted players after handing over the business activities to his children. He is noble and kindhearted person in contributing his best for creating future champions. UDIISA is thankful for his support of mission.',
     ],
   },
 ]
@@ -72,116 +72,91 @@ const AdvisoryBoard = () => {
         }
       `}</style>
 
-      <section className="advisory-section !bg-white !py-20 !px-4 sm:!px-6 lg:!px-8">
-        <div className="!max-w-[1000px] !mx-auto">
+      {/* ══ SECTION ══ */}
+      <section className="advisory-section bg-white !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-[16px] sm:!px-[24px] lg:!px-[32px]">
+        <div className="w-full max-w-[1000px] !mx-auto">
 
-          {/* Header */}
-          <div className="!text-center !mb-14">
-            <div
-              className="inline-flex items-center !rounded-full !mb-5"
-              style={{
-                padding: '5px 18px',
-                border: '1.5px solid rgba(240,90,26,.4)',
-                background: 'rgba(240,90,26,.05)',
-                fontSize: 11, fontWeight: 700,
-                letterSpacing: '2.5px', textTransform: 'uppercase', color: '#F05A1A',
-              }}
-            >
+          {/* ── Header ── */}
+          <div className="text-center !mb-[36px] sm:!mb-[48px] lg:!mb-[56px]">
+
+            {/* Badge */}
+            <div className="inline-flex items-center rounded-full border border-[rgba(240,90,26,.4)] bg-[rgba(240,90,26,.05)] text-[#F05A1A] !px-[14px] sm:!px-[18px] !py-[5px] sm:!py-[6px] text-[10px] sm:text-[11px] font-extrabold tracking-[2.5px] uppercase !mb-[14px] sm:!mb-[18px] lg:!mb-[20px]">
               Advisory Board
             </div>
 
+            {/* Heading */}
             <h2
-              className="!m-0 !mb-2.5"
+              className="text-[#0B1E4B] !m-0 !mb-[10px] sm:!mb-[12px] leading-[1.05] tracking-[3px]"
               style={{
                 fontFamily: "'Bebas Neue', cursive",
-                fontSize: 'clamp(36px,6vw,58px)',
-                letterSpacing: 3, lineHeight: 1.05, color: '#0B1E4B',
+                fontSize: 'clamp(32px,6vw,58px)',
               }}
             >
-               Board Of Advisory<span style={{ color: '#F05A1A' }}>Commitee</span>
+              Board Of Advisory{' '}
+              <span className="text-[#F05A1A]">Committee</span>
             </h2>
 
-            <div
-              className="!mx-auto !mb-4"
-              style={{ width: 52, height: 4, borderRadius: 2, background: 'linear-gradient(90deg,#F05A1A,#FF7D42)' }}
-            />
+            {/* Underline */}
+            <div className="w-[44px] sm:w-[52px] h-[3px] sm:h-[4px] rounded-full bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] !mx-auto !mb-[12px] sm:!mb-[16px]" />
 
-            <p className="!m-0" style={{ fontSize: 15, color: '#64748b', lineHeight: 1.7 }}>
+            {/* Subtitle */}
+            <p className="text-slate-500 !m-0 text-[13.5px] sm:text-[15px] leading-[1.7] max-w-[480px] !mx-auto">
               Distinguished leaders guiding our mission with wisdom and expertise.
             </p>
           </div>
 
-          {/* Cards */}
-          <div className="!grid !grid-cols-1 sm:!grid-cols-2 !gap-8">
+          {/* ── Cards Grid ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 !gap-[16px] sm:!gap-[20px] lg:!gap-[28px]">
             {chairmen.map((c) => (
               <div
                 key={c.name}
-                className="chair-card !flex !flex-col !items-center !text-center !rounded-2xl !bg-white"
-                style={{
-                  padding: '40px 36px 36px',
-                  boxShadow: '0 4px 24px rgba(11,30,75,.08)',
-                  border: '1px solid #f1f5f9',
-                }}
+                className="chair-card flex flex-col items-center text-center rounded-[18px] sm:rounded-[20px] bg-white border border-slate-100 shadow-[0_4px_24px_rgba(11,30,75,.08)] !px-[20px] sm:!px-[28px] lg:!px--[36px] !py-[28px] sm:!py-[36px] lg:!py-[40px]"
               >
                 {/* Photo */}
-                <div className="!relative !mb-8">
-                  <div className="photo-ring !rounded-full !overflow-hidden" style={{ width: 140, height: 140 }}>
-                    <img src={c.img} alt={c.name} className="!w-full !h-full !object-cover object-top" />
+                <div className="relative !mb-[28px] sm:!mb-[32px] lg:!mb-[36px]">
+                  <div className="photo-ring rounded-full overflow-hidden w-[110px] h-[110px] sm:w-[128px] sm:h-[128px] lg:w-[140px] lg:h-[140px]">
+                    <img
+                      src={c.img}
+                      alt={c.name}
+                      className="w-full h-full object-cover object-top"
+                    />
                   </div>
-                  <div
-                    className="!absolute -bottom-3 !left-1/2 -translate-x-1/2 !whitespace-nowrap !rounded-full"
-                    style={{
-                      padding: '4px 14px',
-                      background: 'linear-gradient(90deg,#F05A1A,#FF7D42)',
-                      fontSize: 10.5, fontWeight: 700, color: '#fff',
-                    }}
-                  >
-                    {c.roleBadege}
+
+                  {/* Role badge on photo */}
+                  <div className="absolute -bottom-[10px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white !px-[10px] sm:!px-[14px] !py-[3px] sm:!py-[4px] text-[9.5px] sm:text-[10.5px] font-extrabold">
+                    {c.roleBadge}
                   </div>
                 </div>
 
                 {/* Name */}
                 <h3
-                  className="!mt-2 !mb-1"
+                  className="text-[#0B1E4B] !mt-[6px] sm:!mt-[8px] !mb-[4px] sm:!mb-[6px] leading-none tracking-[2.5px]"
                   style={{
                     fontFamily: "'Bebas Neue', cursive",
-                    fontSize: 28, letterSpacing: 2.5, color: '#0B1E4B',
+                    fontSize: 'clamp(22px,3vw,28px)',
                   }}
                 >
                   {c.name}
                 </h3>
 
-                {/* Role */}
-                <p
-                  className="!mb-3"
-                  style={{
-                    fontSize: 10.5, fontWeight: 700, letterSpacing: '2px',
-                    textTransform: 'uppercase', color: '#94a3b8',
-                  }}
-                >
+                {/* Role label */}
+                <p className="text-slate-400 font-extrabold text-[9.5px] sm:text-[10.5px] tracking-[2px] uppercase !m-0 !mb-[10px] sm:!mb-[14px]">
                   {c.role}
                 </p>
 
                 {/* Desc */}
-                <p className="!mb-6" style={{ fontSize: 14, color: '#475569', lineHeight: 1.75, maxWidth: 320 }}>
+                <p className="text-slate-600 text-[13px] sm:text-[14px] leading-[1.75] !m-0 !mb-[18px] sm:!mb-[22px] lg:!mb-[24px] max-w-[300px]">
                   {c.desc}
                 </p>
 
                 {/* Button */}
                 <button
-                  className="show-btn !flex !items-center !gap-2 !rounded-full !cursor-pointer"
-                  style={{
-                    padding: '11px 26px',
-                    border: '1.5px solid #0B1E4B',
-                    background: 'transparent',
-                    fontSize: 13.5, fontWeight: 700,
-                    color: '#0B1E4B',
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  }}
+                  className="show-btn flex items-center !gap-[7px] sm:!gap-[8px] rounded-full border-[1.5px] border-[#0B1E4B] bg-transparent text-[#0B1E4B] !px-[20px] sm:!px-[26px] !py-[9px] sm:!py-[11px] text-[12.5px] sm:text-[13.5px] font-extrabold cursor-pointer transition-all duration-[250ms]"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                   onClick={() => setSelected(c)}
                 >
                   Show More
-                  <FaArrowRight className="btn-arrow" style={{ fontSize: 12 }} />
+                  <FaArrowRight className="btn-arrow text-[11px] sm:text-[12px]" />
                 </button>
               </div>
             ))}
@@ -192,75 +167,53 @@ const AdvisoryBoard = () => {
       {/* ══ MODAL POPUP ══ */}
       {selected && (
         <div
-          className="modal-overlay !fixed !inset-0 !z-[999] !flex !items-center !justify-center !px-4"
-          style={{ background: 'rgba(11,30,75,.65)', backdropFilter: 'blur(6px)' }}
+          className="modal-overlay fixed inset-0 z-[999] flex items-center justify-center !px-[12px] sm:!px-[16px] bg-[rgba(11,30,75,.65)] backdrop-blur-[6px]"
           onClick={() => setSelected(null)}
         >
           <div
-            className="modal-box !relative !bg-white !rounded-2xl !w-full !overflow-hidden"
-            style={{ maxWidth: 700, boxShadow: '0 32px 80px rgba(11,30,75,.3)' }}
+            className="modal-box relative bg-white rounded-[18px] sm:rounded-[22px] w-full max-w-[360px] sm:max-w-[560px] lg:max-w-[700px] overflow-hidden shadow-[0_32px_80px_rgba(11,30,75,.3)]"
             onClick={e => e.stopPropagation()}
           >
-            <div className="!flex">
+
+            {/* ── Mobile layout: stacked ── */}
+            <div className="flex flex-col sm:flex-row">
 
               {/* Left dark panel */}
-              <div
-                className="!flex-shrink-0 !flex !flex-col !items-center !justify-center !py-10 !px-6"
-                style={{
-                  width: 190,
-                  background: 'linear-gradient(160deg,#1e3a6e,#0B1E4B)',
-                }}
-              >
-                <div
-                  className="photo-ring !rounded-full !overflow-hidden !mb-4"
-                  style={{ width: 100, height: 100 }}
-                >
+              <div className="flex-shrink-0 flex flex-row sm:flex-col items-center justify-center !gap-[12px] sm:!gap-[0] bg-gradient-to-br from-[#1e3a6e] to-[#0B1E4B] !px-[20px] sm:!px-[24px] !py-[20px] sm:!py-[40px] sm:w-[190px]">
+
+                <div className="photo-ring rounded-full overflow-hidden w-[64px] h-[64px] sm:w-[90px] sm:h-[90px] lg:w-[100px] lg:h-[100px] flex-shrink-0 sm:!mb-[16px]">
                   <img
                     src={selected.img}
                     alt={selected.name}
-                    className="!w-full !h-full !object-cover object-top"
+                    className="w-full h-full object-cover object-top"
                   />
                 </div>
-                <h4
-                  className="!text-center !mb-1 !mt-0"
-                  style={{
-                    fontFamily: "'Bebas Neue', cursive",
-                    fontSize: 20, letterSpacing: 2, color: '#fff',
-                  }}
-                >
-                  {selected.name}
-                </h4>
-                <p
-                  className="!text-center !m-0"
-                  style={{
-                    fontSize: 9, fontWeight: 700, letterSpacing: '1.5px',
-                    textTransform: 'uppercase', color: 'rgba(255,255,255,.5)',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {selected.role}
-                </p>
+
+                <div className="text-left sm:text-center">
+                  <h4
+                    className="text-white !m-0 !mb-[3px] sm:!mb-[4px] leading-snug tracking-[2px]"
+                    style={{
+                      fontFamily: "'Bebas Neue', cursive",
+                      fontSize: 'clamp(16px,3vw,20px)',
+                    }}
+                  >
+                    {selected.name}
+                  </h4>
+                  <p className="text-[rgba(255,255,255,.5)] !m-0 font-extrabold text-[8px] sm:text-[9px] tracking-[1.5px] uppercase leading-[1.6]">
+                    {selected.role}
+                  </p>
+                </div>
               </div>
 
               {/* Right content */}
-              <div
-                className="!flex-1 !overflow-y-auto"
-                style={{ padding: '32px 48px 32px 32px', maxHeight: '80vh' }}
-              >
-                <h3
-                  className="!mt-0 !mb-5"
-                  style={{
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    fontSize: 22, fontWeight: 800, color: '#0B1E4B', lineHeight: 1.3,
-                  }}
-                >
+              <div className="flex-1 overflow-y-auto max-h-[55vh] sm:max-h-[80vh] !px-[18px] sm:!px-[28px] lg:!px-[36px] !py-[20px] sm:!py-[28px] lg:!py-[32px] !pr-[18px] sm:!pr-[40px] lg:!pr-[48px]">
+                <h3 className="text-[#0B1E4B] font-extrabold !m-0 !mb-[12px] sm:!mb-[16px] lg:!mb-[20px] leading-[1.3] text-[16px] sm:text-[19px] lg:text-[22px]">
                   {selected.modalTitle}
                 </h3>
                 {selected.modalContent.map((para, i) => (
                   <p
                     key={i}
-                    className="!mb-4"
-                    style={{ fontSize: 14, color: '#475569', lineHeight: 1.85 }}
+                    className="text-slate-500 !m-0 !mb-[12px] sm:!mb-[16px] text-[12.5px] sm:text-[14px] leading-[1.8] sm:leading-[1.85] last:!mb-[0]"
                   >
                     {para}
                   </p>
@@ -268,17 +221,12 @@ const AdvisoryBoard = () => {
               </div>
             </div>
 
-            {/* Close X button */}
+            {/* Close button */}
             <button
-              className="close-btn !absolute !top-3 !right-3 !flex !items-center !justify-center !rounded-full !border-0 !cursor-pointer"
-              style={{
-                width: 32, height: 32,
-                background: '#f1f5f9',
-                color: '#64748b',
-              }}
+              className="close-btn absolute top-[10px] right-[10px] sm:top-[12px] sm:right-[12px] flex items-center justify-center rounded-full border-0 cursor-pointer bg-slate-100 text-slate-500 w-[28px] h-[28px] sm:w-[32px] sm:h-[32px]"
               onClick={() => setSelected(null)}
             >
-              <FaTimes style={{ fontSize: 13 }} />
+              <FaTimes className="text-[11px] sm:text-[13px]" />
             </button>
           </div>
         </div>

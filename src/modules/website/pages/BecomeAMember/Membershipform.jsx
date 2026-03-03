@@ -1171,7 +1171,6 @@ export default function MembershipForm() {
                         }
                     </div>
                 </div>
-
             </div>
         </div>
     )

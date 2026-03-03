@@ -32,14 +32,12 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // baad mein API call yahan aayegi
     alert(`Message sent!\nName: ${form.name}\nEmail: ${form.email}`)
   }
 
   return (
     <>
       <style>{`
-        /* Input focus */
         .contact-input, .contact-textarea {
           outline: none;
           transition: border-color .25s ease, box-shadow .25s ease;
@@ -52,10 +50,9 @@ const ContactUs = () => {
         .contact-input::placeholder, .contact-textarea::placeholder {
           color: #F05A1A;
           opacity: 0.6;
-          font-size: 13.5px;
+          font-size: 13px;
         }
 
-        /* Info icon box */
         .info-icon {
           transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease, background .25s ease;
           flex-shrink: 0;
@@ -69,7 +66,6 @@ const ContactUs = () => {
         .info-item { transition: transform .25s ease; cursor: default; }
         .info-item:hover { transform: translateX(4px); }
 
-        /* Submit button */
         .submit-btn {
           position: relative; overflow: hidden;
           transition: transform .25s ease, box-shadow .25s ease;
@@ -89,29 +85,32 @@ const ContactUs = () => {
         .submit-btn:hover .s-arrow { transform: translateX(3px); }
         .s-arrow { transition: transform .25s ease; }
 
-        /* Underline accent */
         .title-bar {
-          width: 52px; height: 4px; border-radius: 2px;
+          width: 40px; height: 3px; border-radius: 2px;
           background: linear-gradient(90deg,#F05A1A,#FF7D42);
-          margin-top: 14px; margin-bottom: 22px;
+          margin-top: 10px; margin-bottom: 14px;
+        }
+
+        @media (min-width: 640px) {
+          .title-bar { width: 52px; height: 4px; margin-top: 14px; margin-bottom: 20px; }
         }
       `}</style>
 
-      <section className="contact-section !bg-white !py-20 !px-4 sm:!px-6 lg:!px-8">
+      <section className="contact-section !bg-white !py-[32px] sm:!py-[56px] lg:!py-[80px] !px-[12px] sm:!px-[24px] lg:!px-[32px]">
         <div className="!max-w-[1100px] !mx-auto">
-          <div className="!flex !flex-col lg:!flex-row !gap-14 lg:!gap-20">
+          <div className="!flex !flex-col lg:!flex-row !gap-[28px] sm:!gap-[40px] lg:!gap-[80px]">
 
             {/* ══ LEFT — Info ══ */}
             <div className="!flex-1">
 
               {/* Badge */}
               <div
-                className="inline-flex items-center !rounded-full !mb-5"
+                className="inline-flex items-center !rounded-full !mb-[10px] sm:!mb-[16px]"
                 style={{
-                  padding: '5px 18px',
+                  padding: '4px 14px',
                   border: '1.5px solid rgba(240,90,26,.4)',
                   background: 'rgba(240,90,26,.05)',
-                  fontSize: 11, fontWeight: 700,
+                  fontSize: 10, fontWeight: 700,
                   letterSpacing: '2.5px', textTransform: 'uppercase',
                   color: '#F05A1A',
                 }}
@@ -124,7 +123,7 @@ const ContactUs = () => {
                 className="!m-0"
                 style={{
                   fontFamily: "'Bebas Neue', cursive",
-                  fontSize: 'clamp(38px,5.5vw,58px)',
+                  fontSize: 'clamp(30px,5.5vw,58px)',
                   letterSpacing: 2, lineHeight: 1.05,
                   color: '#0B1E4B',
                 }}
@@ -139,37 +138,39 @@ const ContactUs = () => {
 
               {/* Subtext */}
               <p
-                className="!mb-8 !mt-0"
+                className="!mt-0 !mb-[16px] sm:!mb-[28px]"
                 style={{
-                  fontSize: 15, color: '#475569', lineHeight: 1.75, maxWidth: 400,
+                  fontSize: 'clamp(12.5px,1.4vw,15px)',
+                  color: '#475569', lineHeight: 1.7, maxWidth: 400,
                 }}
               >
                 Have a question or want to partner with us? We'd love to hear from you.
               </p>
 
               {/* Contact Info Items */}
-              <div className="!flex !flex-col !gap-5">
+              <div className="!flex !flex-col !gap-[14px] sm:!gap-[20px]">
                 {contactInfo.map((item) => (
-                  <div key={item.id} className="info-item !flex !items-start !gap-4">
+                  <div key={item.id} className="info-item !flex !items-start !gap-[12px] sm:!gap-[16px]">
 
                     {/* Icon */}
                     <div
                       className="info-icon !flex !items-center !justify-center !rounded-xl"
                       style={{
-                        width: 44, height: 44,
+                        width: 38, height: 38,
                         background: 'rgba(240,90,26,.08)',
                         boxShadow: '0 2px 10px rgba(240,90,26,.1)',
+                        flexShrink: 0,
                       }}
                     >
-                      <span style={{ color: '#F05A1A', fontSize: 16 }}>{item.icon}</span>
+                      <span style={{ color: '#F05A1A', fontSize: 14 }}>{item.icon}</span>
                     </div>
 
                     {/* Text */}
                     <div>
-                      <div style={{ fontSize: 13.5, fontWeight: 800, color: '#0B1E4B', marginBottom: 3 }}>
+                      <div style={{ fontSize: 12.5, fontWeight: 800, color: '#0B1E4B', marginBottom: 2 }}>
                         {item.label}
                       </div>
-                      <div style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.55 }}>
+                      <div style={{ fontSize: 12.5, color: '#64748b', lineHeight: 1.55 }}>
                         {item.value}
                       </div>
                     </div>
@@ -181,11 +182,10 @@ const ContactUs = () => {
             {/* ══ RIGHT — Form ══ */}
             <div className="!flex-1">
 
-              {/* Get help heading */}
               <h3
-                className="!mt-0 !mb-6"
+                className="!mt-0 !mb-[14px] sm:!mb-[20px]"
                 style={{
-                  fontSize: 'clamp(22px,3vw,30px)',
+                  fontSize: 'clamp(18px,3vw,30px)',
                   fontWeight: 800,
                   color: '#F05A1A',
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -198,7 +198,7 @@ const ContactUs = () => {
               <form onSubmit={handleSubmit}>
 
                 {/* Name + Email row */}
-                <div className="!grid !grid-cols-1 sm:!grid-cols-2 !gap-4 !mb-4">
+                <div className="!grid !grid-cols-1 sm:!grid-cols-2 !gap-[10px] sm:!gap-[14px] !mb-[10px] sm:!mb-[14px]">
                   <input
                     type="text"
                     name="name"
@@ -207,8 +207,8 @@ const ContactUs = () => {
                     onChange={handleChange}
                     className="contact-input !w-full !rounded-xl !bg-white"
                     style={{
-                      padding: '14px 18px',
-                      fontSize: 14, color: '#0B1E4B',
+                      padding: '11px 14px',
+                      fontSize: 13, color: '#0B1E4B',
                       border: '1.5px solid rgba(240,90,26,.35)',
                     }}
                     onFocus={() => setFocused('name')}
@@ -223,8 +223,8 @@ const ContactUs = () => {
                     onChange={handleChange}
                     className="contact-input !w-full !rounded-xl !bg-white"
                     style={{
-                      padding: '14px 18px',
-                      fontSize: 14, color: '#0B1E4B',
+                      padding: '11px 14px',
+                      fontSize: 13, color: '#0B1E4B',
                       border: '1.5px solid rgba(240,90,26,.35)',
                     }}
                     onFocus={() => setFocused('email')}
@@ -237,13 +237,13 @@ const ContactUs = () => {
                 <textarea
                   name="message"
                   placeholder="Message"
-                  rows={5}
+                  rows={4}
                   value={form.message}
                   onChange={handleChange}
-                  className="contact-textarea !w-full !rounded-xl !bg-white !mb-5 !resize-none !block"
+                  className="contact-textarea !w-full !rounded-xl !bg-white !mb-[12px] sm:!mb-[18px] !resize-none !block"
                   style={{
-                    padding: '14px 18px',
-                    fontSize: 14, color: '#0B1E4B',
+                    padding: '11px 14px',
+                    fontSize: 13, color: '#0B1E4B',
                     border: '1.5px solid rgba(240,90,26,.35)',
                   }}
                   onFocus={() => setFocused('message')}
@@ -256,9 +256,9 @@ const ContactUs = () => {
                   type="submit"
                   className="submit-btn !flex !items-center !gap-2 !rounded-xl !border-0 !cursor-pointer"
                   style={{
-                    padding: '13px 32px',
+                    padding: '11px 26px',
                     background: 'linear-gradient(135deg,#F05A1A,#FF7D42)',
-                    fontSize: 14, fontWeight: 700,
+                    fontSize: 13, fontWeight: 700,
                     color: '#fff',
                     fontFamily: "'Plus Jakarta Sans', sans-serif",
                     boxShadow: '0 6px 20px rgba(240,90,26,.32)',
@@ -266,7 +266,7 @@ const ContactUs = () => {
                   }}
                 >
                   Next
-                  <FaAngleDoubleRight className="s-arrow" style={{ fontSize: 14 }} />
+                  <FaAngleDoubleRight className="s-arrow" style={{ fontSize: 13 }} />
                 </button>
 
               </form>

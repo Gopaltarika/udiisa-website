@@ -1,49 +1,18 @@
 import React from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-import deepakgarg from "@/assets/images/deepak-garg.jpeg";
-import manishgupta from "@/assets/images/manish-gupta.jpeg";
-import sahiljindal from "@/assets/images/sahil-jindal.jpeg";
-import ankurjain from "@/assets/images/ankur-jain.jpeg";
-import shyamsunder from "@/assets/images/shyam-sunder.jpeg";
+import deepakgarg   from "@/assets/images/deepak-garg.jpeg"
+import manishgupta  from "@/assets/images/manish-gupta.jpeg"
+import sahiljindal  from "@/assets/images/sahil-jindal.jpeg"
+import ankurjain    from "@/assets/images/ankur-jain.jpeg"
+import shyamsunder  from "@/assets/images/shyam-sunder.jpeg"
 
-// ── Data (baad mein API se replace karein) ──
 const members = [
-  {
-    id: 1,
-    name: 'Mr. Deepak Garg',
-    role: 'Chairman',
-    roleColor: '#F05A1A',
-    img: deepakgarg,
-  },
-  {
-    id: 2,
-    name: 'Mr. Manish Gupta',
-    role: 'Vice Chairman',
-    roleColor: '#F05A1A',
-    img: manishgupta,
-  },
-  {
-    id: 3,
-    name: 'Mr. Sahil Jindal',
-    role: 'Joint Secretary',
-    roleColor: '#64748b',
-    img: sahiljindal,
-  },
-  {
-    id: 4,
-    name: 'Mr. ankur jain',
-    role: 'Secretary',
-    roleColor: '#F05A1A',
-    img: ankurjain,
-  },
-  {
-    id: 5,
-    name: 'Mr. Shyam Sunder Kocher',
-    role: 'Treasurer',
-    roleColor: '#64748b',
-    img: shyamsunder,
-  },
+  { id: 1, name: 'Mr. Deepak Garg',        role: 'Chairman',       isOrange: true,  img: deepakgarg  },
+  { id: 2, name: 'Mr. Manish Gupta',        role: 'Vice Chairman',  isOrange: true,  img: manishgupta },
+  { id: 3, name: 'Mr. Sahil Jindal',        role: 'Joint Secretary',isOrange: false, img: sahiljindal },
+  { id: 4, name: 'Mr. Ankur Jain',          role: 'Secretary',      isOrange: true,  img: ankurjain   },
+  { id: 5, name: 'Mr. Shyam Sunder Kocher', role: 'Treasurer',      isOrange: false, img: shyamsunder },
 ]
 
 const ManagingCommittee = () => {
@@ -52,8 +21,7 @@ const ManagingCommittee = () => {
   return (
     <>
       <style>{`
-
-        /* Card */
+        /* Card lift */
         .mc-card {
           transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease;
           cursor: default;
@@ -63,29 +31,12 @@ const ManagingCommittee = () => {
           box-shadow: 0 20px 48px rgba(11,30,75,.13) !important;
         }
 
-        /* Photo wrapper */
-        .mc-photo-wrap {
-          transition: .3s ease;
-          overflow: hidden;
-          box-shadow: 0 8px 28px rgba(240,90,26,.22) !important;
-        }
-        .mc-card:hover .mc-photo-wrap {
-          box-shadow: 0 8px 28px rgba(240,90,26,.22) !important;
-        }
-
         /* Photo zoom */
-        .mc-photo {
-          transition: transform .4s cubic-bezier(.16,1,.3,1);
-        }
-        .mc-card:hover .mc-photo {
-          transform: scale(1.07);
-        }
+        .mc-photo { transition: transform .4s cubic-bezier(.16,1,.3,1); }
+        .mc-card:hover .mc-photo { transform: scale(1.07); }
 
-        /* Orange underline on name */
-        .mc-name-line {
-          position: relative;
-          display: inline-block;
-        }
+        /* Name underline */
+        .mc-name-line { position: relative; display: inline-block; }
         .mc-name-line::after {
           content: '';
           position: absolute;
@@ -100,14 +51,12 @@ const ManagingCommittee = () => {
 
         /* View All button */
         .view-btn {
-          position: relative;
-          overflow: hidden;
+          position: relative; overflow: hidden;
           transition: all .28s cubic-bezier(.16,1,.3,1);
         }
         .view-btn::before {
           content: '';
-          position: absolute;
-          inset: 0;
+          position: absolute; inset: 0;
           background: linear-gradient(135deg,#1e40af,#2563EB);
           opacity: 0;
           transition: opacity .28s ease;
@@ -118,115 +67,88 @@ const ManagingCommittee = () => {
           transform: translateY(-2px);
           box-shadow: 0 12px 32px rgba(37,99,235,.4) !important;
         }
-        .view-btn span, .view-btn svg { position: relative; z-index: 1; }
-        .view-btn:hover .btn-arrow { transform: translateX(4px); }
+        .view-btn span,
+        .view-btn svg { position: relative; z-index: 1; }
         .btn-arrow { transition: transform .25s ease; }
+        .view-btn:hover .btn-arrow { transform: translateX(4px); }
       `}</style>
 
-      <section className="mc-section !bg-white !py-20 !px-4 sm:!px-6 lg:!px-8">
-        <div className="!max-w-[1280px] !mx-auto">
+      <section className="mc-section bg-white !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-[16px] sm:!px-[24px] lg:!px-[32px]">
+        <div className="max-w-[1280px] !mx-auto">
 
           {/* ── Header ── */}
-          <div className="!text-center !mb-12">
-             <div
-              className="inline-flex items-center !rounded-full !mb-5"
-              style={{
-                padding: '6px 20px',
-                background: 'rgba(240,90,26,.15)',
-                border: '1.5px solid rgba(240,90,26,.45)',
-                fontSize: 11, fontWeight: 700,
-                letterSpacing: '2.5px', textTransform: 'uppercase',
-                color: '#FF8C5A',
-              }}
-            >
+          <div className="text-center !mb-[28px] sm:!mb-[36px] lg:!mb-[48px]">
+
+            {/* Badge */}
+            <div className="inline-flex items-center rounded-full !mb-[12px] sm:!mb-[16px] lg:!mb-[20px] !px-[14px] sm:!px-[18px] lg:!px-[20px] !py-[5px] sm:!py-[6px] bg-[rgba(240,90,26,.15)] border-[1.5px] border-[rgba(240,90,26,.45)] text-[#FF8C5A] text-[10px] sm:text-[11px] font-extrabold tracking-[2.5px] uppercase">
               Our Committee
             </div>
+
+            {/* Heading */}
             <h2
-              className="!m-0"
+              className="text-[#0B1E4B] !m-0 leading-[1.05] tracking-[2px] sm:tracking-[3px] lg:tracking-[4px]"
               style={{
                 fontFamily: "'Bebas Neue', cursive",
-                fontSize: 'clamp(36px,6vw,62px)',
-                letterSpacing: 4,
-                lineHeight: 1.05,
-                color: '#0B1E4B',
+                fontSize: 'clamp(30px,6vw,62px)',
               }}
             >
               Managing{' '}
-              <span style={{ color: '#F05A1A' }}>Committee</span> of UDIISA
+              <span className="text-[#F05A1A]">Committee</span> of UDIISA
             </h2>
           </div>
 
-          {/* ── Cards ── */}
-          <div className="!grid !grid-cols-2 sm:!grid-cols-3 lg:!grid-cols-5 !gap-5 !mb-10">
+          {/* ── Cards Grid ── */}
+          {/* Mobile: 2-col | sm: 3-col | lg: 5-col */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 !gap-[10px] sm:!gap-[14px] lg:!gap-[20px] !mb-[24px] sm:!mb-[32px] lg:!mb-[40px]">
             {members.slice(0, 5).map((m) => (
               <div
                 key={m.id}
-                className="mc-card !flex !flex-col !items-center !text-center !bg-white rounded-2xl !p-3 !shadow-[0_8px_12px_rgba(11,30,75,.07)]"
+                className="mc-card flex flex-col items-center text-center bg-white rounded-[14px] sm:rounded-[18px] lg:rounded-[20px] !p-[8px] sm:!p-[10px] lg:!p-[12px] shadow-[0_4px_16px_rgba(11,30,75,.07)] border border-slate-100"
               >
                 {/* Photo */}
                 <div
-                  className="mc-photo-wrap !rounded-2xl !w-full !mb-4"
-                  style={{
-                    aspectRatio: '3/3.5',
-                    border: '1px solid #e8ecf4',
-                    boxShadow: '0 4px 16px rgba(11,30,75,.07)',
-                  }}
+                  className="rounded-[10px] sm:rounded-[14px] lg:rounded-[16px] w-full overflow-hidden !mb-[8px] sm:!mb-[10px] lg:!mb-[14px] border border-[#e8ecf4] shadow-[0_4px_16px_rgba(11,30,75,.07)]"
+                  style={{ aspectRatio: '3/3.5' }}
                 >
                   <img
                     src={m.img}
                     alt={m.name}
-                    className="mc-photo !w-full !h-full !object-cover !object-top !rounded-2xl"
+                    className="mc-photo w-full h-full object-cover object-top"
                   />
                 </div>
 
                 {/* Name */}
-                <h3
-                  className="!mt-0 !mb-1"
-                  style={{
-                    fontSize: 'clamp(13px,1.4vw,15px)',
-                    fontWeight: 700,
-                    color: '#0B1E4B',
-                    lineHeight: 1.3,
-                  }}
-                >
+                <h3 className="text-[#0B1E4B] font-extrabold leading-[1.25] !m-0 !mb-[4px] sm:!mb-[6px] text-[10.5px] sm:text-[12.5px] lg:text-[14px] w-full">
                   <span className="mc-name-line">{m.name}</span>
                 </h3>
 
-                {/* Role */}
-                <p
-                  className="!m-0"
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: m.roleColor,
-                    letterSpacing: '0.3px',
-                    textTransform: 'capitalize',
-                  }}
-                >
+                {/* Role badge */}
+                <span className={`
+                  inline-flex items-center rounded-full
+                  !px-[7px] sm:!px-[9px] lg:!px-[10px]
+                  !py-[2px] sm:!py-[3px] lg:!py-[4px]
+                  text-[8.5px] sm:text-[9.5px] lg:text-[10.5px]
+                  font-extrabold tracking-[0.3px] capitalize
+                  ${m.isOrange
+                    ? 'bg-[rgba(240,90,26,.1)] text-[#F05A1A] border border-[rgba(240,90,26,.25)]'
+                    : 'bg-[rgba(100,116,139,.08)] text-slate-500 border border-[rgba(100,116,139,.2)]'
+                  }
+                `}>
                   {m.role}
-                </p>
+                </span>
               </div>
             ))}
           </div>
 
           {/* ── View All Button ── */}
-          <div className="!flex !justify-center">
+          <div className="flex justify-center">
             <button
-              className="view-btn !flex !items-center !gap-2.5 !rounded-xl !border-0 !cursor-pointer"
-              style={{
-                padding: '13px 32px',
-                background: '#2563EB',
-                fontSize: 14,
-                fontWeight: 700,
-                color: '#fff',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                boxShadow: '0 6px 20px rgba(37,99,235,.32)',
-                letterSpacing: '0.3px',
-              }}
+              className="view-btn flex items-center !gap-[8px] sm:!gap-[10px] rounded-[12px] sm:rounded-[14px] border-0 cursor-pointer !px-[22px] sm:!px-[28px] lg:!px-[32px] !py-[10px] sm:!py-[12px] lg:!py-[13px] bg-[#2563EB] text-white text-[12.5px] sm:text-[13.5px] lg:text-[14px] font-extrabold shadow-[0_6px_20px_rgba(37,99,235,.32)] tracking-[0.3px]"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
               onClick={() => navigate('/members/managing-committee')}
             >
-              <span>View all</span>
-              <FaArrowRight className="btn-arrow" style={{ fontSize: 13 }} />
+              <span>View All Members</span>
+              <FaArrowRight className="btn-arrow text-[10px] sm:text-[11px] lg:text-[13px]" />
             </button>
           </div>
 
