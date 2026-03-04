@@ -26,11 +26,8 @@ export default function Login() {
     setLoading(true)
     setApiErr('')
     try {
-      // const { data } = await authService.login(form)
-      // localStorage.setItem('adminToken', data.token)
-      // Mock login
-      await new Promise(r => setTimeout(r, 800))
-      localStorage.setItem('adminToken', 'mock-token-123')
+      const { data } = await authService.login(form)
+      localStorage.setItem('adminToken', data.token)
       navigate('/admin/dashboard')
     } catch (err) {
       setApiErr(err?.response?.data?.message || 'Invalid credentials')

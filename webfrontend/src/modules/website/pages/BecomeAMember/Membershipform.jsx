@@ -120,16 +120,33 @@ const OTPModal = ({ email, onVerified, onClose }) => {
     const [verifying, setVerifying] = useState(false)
     const [otpSent, setOtpSent] = useState(false)
     const inputRefs = useRef([])
+    const inFlightRef = useRef(false)
+    const sentForEmailRef = useRef('')
+    const normalizedEmail = (email || '').trim().toLowerCase()
 
-    const requestOtp = () => {
+    const requestOtp = useCallback(async (force = false) => {
+        if (!normalizedEmail || inFlightRef.current) return
+        if (!force && sentForEmailRef.current === normalizedEmail) return
+
+        inFlightRef.current = true
         setOtpErr('')
-        sendOtp(email).then(() => { setOtpSent(true); setTimer(RESEND_SECONDS); setCanResend(false) })
-            .catch((e) => setOtpErr(e?.response?.data?.message || 'Failed to send OTP'))
-    }
+        try {
+            await sendOtp(normalizedEmail)
+            sentForEmailRef.current = normalizedEmail
+            setOtpSent(true)
+            setTimer(RESEND_SECONDS)
+            setCanResend(false)
+        } catch (e) {
+            sentForEmailRef.current = ''
+            setOtpErr(e?.response?.data?.message || 'Failed to send OTP')
+        } finally {
+            inFlightRef.current = false
+        }
+    }, [normalizedEmail])
 
     useEffect(() => {
-        if (email && !otpSent) requestOtp()
-    }, [email])
+        if (normalizedEmail && !otpSent) requestOtp()
+    }, [normalizedEmail, otpSent, requestOtp])
 
     /* Countdown timer */
     useEffect(() => {
@@ -178,7 +195,7 @@ const OTPModal = ({ email, onVerified, onClose }) => {
         setTimer(RESEND_SECONDS)
         setCanResend(false)
         setOtpErr('')
-        requestOtp()
+        requestOtp(true)
         setTimeout(() => inputRefs.current[0]?.focus(), 50)
     }
 
@@ -191,7 +208,7 @@ const OTPModal = ({ email, onVerified, onClose }) => {
         }
         setVerifying(true)
         setOtpErr('')
-        verifyOtp(email, entered)
+        verifyOtp(normalizedEmail, entered)
             .then(() => onVerified())
             .catch((e) => {
                 setOtpErr(e?.response?.data?.message || 'Incorrect OTP. Please try again.')

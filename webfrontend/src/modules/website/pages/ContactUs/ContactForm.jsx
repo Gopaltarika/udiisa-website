@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import {
     FaEnvelope, FaPhone, FaMapMarkerAlt, FaTimesCircle,
     FaCheckCircle, FaShieldAlt, FaWhatsapp, FaInstagram,
@@ -58,20 +58,37 @@ const OTPModal = ({ email, onVerified, onClose }) => {
     const [loading, setLoading]   = useState(false)
     const [otpSent, setOtpSent]   = useState(false)
     const refs = useRef([])
+    const inFlightRef = useRef(false)
+    const sentForEmailRef = useRef('')
+    const normalizedEmail = (email || '').trim().toLowerCase()
 
     useEffect(() => {
         setTimeout(() => refs.current[0]?.focus(), 120)
     }, [])
 
-    const requestOtp = () => {
+    const requestOtp = useCallback(async (force = false) => {
+        if (!normalizedEmail || inFlightRef.current) return
+        if (!force && sentForEmailRef.current === normalizedEmail) return
+
+        inFlightRef.current = true
         setErr('')
-        sendOtp(email).then(() => { setOtpSent(true); setTimer(RESEND_SEC); setCanResend(false) })
-            .catch((e) => setErr(e?.response?.data?.message || 'Failed to send OTP'))
-    }
+        try {
+            await sendOtp(normalizedEmail)
+            sentForEmailRef.current = normalizedEmail
+            setOtpSent(true)
+            setTimer(RESEND_SEC)
+            setCanResend(false)
+        } catch (e) {
+            sentForEmailRef.current = ''
+            setErr(e?.response?.data?.message || 'Failed to send OTP')
+        } finally {
+            inFlightRef.current = false
+        }
+    }, [normalizedEmail])
 
     useEffect(() => {
-        if (email && !otpSent) requestOtp()
-    }, [email])
+        if (normalizedEmail && !otpSent) requestOtp()
+    }, [normalizedEmail, otpSent, requestOtp])
 
     useEffect(() => {
         if (timer <= 0) { setCanResend(true); return }
@@ -106,7 +123,7 @@ const OTPModal = ({ email, onVerified, onClose }) => {
         setTimer(RESEND_SEC)
         setCanResend(false)
         setErr('')
-        requestOtp()
+        requestOtp(true)
         setTimeout(() => refs.current[0]?.focus(), 50)
     }
 
@@ -115,7 +132,7 @@ const OTPModal = ({ email, onVerified, onClose }) => {
         if (entered.length < OTP_LEN) { setErr('Please enter all 6 digits'); doShake(); return }
         setLoading(true)
         setErr('')
-        verifyOtp(email, entered)
+        verifyOtp(normalizedEmail, entered)
             .then(() => { onVerified() })
             .catch((e) => {
                 setErr(e?.response?.data?.message || 'Incorrect OTP. Please try again.')

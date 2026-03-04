@@ -4,7 +4,24 @@
  */
 import axios from 'axios'
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const DEFAULT_API_URL = 'http://localhost:5000/api'
+
+const normalizeApiBaseUrl = (rawUrl) => {
+  const raw = (rawUrl || '').trim()
+  if (!raw) return DEFAULT_API_URL
+
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  if (raw.startsWith(':')) return `http://localhost${raw}`
+  if (raw.startsWith('localhost') || raw.startsWith('127.0.0.1')) return `http://${raw}`
+
+  try {
+    return new URL(raw, window.location.origin).toString().replace(/\/$/, '')
+  } catch {
+    return DEFAULT_API_URL
+  }
+}
+
+const baseURL = normalizeApiBaseUrl(import.meta.env.VITE_API_URL)
 
 const publicApi = axios.create({
   baseURL,

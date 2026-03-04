@@ -1,5 +1,5 @@
 // admin/pages/incoming/IncomingContacts.jsx
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Table from '../../components/Table'
 import Modal from '../../components/Modal'
 import SearchBar from '../../components/SearchBar'
@@ -8,17 +8,12 @@ import ConfirmDialog from '../../components/ConfirmDialog'
 import PageHeader from '../../components/PageHeader'
 import { useAdminToast } from '../../hooks/ToastContext'
 import { useDebounce } from '../../hooks/useDebounce'
+import incomingService from '../../services/incomingService'
 import { formatDate } from '../../utils/helpers'
-
-const MOCK = [
-  { id: 1, name: 'Kiran Bedi',   email: 'kiran@email.com',  phone: '9876543210', subject: 'Membership Enquiry',      message: 'I want to know about membership fees and benefits for individual members.', submittedAt: '2024-12-15' },
-  { id: 2, name: 'Raj Malhotra', email: 'raj@email.com',    phone: '9123456789', subject: 'Sponsorship Opportunity',  message: 'Our company is interested in sponsoring your upcoming talent hunt event.', submittedAt: '2024-12-14' },
-  { id: 3, name: 'Neha Joshi',   email: 'neha@email.com',   phone: '9988776655', subject: 'Volunteer Registration',   message: 'I would like to volunteer for UDI Sports events. Please guide me through the process.', submittedAt: '2024-12-13' },
-]
 
 export default function IncomingContacts() {
   const toast = useAdminToast()
-  const [forms,    setForms]   = useState(MOCK)
+  const [forms,    setForms]   = useState([])
   const [loading,  setLoading] = useState(false)
   const [deleting, setDeleting]= useState(false)
   const [search,   setSearch]  = useState('')
@@ -27,19 +22,49 @@ export default function IncomingContacts() {
   const [delOpen,  setDelOpen] = useState(false)
   const [selected, setSelected]= useState(null)
 
-  const filtered = forms.filter(f =>
-    f.name.toLowerCase().includes(dSearch.toLowerCase()) ||
-    f.subject.toLowerCase().includes(dSearch.toLowerCase()) ||
-    f.email.toLowerCase().includes(dSearch.toLowerCase())
-  )
+  useEffect(() => {
+    let mounted = true
+
+    const loadContacts = async () => {
+      setLoading(true)
+      try {
+        const res = await incomingService.getContactForms(dSearch ? { search: dSearch } : {})
+        const list = Array.isArray(res?.data) ? res.data : []
+        if (!mounted) return
+
+        setForms(
+          list.map((item) => ({
+            id: item._id,
+            name: item.fullName || '—',
+            email: item.email || '—',
+            phone: item.phone || '—',
+            subject: item.subject || 'Contact Form Submission',
+            message: item.message || '—',
+            submittedAt: item.createdAt,
+          }))
+        )
+      } catch (e) {
+        if (!mounted) return
+        toast.error(e?.response?.data?.message || 'Failed to fetch contact forms')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    loadContacts()
+    return () => { mounted = false }
+  }, [dSearch, toast])
 
   const handleDelete = async () => {
     setDeleting(true)
     try {
+      await incomingService.deleteContactForm(selected.id)
       setForms(prev => prev.filter(f => f.id !== selected.id))
       toast.success('Contact form deleted!')
       setDelOpen(false)
-    } catch { toast.error('Failed to delete') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to delete')
+    }
     finally { setDeleting(false) }
   }
 
@@ -70,7 +95,7 @@ export default function IncomingContacts() {
       <div className="mb-[16px]">
         <SearchBar value={search} onChange={setSearch} placeholder="Search by name, email, subject…" />
       </div>
-      <Table columns={columns} data={filtered} loading={loading} emptyText="No contact form submissions" />
+      <Table columns={columns} data={forms} loading={loading} emptyText="No contact form submissions" />
 
       {/* View Modal */}
       <Modal isOpen={viewOpen} onClose={() => setViewOpen(false)} title="Contact Form Details" size="md">
