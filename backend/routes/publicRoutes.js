@@ -1,0 +1,18 @@
+import { Router } from 'express'
+import * as ctrl from '../controllers/publicController.js'
+
+const r = Router()
+
+// Public blogs (no auth)
+r.get('/blogs', ctrl.getPublicBlogs)
+r.get('/blogs/slug/:slug', ctrl.getPublicBlogBySlug)
+
+// Public members (no auth)
+r.get('/members/committee', ctrl.getPublicCommittee)
+r.get('/members/special', ctrl.getPublicSpecialMembers)
+r.get('/members/general', ctrl.getPublicGeneralMembers)
+
+// Public players (no auth)
+r.get('/players', ctrl.getPublicPlayers)
+
+export default r

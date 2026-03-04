@@ -6,57 +6,19 @@ import {
 import { MdGroups } from 'react-icons/md'
 import { BsPersonFill, BsBuildingsFill, BsShieldFillCheck } from 'react-icons/bs'
 import { HiSparkles } from 'react-icons/hi'
+import {
+  getPublicCommittee,
+  getPublicSpecialMembers,
+  getPublicGeneralMembers,
+} from '../../../../shared/services/publicApi'
 
 /* ═══════════════════════════════════════════
-   DATA
+   DATA — loaded from API in MembersData
 ═══════════════════════════════════════════ */
-const managingCommittee = [
-  { id: 1, name: 'Rajesh Sharma',  role: 'Chairman',         company: 'SportForce NGO',     img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=85&fit=crop&crop=face' },
-  { id: 2, name: 'Priya Verma',    role: 'Vice Chairman',    company: 'Verma Enterprises',  img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=85&fit=crop&crop=face' },
-  { id: 3, name: 'Amit Gupta',     role: 'Secretary',        company: 'Gupta & Associates', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=85&fit=crop&crop=face' },
-  { id: 4, name: 'Vikram Singh',   role: 'Joint Secretary',  company: 'Singh Industries',   img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=85&fit=crop&crop=face' },
-  { id: 5, name: 'Rohit Joshi',    role: 'Treasurer',        company: 'Joshi Financials',   img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=85&fit=crop&crop=face' },
-  { id: 6, name: 'Sunita Mehta',   role: 'Executive Member', company: 'Mehta Foundation',   img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=85&fit=crop&crop=face' },
-  { id: 7, name: 'Deepak Tiwari',  role: 'Executive Member', company: 'Tiwari Builders',    img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=85&fit=crop&crop=face' },
-  { id: 8, name: 'Kavitha Nair',   role: 'Executive Member', company: 'Nair Foundation',    img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=85&fit=crop&crop=face' },
-]
-
-const specialMembers = [
-  { id: 1, name: 'Rajesh Sharma',  designation: 'Sports Entrepreneur',  img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=85&fit=crop&crop=face' },
-  { id: 2, name: 'Priya Verma',    designation: 'Youth Sports Patron',  img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=85&fit=crop&crop=face' },
-  { id: 3, name: 'Amit Gupta',     designation: 'National Coach',       img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=85&fit=crop&crop=face' },
-  { id: 4, name: 'Vikram Singh',   designation: 'Sports Journalist',    img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=85&fit=crop&crop=face' },
-  { id: 5, name: 'Rohit Joshi',    designation: 'Govt. Sports Officer', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=85&fit=crop&crop=face' },
-  { id: 6, name: 'Sunita Mehta',   designation: 'Sports Scientist',     img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&q=85&fit=crop&crop=face' },
-]
-
-const individualMembers = [
-  { id: 1,  name: 'Ajay Kumar',    city: 'New Delhi',   sport: 'Cricket' },
-  { id: 2,  name: 'Disha Singh',   city: 'Mumbai',      sport: 'Athletics' },
-  { id: 3,  name: 'Fatima Bibi',   city: 'Hyderabad',   sport: 'Badminton' },
-  { id: 4,  name: 'Himani Rawat',  city: 'Dehradun',    sport: 'Swimming' },
-  { id: 5,  name: 'Jaya Nair',     city: 'Kochi',       sport: 'Volleyball' },
-  { id: 6,  name: 'Lalita Devi',   city: 'Jaipur',      sport: 'Kabaddi' },
-  { id: 7,  name: 'Om Prakash',    city: 'Lucknow',     sport: 'Wrestling' },
-  { id: 8,  name: 'Rekha Sharma',  city: 'Bhopal',      sport: 'Hockey' },
-  { id: 9,  name: 'Sanjay Verma',  city: 'Chandigarh',  sport: 'Football' },
-  { id: 10, name: 'Tanvi Mehta',   city: 'Pune',        sport: 'Tennis' },
-  { id: 11, name: 'Uday Pandey',   city: 'Varanasi',    sport: 'Archery' },
-  { id: 12, name: 'Vandana Rao',   city: 'Bengaluru',   sport: 'Gymnastics' },
-]
-
-const corporateMembers = [
-  { id: 1,  name: 'Bindu Sharma',   company: 'Sharma Textiles Pvt. Ltd.',   sector: 'Textile' },
-  { id: 2,  name: 'Chetan Patel',   company: 'Patel Group of Companies',    sector: 'Conglomerate' },
-  { id: 3,  name: 'Elan Kumar',     company: 'EK Solutions LLP',            sector: 'IT / Tech' },
-  { id: 4,  name: 'Gaurav Agarwal', company: 'Agarwal Builders Pvt. Ltd.',  sector: 'Real Estate' },
-  { id: 5,  name: 'Irfan Qureshi',  company: 'Qureshi Exports Ltd.',        sector: 'Exports' },
-  { id: 6,  name: 'Karan Malhotra', company: 'Malhotra Agro Farms',         sector: 'Agriculture' },
-  { id: 7,  name: 'Mohan Lal',      company: 'ML Enterprises',              sector: 'Trading' },
-  { id: 8,  name: 'Neha Khanna',    company: 'Khanna & Co. Associates',     sector: 'Consulting' },
-  { id: 9,  name: 'Paresh Desai',   company: 'Desai Pharmaceuticals',       sector: 'Pharma' },
-  { id: 10, name: 'Zara Sheikh',    company: 'Sheikh Media House',          sector: 'Media' },
-]
+const managingCommitteeFallback = []
+const specialMembersFallback = []
+const individualMembersFallback = []
+const corporateMembersFallback = []
 
 const TABS = [
   { key: 'managing-committee', label: 'Managing Committee', Icon: MdGroups,  route: '/members/managing-committee' },
@@ -250,7 +212,7 @@ const SpecialCard = ({ member }) => (
 /* ═══════════════════════════════════════════
    INDIVIDUAL TABLE
 ═══════════════════════════════════════════ */
-const IndividualTable = () => (
+const IndividualTable = ({ data = [] }) => (
   <div style={{ width: '100%', overflowX: 'auto', borderRadius: 18, border: '1.5px solid #e8ecf4', boxShadow: '0 4px 24px rgba(11,30,75,0.08)' }}>
     <div style={{ minWidth: 520 }}>
       {/* Header */}
@@ -260,8 +222,8 @@ const IndividualTable = () => (
         ))}
       </div>
       {/* Rows */}
-      {individualMembers.map((m, i) => (
-        <div key={m.id} className="trow" style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '12px 22px', gap: 10, background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: i < individualMembers.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background .15s' }}>
+      {data.map((m, i) => (
+        <div key={m.id} className="trow" style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '12px 22px', gap: 10, background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: i < data.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background .15s' }}>
           <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.id}</div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: '#0B1E4B', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.name}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#64748b', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
@@ -282,7 +244,7 @@ const IndividualTable = () => (
 /* ═══════════════════════════════════════════
    CORPORATE TABLE
 ═══════════════════════════════════════════ */
-const CorporateTable = () => (
+const CorporateTable = ({ data = [] }) => (
   <div style={{ width: '100%', overflowX: 'auto', borderRadius: 18, border: '1.5px solid #e8ecf4', boxShadow: '0 4px 24px rgba(11,30,75,0.08)' }}>
     <div style={{ minWidth: 540 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '13px 22px', background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)', gap: 10 }}>
@@ -290,8 +252,8 @@ const CorporateTable = () => (
           <div key={h} style={{ fontSize: 10, fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{h}</div>
         ))}
       </div>
-      {corporateMembers.map((m, i) => (
-        <div key={m.id} className="trow" style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '12px 22px', gap: 10, background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: i < corporateMembers.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background .15s' }}>
+      {data.map((m, i) => (
+        <div key={m.id} className="trow" style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '12px 22px', gap: 10, background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: i < data.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background .15s' }}>
           <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.id}</div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: '#0B1E4B', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.name}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#374151', overflow: 'hidden', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
@@ -316,6 +278,30 @@ const MembersData = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const [managingCommittee, setManagingCommittee] = useState(managingCommitteeFallback)
+  const [specialMembers, setSpecialMembers] = useState(specialMembersFallback)
+  const [individualMembers, setIndividualMembers] = useState(individualMembersFallback)
+  const [corporateMembers, setCorporateMembers] = useState(corporateMembersFallback)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError(null)
+    Promise.all([
+      getPublicCommittee().then((data) => (cancelled ? null : setManagingCommittee(Array.isArray(data) ? data : []))),
+      getPublicSpecialMembers().then((data) => (cancelled ? null : setSpecialMembers(Array.isArray(data) ? data : []))),
+      getPublicGeneralMembers('individual').then((data) => (cancelled ? null : setIndividualMembers(Array.isArray(data) ? data : []))),
+      getPublicGeneralMembers('corporate').then((data) => (cancelled ? null : setCorporateMembers(Array.isArray(data) ? data : []))),
+    ]).catch((err) => {
+      if (!cancelled) setError(err?.message || 'Failed to load members')
+    }).finally(() => {
+      if (!cancelled) setLoading(false)
+    })
+    return () => { cancelled = true }
+  }, [])
+
   const getTab = () => {
     if (location.pathname.includes('special-members')) return 'special-members'
     if (location.pathname.includes('general-members'))  return 'general-members'
@@ -334,6 +320,12 @@ const MembersData = () => {
       <style>{STYLES}</style>
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '40px 16px' }}>
+
+        {error && (
+          <div style={{ marginBottom: 20, padding: '12px 18px', borderRadius: 12, background: '#FEF2F2', border: '1px solid #FECACA', color: '#B91C1C', fontSize: 13, fontWeight: 600 }}>
+            {error}
+          </div>
+        )}
 
         {/* ── PAGE HEADER ── */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
@@ -385,6 +377,10 @@ const MembersData = () => {
               sub="The elected governing body steering UDI Sports NGO towards its mission of grassroots sports development."
             />
 
+            {loading ? (
+              <div style={{ padding: 40, textAlign: 'center', color: '#64748b', fontSize: 14 }}>Loading…</div>
+            ) : (
+              <>
             {/* Stats strip */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 32 }}
               className="stats-strip">
@@ -412,6 +408,8 @@ const MembersData = () => {
               `}</style>
               {managingCommittee.map((m, i) => <CommitteeCard key={m.id} member={m} index={i} />)}
             </div>
+              </>
+            )}
           </div>
         )}
 
@@ -424,6 +422,9 @@ const MembersData = () => {
               white="Special" orange="Members" Icon={FaStar}
               sub="Distinguished patrons and ambassadors who champion sports excellence and youth development."
             />
+            {loading ? (
+              <div style={{ padding: 40, textAlign: 'center', color: '#64748b', fontSize: 14 }}>Loading…</div>
+            ) : (
             <div style={{ display: 'grid', gap: 18 }} className="special-grid">
               <style>{`
                 .special-grid { grid-template-columns: repeat(5,1fr); }
@@ -433,6 +434,7 @@ const MembersData = () => {
               `}</style>
               {specialMembers.map(m => <SpecialCard key={m.id} member={m} />)}
             </div>
+            )}
           </div>
         )}
 
@@ -491,7 +493,7 @@ const MembersData = () => {
               }
             </div>
 
-            {generalSub === 'individual' ? <IndividualTable /> : <CorporateTable />}
+            {generalSub === 'individual' ? <IndividualTable data={individualMembers} /> : <CorporateTable data={corporateMembers} />}
           </div>
         )}
 

@@ -24,7 +24,7 @@ import { HiSparkles } from 'react-icons/hi'
 import { MdArticle }  from 'react-icons/md'
 import BlogSidebar from './BlogSidebar'
 import BlogCard    from './BlogCard'
-import { useBlogDetail, getCatColor, MOCK_BLOGS } from './blogData'
+import { useBlogDetail, useRecentBlogs, getCatColor } from './blogData'
 
 /* ── Skeleton loader ── */
 const DetailSkeleton = () => (
@@ -70,11 +70,12 @@ export default function BlogDetail () {
   const { slug }   = useParams()
   const navigate   = useNavigate()
   const { blog, loading, error } = useBlogDetail(slug)
+  const recentBlogs = useRecentBlogs(10)
 
   /* Related posts — same category, exclude current */
-  const related = MOCK_BLOGS
-    .filter(b => b.slug !== slug && b.category === blog?.category)
-    .slice(0, 3)
+  const related = recentBlogs.filter(
+    (b) => b.slug !== slug && b.category === blog?.category
+  ).slice(0, 3)
 
   const shareUrl = encodeURIComponent(window.location.href)
   const shareTitle = encodeURIComponent(blog?.title || '')

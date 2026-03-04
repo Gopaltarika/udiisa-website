@@ -27,6 +27,7 @@ import {
     MdClose,
 } from 'react-icons/md'
 import { HiSparkles, HiArrowRight } from 'react-icons/hi'
+import { submitMemberForm, sendOtp, verifyOtp } from '../../../../shared/services/publicApi'
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS & CONFIG
@@ -103,20 +104,8 @@ const UPI_STEPS = [
 
 const UPI_APPS = ['GPay', 'PhonePe', 'Paytm', 'BHIM', 'Amazon Pay']
 
-const SUBMISSIONS = []
-
 /* ════════════════════════════════════════════════════════
-   OTP GENERATION HELPER
-════════════════════════════════════════════════════════ */
-
-/** Generates a mock 6-digit OTP — replace with API call in production */
-const generateOTP = () => {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
-    console.log('📧 OTP Generated (mock):', otp, '← replace with email API')
-    return otp
-}
-
-/* ════════════════════════════════════════════════════════
+   OTP — request from backend (sendOtp), verify with verifyOtp
    OTP VERIFICATION MODAL
 ════════════════════════════════════════════════════════ */
 const OTPModal = ({ email, onVerified, onClose }) => {
@@ -124,13 +113,23 @@ const OTPModal = ({ email, onVerified, onClose }) => {
     const RESEND_SECONDS = 60
 
     const [otpDigits, setOtpDigits] = useState(Array(OTP_LENGTH).fill(''))
-    const [currentOTP, setCurrentOTP] = useState(() => generateOTP())
     const [timer, setTimer] = useState(RESEND_SECONDS)
     const [canResend, setCanResend] = useState(false)
     const [otpErr, setOtpErr] = useState('')
     const [shake, setShake] = useState(false)
     const [verifying, setVerifying] = useState(false)
+    const [otpSent, setOtpSent] = useState(false)
     const inputRefs = useRef([])
+
+    const requestOtp = () => {
+        setOtpErr('')
+        sendOtp(email).then(() => { setOtpSent(true); setTimer(RESEND_SECONDS); setCanResend(false) })
+            .catch((e) => setOtpErr(e?.response?.data?.message || 'Failed to send OTP'))
+    }
+
+    useEffect(() => {
+        if (email && !otpSent) requestOtp()
+    }, [email])
 
     /* Countdown timer */
     useEffect(() => {
@@ -175,12 +174,11 @@ const OTPModal = ({ email, onVerified, onClose }) => {
     }
 
     const handleResend = () => {
-        const newOTP = generateOTP()
-        setCurrentOTP(newOTP)
         setOtpDigits(Array(OTP_LENGTH).fill(''))
         setTimer(RESEND_SECONDS)
         setCanResend(false)
         setOtpErr('')
+        requestOtp()
         setTimeout(() => inputRefs.current[0]?.focus(), 50)
     }
 
@@ -192,16 +190,16 @@ const OTPModal = ({ email, onVerified, onClose }) => {
             return
         }
         setVerifying(true)
-        await new Promise(r => setTimeout(r, 700)) // mock API delay
-        if (entered === currentOTP) {
-            onVerified()
-        } else {
-            setOtpErr('Incorrect OTP. Please try again.')
-            setOtpDigits(Array(OTP_LENGTH).fill(''))
-            triggerShake()
-            setTimeout(() => inputRefs.current[0]?.focus(), 50)
-        }
-        setVerifying(false)
+        setOtpErr('')
+        verifyOtp(email, entered)
+            .then(() => onVerified())
+            .catch((e) => {
+                setOtpErr(e?.response?.data?.message || 'Incorrect OTP. Please try again.')
+                setOtpDigits(Array(OTP_LENGTH).fill(''))
+                triggerShake()
+                setTimeout(() => inputRefs.current[0]?.focus(), 50)
+            })
+            .finally(() => setVerifying(false))
     }
 
     const triggerShake = () => {
@@ -795,10 +793,23 @@ const GeneralForm = ({ onMemberTypeChange }) => {
         ev.preventDefault()
         const errs = validate()
         if (Object.keys(errs).length) { setErrors(errs); return }
-        const entry = { ...form, formType: 'general-member', submittedAt: new Date().toISOString() }
-        SUBMISSIONS.push(entry)
-        console.log('✅ New Submission:', entry)
-        setDone(true)
+        const fd = new FormData()
+        fd.append('formType', 'general-member')
+        fd.append('memberType', form.memberType)
+        fd.append('fullName', form.fullName)
+        fd.append('age', form.age)
+        fd.append('gender', form.gender)
+        fd.append('companyName', form.companyName || '')
+        fd.append('email', form.email)
+        fd.append('aadharNumber', form.aadharNumber || '')
+        fd.append('panNumber', form.panNumber || '')
+        fd.append('qualification', form.qualification || '')
+        fd.append('fullAddress', form.fullAddress)
+        fd.append('sportsInterest', form.sportsInterest || '')
+        fd.append('utrNumber', form.utrNumber)
+        fd.append('paymentSender', form.paymentSender)
+        submitMemberForm(fd).then(() => setDone(true))
+            .catch((e) => setErrors({ submit: e?.response?.data?.message || 'Failed to submit. Try again.' }))
     }
 
     if (done) return <SuccessScreen memberType="General Member" />
@@ -914,6 +925,7 @@ const GeneralForm = ({ onMemberTypeChange }) => {
                     </div>
                 </div>
 
+                {errors.submit && <Err msg={errors.submit} />}
                 <button type="submit" className="
           w-full h-[50px] rounded-[14px]
           bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white
@@ -993,10 +1005,19 @@ const SpecialForm = () => {
         ev.preventDefault()
         const errs = validate()
         if (Object.keys(errs).length) { setErrors(errs); return }
-        const entry = { ...form, photo: form.photo?.name, formType: 'special-member', submittedAt: new Date().toISOString() }
-        SUBMISSIONS.push(entry)
-        console.log('✅ New Submission:', entry)
-        setDone(true)
+        const fd = new FormData()
+        fd.append('formType', 'special-member')
+        if (form.photo) fd.append('photo', form.photo)
+        fd.append('fullName', form.fullName)
+        fd.append('email', form.email)
+        fd.append('designation', form.designation)
+        fd.append('organization', form.organization)
+        fd.append('fullAddress', form.fullAddress)
+        fd.append('linkedin', form.linkedin || '')
+        fd.append('contribution', form.contribution || '')
+        fd.append('message', form.message || '')
+        submitMemberForm(fd).then(() => setDone(true))
+            .catch((e) => setErrors({ submit: e?.response?.data?.message || 'Failed to submit. Try again.' }))
     }
 
     if (done) return <SuccessScreen memberType="Special Member" />
@@ -1093,6 +1114,7 @@ const SpecialForm = () => {
                     <Textarea rows={3} placeholder="Any message for the Managing Committee…" value={form.message} onChange={e => set('message', e.target.value)} />
                 </Field>
 
+                {errors.submit && <Err msg={errors.submit} />}
                 <button type="submit" className="
           w-full h-[50px] rounded-[14px]
           bg-gradient-to-r from-[#0B1E4B] to-[#1e3a8a] text-white

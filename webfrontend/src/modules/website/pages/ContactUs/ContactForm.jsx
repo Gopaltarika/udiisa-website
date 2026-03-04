@@ -10,6 +10,7 @@ import {
 } from 'react-icons/md'
 import { HiSparkles, HiArrowRight } from 'react-icons/hi'
 import { BsBuilding } from 'react-icons/bs'
+import { submitContact, sendOtp, verifyOtp } from '../../../../shared/services/publicApi'
 
 /* ════════════════════════════════════════════════════════
    CONFIG
@@ -40,17 +41,7 @@ const QUALIFICATION_OPTS = [
     { value: 'other', label: 'Other' },
 ]
 
-/** Global submissions store — replace with API call in production */
-const CONTACT_SUBMISSIONS = []
-
-/* ════════════════════════════════════════════════════════
-   OTP HELPER
-════════════════════════════════════════════════════════ */
-const generateOTP = () => {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
-    console.log('📧 OTP Generated (mock):', otp, '← replace with email API')
-    return otp
-}
+/** Contact form submissions go to backend via submitContact() */
 
 /* ════════════════════════════════════════════════════════
    OTP MODAL
@@ -60,17 +51,27 @@ const OTPModal = ({ email, onVerified, onClose }) => {
     const RESEND_SEC = 60
 
     const [digits, setDigits]     = useState(Array(OTP_LEN).fill(''))
-    const [otp, setOtp]           = useState(() => generateOTP())
     const [timer, setTimer]       = useState(RESEND_SEC)
     const [canResend, setCanResend] = useState(false)
     const [err, setErr]           = useState('')
     const [shake, setShake]       = useState(false)
     const [loading, setLoading]   = useState(false)
+    const [otpSent, setOtpSent]   = useState(false)
     const refs = useRef([])
 
     useEffect(() => {
         setTimeout(() => refs.current[0]?.focus(), 120)
     }, [])
+
+    const requestOtp = () => {
+        setErr('')
+        sendOtp(email).then(() => { setOtpSent(true); setTimer(RESEND_SEC); setCanResend(false) })
+            .catch((e) => setErr(e?.response?.data?.message || 'Failed to send OTP'))
+    }
+
+    useEffect(() => {
+        if (email && !otpSent) requestOtp()
+    }, [email])
 
     useEffect(() => {
         if (timer <= 0) { setCanResend(true); return }
@@ -101,9 +102,11 @@ const OTPModal = ({ email, onVerified, onClose }) => {
     }
 
     const resend = () => {
-        setOtp(generateOTP())
         setDigits(Array(OTP_LEN).fill(''))
-        setTimer(RESEND_SEC); setCanResend(false); setErr('')
+        setTimer(RESEND_SEC)
+        setCanResend(false)
+        setErr('')
+        requestOtp()
         setTimeout(() => refs.current[0]?.focus(), 50)
     }
 
@@ -111,16 +114,16 @@ const OTPModal = ({ email, onVerified, onClose }) => {
         const entered = digits.join('')
         if (entered.length < OTP_LEN) { setErr('Please enter all 6 digits'); doShake(); return }
         setLoading(true)
-        await new Promise(r => setTimeout(r, 700))
-        if (entered === otp) {
-            onVerified()
-        } else {
-            setErr('Incorrect OTP. Please try again.')
-            setDigits(Array(OTP_LEN).fill(''))
-            doShake()
-            setTimeout(() => refs.current[0]?.focus(), 50)
-        }
-        setLoading(false)
+        setErr('')
+        verifyOtp(email, entered)
+            .then(() => { onVerified() })
+            .catch((e) => {
+                setErr(e?.response?.data?.message || 'Incorrect OTP. Please try again.')
+                setDigits(Array(OTP_LEN).fill(''))
+                doShake()
+                setTimeout(() => refs.current[0]?.focus(), 50)
+            })
+            .finally(() => setLoading(false))
     }
 
     const doShake = () => { setShake(true); setTimeout(() => setShake(false), 500) }
@@ -516,11 +519,18 @@ const ContactForm = () => {
         ev.preventDefault()
         const errs = validate()
         if (Object.keys(errs).length) { setErrors(errs); return }
-        const entry = { ...form, submittedAt: new Date().toISOString() }
-        CONTACT_SUBMISSIONS.push(entry)
-        console.log('✅ New Contact Submission:', entry)
-        console.log('📋 All Contact Submissions:', CONTACT_SUBMISSIONS)
-        setDone(true)
+        submitContact({
+            fullName: form.fullName.trim(),
+            email: form.email.trim(),
+            phone: '',
+            address: form.address.trim(),
+            age: form.age ? Number(form.age) : undefined,
+            aadharNumber: form.aadharNumber.trim() || undefined,
+            qualification: form.qualification || undefined,
+            gender: form.gender || undefined,
+            message: form.message.trim(),
+        }).then(() => setDone(true))
+            .catch((e) => setErrors({ submit: e?.response?.data?.message || 'Failed to send. Try again.' }))
     }
 
     if (done) return <SuccessScreen name={form.fullName} />
@@ -631,6 +641,7 @@ const ContactForm = () => {
                     <Err msg={errors.message} />
                 </Field>
 
+                {errors.submit && <Err msg={errors.submit} />}
                 {/* ── SUBMIT ── */}
                 <button type="submit" className="
                     w-full h-[50px] rounded-[14px]

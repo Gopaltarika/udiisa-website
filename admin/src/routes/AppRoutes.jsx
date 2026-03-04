@@ -2,18 +2,45 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "../modules/admin/pages/Login";
 import Dashboard from "../modules/admin/pages/Dashboard";
 import AdminLayout from "../modules/admin/layout/AdminLayout";
+import Players from "../modules/admin/pages/Players";
+import Blogs from "../modules/admin/pages/Blogs";
+import Settings from "../modules/admin/pages/Settings";
+import GeneralMembers from "../modules/admin/pages/members/GeneralMembers";
+import SpecialMembers from "../modules/admin/pages/members/SpecialMembers";
+import ManagingCommittee from "../modules/admin/pages/members/ManagingCommittee";
+import IncomingMembers from "../modules/admin/pages/incoming/IncomingMembers";
+import IncomingContacts from "../modules/admin/pages/incoming/IncomingContacts";
+
 const AppRoutes = () => {
   function RequireAuth({ children }) {
-  const token = localStorage.getItem('adminToken')
-  if (!token) return <Navigate to="/admin/login" replace />
-  return children
-}
+    const token = localStorage.getItem("adminToken");
+    if (!token) return <Navigate to="/admin/login" replace />;
+    return children;
+  }
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/admin" element={<AdminLayout />} />
-        <Route path="/admin/dashboard" element={<AdminLayout />} />
         <Route path="/admin/login" element={<Login />} />
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth>
+              <AdminLayout />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="players" element={<Players />} />
+          <Route path="members/general" element={<GeneralMembers />} />
+          <Route path="members/special" element={<SpecialMembers />} />
+          <Route path="members/committee" element={<ManagingCommittee />} />
+          <Route path="incoming/members" element={<IncomingMembers />} />
+          <Route path="incoming/contacts" element={<IncomingContacts />} />
+          <Route path="blogs" element={<Blogs />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

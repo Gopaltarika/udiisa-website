@@ -1,20 +1,11 @@
 /**
  * blogData.js  ← /src/blogs/blogData.js
  * ─────────────────────────────────────────────────────────
- * Shared mock data + custom React hooks
- *
- * Admin CKEditor panel saves each blog as:
- * { id, slug, title, category, image, excerpt,
- *   content (CKEditor HTML), author, authorImg,
- *   date, dateISO, readTime, tags[] }
- *
- * ── TO SWITCH TO REAL API ──────────────────────────
- *   In useBlogs     → replace setTimeout block with fetch()
- *   In useBlogDetail → replace setTimeout block with fetch()
- * ───────────────────────────────────────────────────
+ * Shared data + custom React hooks — wired to backend /api/public/blogs
  */
 
 import { useState, useEffect } from 'react'
+import { getPublicBlogs, getPublicBlogBySlug } from '../../../../shared/services/publicApi'
 
 /* ══════════════════════
    CATEGORIES
@@ -212,34 +203,25 @@ export const useBlogs = ({ search = '', category = 'All', page = 1, limit = 5 })
     let cancelled = false
     setLoading(true)
     setError(null)
-
-    const timer = setTimeout(() => {
-      if (cancelled) return
-      try {
-        let filtered = [...MOCK_BLOGS]
-        if (category !== 'All')
-          filtered = filtered.filter(b => b.category === category)
-        if (search.trim()) {
-          const q = search.toLowerCase()
-          filtered = filtered.filter(b =>
-            b.title.toLowerCase().includes(q) ||
-            b.excerpt.toLowerCase().includes(q) ||
-            b.category.toLowerCase().includes(q) ||
-            b.tags.some(t => t.toLowerCase().includes(q))
-          )
-        }
-        const totalCount = filtered.length
-        const start      = (page - 1) * limit
-        setBlogs(filtered.slice(start, start + limit))
-        setTotal(totalCount)
-        setLoading(false)
-      } catch {
-        setError('Failed to load blogs.')
-        setLoading(false)
-      }
-    }, 280)
-
-    return () => { cancelled = true; clearTimeout(timer) }
+    const params = {
+      page,
+      limit,
+      ...(search.trim() && { search: search.trim() }),
+      ...(category && category !== 'All' && { category }),
+    }
+    getPublicBlogs(params)
+      .then((data) => {
+        if (cancelled) return
+        setBlogs(Array.isArray(data?.blogs) ? data.blogs : [])
+        setTotal(typeof data?.total === 'number' ? data.total : 0)
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err?.message || 'Failed to load blogs.')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
   }, [search, category, page, limit])
 
   return { blogs, total, loading, error }
@@ -259,24 +241,32 @@ export const useBlogDetail = (slug) => {
     setLoading(true)
     setError(null)
     setBlog(null)
-
-    const timer = setTimeout(() => {
-      if (cancelled) return
-      const found = MOCK_BLOGS.find(b => b.slug === slug)
-      if (found) { setBlog(found); setLoading(false) }
-      else       { setError('Blog post not found.'); setLoading(false) }
-    }, 280)
-
-    return () => { cancelled = true; clearTimeout(timer) }
+    getPublicBlogBySlug(slug)
+      .then((data) => {
+        if (cancelled) return
+        setBlog(data)
+      })
+      .catch(() => {
+        if (!cancelled) setError('Blog post not found.')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
   }, [slug])
 
   return { blog, loading, error }
 }
 
 /* ══════════════════════════════════════
-   useRecentBlogs — sidebar
+   useRecentBlogs — sidebar (from API)
 ══════════════════════════════════════ */
-export const useRecentBlogs = (count = 4) =>
-  [...MOCK_BLOGS]
-    .sort((a, b) => new Date(b.dateISO) - new Date(a.dateISO))
-    .slice(0, count)
+export const useRecentBlogs = (count = 4) => {
+  const [recent, setRecent] = useState([])
+  useEffect(() => {
+    getPublicBlogs({ limit: count, page: 1 })
+      .then((data) => setRecent(Array.isArray(data?.blogs) ? data.blogs : []))
+      .catch(() => setRecent([]))
+  }, [count])
+  return recent
+}
