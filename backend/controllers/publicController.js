@@ -8,8 +8,7 @@ import CommitteeMember from '../models/CommitteeMember.js'
 import SpecialMember from '../models/SpecialMember.js'
 import GeneralMember from '../models/GeneralMember.js'
 import Player from '../models/Player.js'
-
-const baseUrl = (req) => req.protocol + '://' + req.get('host')
+import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
 // ─── Format date for frontend ─────────────────────────────
 function formatDate(d) {
@@ -42,7 +41,6 @@ export const getPublicBlogs = async (req, res) => {
       Blog.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limitNum).lean(),
       Blog.countDocuments(filter),
     ])
-    const base = baseUrl(req)
     const blogs = list.map((b) => {
       const { display, iso } = formatDate(b.createdAt)
       return {
@@ -51,7 +49,7 @@ export const getPublicBlogs = async (req, res) => {
         title: b.heading,
         category: b.category || '',
         excerpt: b.shortContent,
-        image: b.image ? base + b.image : null,
+        image: toPublicMediaUrl(req, b.image),
         author: b.author || 'UDI Sports',
         authorImg: b.authorImg || null,
         date: display,
@@ -72,7 +70,6 @@ export const getPublicBlogBySlug = async (req, res) => {
     const slug = req.params.slug
     const blog = await Blog.findOne({ pageName: slug }).lean()
     if (!blog) return res.status(404).json({ message: 'Blog not found' })
-    const base = baseUrl(req)
     const { display, iso } = formatDate(blog.createdAt)
     const out = {
       id: blog._id.toString(),
@@ -80,7 +77,7 @@ export const getPublicBlogBySlug = async (req, res) => {
       title: blog.heading,
       category: blog.category || '',
       excerpt: blog.shortContent,
-      image: blog.image ? base + blog.image : null,
+      image: toPublicMediaUrl(req, blog.image),
       author: blog.author || 'UDI Sports',
       authorImg: blog.authorImg || null,
       date: display,
@@ -99,13 +96,12 @@ export const getPublicBlogBySlug = async (req, res) => {
 export const getPublicCommittee = async (req, res) => {
   try {
     const list = await CommitteeMember.find({}).sort({ createdAt: -1 }).lean()
-    const base = baseUrl(req)
     const members = list.map((m) => ({
       id: m._id.toString(),
       name: m.name,
       role: m.position,
       company: m.companyName || '',
-      img: m.photo ? base + m.photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=200`,
+      img: toPublicMediaUrl(req, m.photo) || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=200`,
     }))
     return res.json(members)
   } catch (e) {
@@ -116,12 +112,11 @@ export const getPublicCommittee = async (req, res) => {
 export const getPublicSpecialMembers = async (req, res) => {
   try {
     const list = await SpecialMember.find({}).sort({ createdAt: -1 }).lean()
-    const base = baseUrl(req)
     const members = list.map((m) => ({
       id: m._id.toString(),
       name: m.name,
       designation: m.companyName || 'Special Member',
-      img: m.photo ? base + m.photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=200`,
+      img: toPublicMediaUrl(req, m.photo) || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=200`,
     }))
     return res.json(members)
   } catch (e) {
@@ -160,7 +155,6 @@ export const getPublicGeneralMembers = async (req, res) => {
 export const getPublicPlayers = async (req, res) => {
   try {
     const list = await Player.find({}).sort({ createdAt: -1 }).lean()
-    const base = baseUrl(req)
     const players = list.map((p) => ({
       id: p._id.toString(),
       name: p.playerName,
@@ -168,7 +162,7 @@ export const getPublicPlayers = async (req, res) => {
       role: `${p.sportsName} Player`,
       achievement: p.achievement || '-',
       gender: p.gender || '-',
-      photo: p.photo ? base + p.photo : null,
+      photo: toPublicMediaUrl(req, p.photo),
     }))
     return res.json(players)
   } catch (e) {

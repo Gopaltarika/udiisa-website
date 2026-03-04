@@ -13,17 +13,11 @@ import { useDebounce } from '../../hooks/useDebounce'
 import memberService from '../../services/memberService'
 import { validateRequired, buildFormData, API_IMG, formatDate } from '../../utils/helpers'
 
-const MOCK = [
-  { id: 1, name: 'Dr. Rajesh Sharma', companyName: 'Sports Foundation India', photo: null, createdAt: '2024-12-05' },
-  { id: 2, name: 'Meena Kapoor',       companyName: 'FitIndia Trust',          photo: null, createdAt: '2024-11-28' },
-  { id: 3, name: 'Suresh Patil',       companyName: 'Maharashtra Sports Club',  photo: null, createdAt: '2024-11-10' },
-]
-
 const EMPTY = { name: '', companyName: '', photo: null }
 
 export default function SpecialMembers() {
   const toast = useAdminToast()
-  const [members,  setMembers]  = useState(MOCK)
+  const [members,  setMembers]  = useState([])
   const [loading,  setLoading]  = useState(false)
   const [saving,   setSaving]   = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -37,10 +31,36 @@ export default function SpecialMembers() {
   const [preview,  setPreview]  = useState(null)
   const [errors,   setErrors]   = useState({})
 
-  const filtered = members.filter(m =>
-    m.name.toLowerCase().includes(dSearch.toLowerCase()) ||
-    m.companyName.toLowerCase().includes(dSearch.toLowerCase())
-  )
+  useEffect(() => {
+    let mounted = true
+
+    const loadSpecialMembers = async () => {
+      setLoading(true)
+      try {
+        const res = await memberService.getSpecialMembers(dSearch ? { search: dSearch } : {})
+        const list = Array.isArray(res?.data) ? res.data : []
+        if (!mounted) return
+
+        setMembers(
+          list.map((m) => ({
+            id: m._id,
+            name: m.name || '',
+            companyName: m.companyName || '',
+            photo: m.photo || null,
+            createdAt: m.createdAt,
+          }))
+        )
+      } catch (e) {
+        if (!mounted) return
+        toast.error(e?.response?.data?.message || 'Failed to fetch special members')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    loadSpecialMembers()
+    return () => { mounted = false }
+  }, [dSearch, toast])
 
   const openAdd = () => { setSelected(null); setForm(EMPTY); setPreview(null); setErrors({}); setFormOpen(true) }
   const openEdit = (row) => { setSelected(row); setForm({ name: row.name, companyName: row.companyName, photo: null }); setPreview(row.photo ? API_IMG(row.photo) : null); setErrors({}); setFormOpen(true) }
@@ -59,25 +79,54 @@ export default function SpecialMembers() {
     if (Object.keys(err).length > 0) return
     setSaving(true)
     try {
+      const payload = buildFormData({
+        name: form.name?.trim(),
+        companyName: form.companyName?.trim(),
+        photo: form.photo || undefined,
+      })
+
       if (selected) {
-        setMembers(prev => prev.map(m => m.id === selected.id ? { ...m, ...form } : m))
+        const res = await memberService.updateSpecialMember(selected.id, payload)
+        const m = res?.data || {}
+        const updated = {
+          id: m._id || selected.id,
+          name: m.name || form.name,
+          companyName: m.companyName || form.companyName || '',
+          photo: m.photo || selected.photo || null,
+          createdAt: m.createdAt || selected.createdAt,
+        }
+        setMembers(prev => prev.map(item => item.id === selected.id ? updated : item))
         toast.success('Special member updated!')
       } else {
-        setMembers(prev => [{ id: Date.now(), ...form, photo: null, createdAt: new Date().toISOString() }, ...prev])
+        const res = await memberService.addSpecialMember(payload)
+        const m = res?.data || {}
+        const created = {
+          id: m._id,
+          name: m.name || form.name,
+          companyName: m.companyName || form.companyName || '',
+          photo: m.photo || null,
+          createdAt: m.createdAt || new Date().toISOString(),
+        }
+        setMembers(prev => [created, ...prev])
         toast.success('Special member added!')
       }
       setFormOpen(false)
-    } catch { toast.error('Failed to save') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to save')
+    }
     finally { setSaving(false) }
   }
 
   const handleDelete = async () => {
     setDeleting(true)
     try {
+      await memberService.deleteSpecialMember(selected.id)
       setMembers(prev => prev.filter(m => m.id !== selected.id))
       toast.success('Deleted successfully!')
       setDelOpen(false)
-    } catch { toast.error('Failed to delete') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to delete')
+    }
     finally { setDeleting(false) }
   }
 
@@ -115,7 +164,7 @@ export default function SpecialMembers() {
         }
       />
       <div className="mb-[16px]"><SearchBar value={search} onChange={setSearch} placeholder="Search special members…" /></div>
-      <Table columns={columns} data={filtered} loading={loading} emptyText="No special members found" />
+      <Table columns={columns} data={members} loading={loading} emptyText="No special members found" />
 
       {/* Form */}
       <Modal isOpen={formOpen} onClose={() => setFormOpen(false)} title={`${selected ? 'Edit' : 'Add'} Special Member`} size="sm">

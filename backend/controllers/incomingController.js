@@ -2,8 +2,11 @@ import IncomingContact from '../models/IncomingContact.js'
 import IncomingMember from '../models/IncomingMember.js'
 import { setOTP, verifyOTP } from '../utils/otpStore.js'
 import { sendOTPEmail } from '../utils/emailService.js'
+import { uploadImageFromFile } from '../utils/cloudinary.js'
+import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
-const baseUrl = (req) => req.protocol + '://' + req.get('host')
+const NAME_REGEX = /^[A-Za-z][A-Za-z\s.'-]{1,79}$/
+const isValidFullName = (value) => NAME_REGEX.test(String(value || '').trim())
 
 // ─── Public: Send OTP to email (no auth) ───────
 export const sendOtp = async (req, res) => {
@@ -60,6 +63,9 @@ export const submitContact = async (req, res) => {
     if (!fullName || !email || !message) {
       return res.status(400).json({ message: 'Full name, email and message are required' })
     }
+    if (!isValidFullName(fullName)) {
+      return res.status(400).json({ message: 'Please enter a valid full name (letters only)' })
+    }
 
     const doc = await IncomingContact.create({
       fullName: fullName.trim(),
@@ -83,7 +89,13 @@ export const submitMemberForm = async (req, res) => {
   try {
     const body = { ...req.body }
     const formType = body.formType === 'special-member' ? 'special-member' : 'general-member'
-    if (req.file) body.photo = `/uploads/image/${req.file.filename}`
+    if (!isValidFullName(body.fullName)) {
+      return res.status(400).json({ message: 'Please enter a valid full name (letters only)' })
+    }
+    if (req.file) {
+      body.photo =
+        (await uploadImageFromFile(req.file, 'udiisa/incoming-members')) || `/uploads/image/${req.file.filename}`
+    }
 
     const doc = await IncomingMember.create({
       formType,
@@ -156,9 +168,8 @@ export const getMemberForms = async (req, res) => {
       ]
     }
     const list = await IncomingMember.find(filter).sort({ createdAt: -1 }).lean()
-    const base = baseUrl(req)
     list.forEach(m => {
-      if (m.photo) m.photo = base + m.photo
+      m.photo = toPublicMediaUrl(req, m.photo)
       m.name = m.fullName
       m.phone = m.phone || '—'
       if (m.formType === 'special-member') {

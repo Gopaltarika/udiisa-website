@@ -1,4 +1,6 @@
 import Blog from '../models/Blog.js'
+import { uploadImageFromFile } from '../utils/cloudinary.js'
+import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
 export const getBlogs = async (req, res) => {
   try {
@@ -12,8 +14,7 @@ export const getBlogs = async (req, res) => {
       ]
     }
     const list = await Blog.find(filter).sort({ createdAt: -1 }).lean()
-    const base = req.protocol + '://' + req.get('host')
-    list.forEach(b => { if (b.image) b.image = base + b.image })
+    list.forEach((b) => { b.image = toPublicMediaUrl(req, b.image) })
     return res.json(list)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to fetch blogs' })
@@ -24,8 +25,7 @@ export const getBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id).lean()
     if (!blog) return res.status(404).json({ message: 'Blog not found' })
-    const base = req.protocol + '://' + req.get('host')
-    if (blog.image) blog.image = base + blog.image
+    blog.image = toPublicMediaUrl(req, blog.image)
     return res.json(blog)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to fetch blog' })
@@ -35,11 +35,12 @@ export const getBlog = async (req, res) => {
 export const addBlog = async (req, res) => {
   try {
     const { heading, pageName, shortContent, content } = req.body
-    const image = req.file ? `/uploads/image/${req.file.filename}` : null
+    const image = req.file
+      ? (await uploadImageFromFile(req.file, 'udiisa/blogs')) || `/uploads/image/${req.file.filename}`
+      : null
     const doc = await Blog.create({ heading, pageName, shortContent, content: content || '', image })
-    const base = req.protocol + '://' + req.get('host')
     const out = doc.toObject()
-    if (out.image) out.image = base + out.image
+    out.image = toPublicMediaUrl(req, out.image)
     return res.status(201).json(out)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to create blog' })
@@ -55,11 +56,13 @@ export const updateBlog = async (req, res) => {
     if (pageName !== undefined) doc.pageName = pageName
     if (shortContent !== undefined) doc.shortContent = shortContent
     if (content !== undefined) doc.content = content
-    if (req.file) doc.image = `/uploads/image/${req.file.filename}`
+    if (req.file) {
+      doc.image =
+        (await uploadImageFromFile(req.file, 'udiisa/blogs')) || `/uploads/image/${req.file.filename}`
+    }
     await doc.save()
-    const base = req.protocol + '://' + req.get('host')
     const out = doc.toObject()
-    if (out.image) out.image = base + out.image
+    out.image = toPublicMediaUrl(req, out.image)
     return res.json(out)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to update blog' })

@@ -28,5 +28,28 @@ export const validateRequired = (fields, values) => {
   return errors
 }
 
-export const API_IMG = (path) =>
-  path ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${path}` : null
+const DEFAULT_API_URL = 'http://localhost:5000/api'
+
+const normalizeApiBaseUrl = (rawUrl) => {
+  const raw = (rawUrl || '').trim()
+  if (!raw) return DEFAULT_API_URL
+
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  if (raw.startsWith(':')) return `http://localhost${raw}`
+  if (raw.startsWith('localhost') || raw.startsWith('127.0.0.1')) return `http://${raw}`
+
+  try {
+    return new URL(raw, window.location.origin).toString().replace(/\/$/, '')
+  } catch {
+    return DEFAULT_API_URL
+  }
+}
+
+const apiBase = normalizeApiBaseUrl(import.meta.env.VITE_API_URL)
+const originBase = apiBase.replace(/\/api$/, '')
+
+export const API_IMG = (path) => {
+  if (!path) return null
+  if (path.startsWith('http://') || path.startsWith('https://')) return path
+  return `${originBase}${path}`
+}

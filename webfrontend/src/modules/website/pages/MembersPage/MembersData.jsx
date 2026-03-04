@@ -224,7 +224,7 @@ const IndividualTable = ({ data = [] }) => (
       {/* Rows */}
       {data.map((m, i) => (
         <div key={m.id} className="trow" style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '12px 22px', gap: 10, background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: i < data.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background .15s' }}>
-          <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.id}</div>
+          <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{i + 1}</div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: '#0B1E4B', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.name}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#64748b', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
             <FaMapMarkerAlt style={{ color: '#F05A1A', fontSize: 9, flexShrink: 0 }} />
@@ -254,7 +254,7 @@ const CorporateTable = ({ data = [] }) => (
       </div>
       {data.map((m, i) => (
         <div key={m.id} className="trow" style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '12px 22px', gap: 10, background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: i < data.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background .15s' }}>
-          <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.id}</div>
+          <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{i + 1}</div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: '#0B1E4B', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.name}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#374151', overflow: 'hidden', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
             <FaBuilding style={{ color: '#F05A1A', fontSize: 9, flexShrink: 0 }} />

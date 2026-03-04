@@ -69,7 +69,15 @@ export default function IncomingContacts() {
   }
 
   const columns = [
-    { key: '#', label: '#', render: (_, __, i) => <span className="text-slate-400 text-[12px]">{i + 1}</span> },
+    {
+      key: '__serial',
+      label: '#',
+      render: (_, __, i) => (
+        <span className="inline-flex min-w-[28px] h-[22px] items-center justify-center rounded-[6px] bg-slate-100 text-slate-700 text-[11px] font-extrabold">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+      ),
+    },
     { key: 'name',    label: 'Name' },
     { key: 'email',   label: 'Email' },
     { key: 'phone',   label: 'Phone' },

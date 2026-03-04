@@ -13,16 +13,9 @@ import { useDebounce } from '../../hooks/useDebounce'
 import incomingService from '../../services/incomingService'
 import { formatDate } from '../../utils/helpers'
 
-const MOCK = [
-  { id: 1, name: 'Ramesh Yadav',  email: 'ramesh@email.com',  phone: '9876543210', memberType: 'Sports Men', utr: 'UTR123456789', amount: '₹1,200', submittedAt: '2024-12-15' },
-  { id: 2, name: 'Pooja Sharma',  email: 'pooja@email.com',   phone: '9123456789', memberType: 'General',    utr: 'UTR987654321', amount: '₹12,000', submittedAt: '2024-12-14' },
-  { id: 3, name: 'Suresh Kumar',  email: 'suresh@email.com',  phone: '9988776655', memberType: 'Sports Men', utr: 'UTR111222333', amount: '₹1,200', submittedAt: '2024-12-13' },
-  { id: 4, name: 'Anita Singh',   email: 'anita@email.com',   phone: '9901234567', memberType: 'General',    utr: 'UTR444555666', amount: '₹12,000', submittedAt: '2024-12-12' },
-]
-
 export default function IncomingMembers() {
   const toast = useAdminToast()
-  const [forms,    setForms]   = useState(MOCK)
+  const [forms,    setForms]   = useState([])
   const [loading,  setLoading] = useState(false)
   const [deleting, setDeleting]= useState(false)
   const [search,   setSearch]  = useState('')
@@ -31,25 +24,63 @@ export default function IncomingMembers() {
   const [delOpen,  setDelOpen] = useState(false)
   const [selected, setSelected]= useState(null)
 
-  const filtered = forms.filter(f =>
-    f.name.toLowerCase().includes(dSearch.toLowerCase()) ||
-    f.email.toLowerCase().includes(dSearch.toLowerCase()) ||
-    f.memberType.toLowerCase().includes(dSearch.toLowerCase())
-  )
+  useEffect(() => {
+    let mounted = true
+
+    const loadMembers = async () => {
+      setLoading(true)
+      try {
+        const res = await incomingService.getMemberForms(dSearch ? { search: dSearch } : {})
+        const list = Array.isArray(res?.data) ? res.data : []
+        if (!mounted) return
+
+        setForms(
+          list.map((item) => ({
+            id: item._id,
+            name: item.name || item.fullName || '—',
+            email: item.email || '—',
+            phone: item.phone || '—',
+            memberType: item.memberType || '—',
+            utr: item.utr || item.utrNumber || '—',
+            amount: item.amount || '—',
+            submittedAt: item.submittedAt || item.createdAt,
+          }))
+        )
+      } catch (e) {
+        if (!mounted) return
+        toast.error(e?.response?.data?.message || 'Failed to fetch incoming member forms')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    loadMembers()
+    return () => { mounted = false }
+  }, [dSearch, toast])
 
   const handleDelete = async () => {
     setDeleting(true)
     try {
-      // await incomingService.deleteMemberForm(selected.id)
+      await incomingService.deleteMemberForm(selected.id)
       setForms(prev => prev.filter(f => f.id !== selected.id))
       toast.success('Form deleted!')
       setDelOpen(false)
-    } catch { toast.error('Failed to delete') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to delete')
+    }
     finally { setDeleting(false) }
   }
 
   const columns = [
-    { key: '#', label: '#', render: (_, __, i) => <span className="text-slate-400 text-[12px]">{i + 1}</span> },
+    {
+      key: '__serial',
+      label: '#',
+      render: (_, __, i) => (
+        <span className="inline-flex min-w-[28px] h-[22px] items-center justify-center rounded-[6px] bg-slate-100 text-slate-700 text-[11px] font-extrabold">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+      ),
+    },
     { key: 'name',   label: 'Name' },
     { key: 'email',  label: 'Email' },
     { key: 'phone',  label: 'Phone' },
@@ -79,7 +110,7 @@ export default function IncomingMembers() {
       <div className="mb-[16px]">
         <SearchBar value={search} onChange={setSearch} placeholder="Search by name, email, type…" />
       </div>
-      <Table columns={columns} data={filtered} loading={loading} emptyText="No incoming member forms" />
+      <Table columns={columns} data={forms} loading={loading} emptyText="No incoming member forms" />
 
       {/* View Modal */}
       <Modal isOpen={viewOpen} onClose={() => setViewOpen(false)} title="Member Application Details" size="md">

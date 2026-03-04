@@ -8,7 +8,8 @@ const UPLOADS = process.env.UPLOADS_DIR || 'uploads'
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '..', UPLOADS, file.fieldname)
+    // Keep all image uploads in one stable folder so stored DB paths stay consistent.
+    const dir = path.join(__dirname, '..', UPLOADS, 'image')
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
     cb(null, dir)
   },

@@ -8,20 +8,10 @@ import ActionButtons from '../components/ActionButtons'
 import ConfirmDialog from '../components/ConfirmDialog'
 import PageHeader from '../components/PageHeader'
 import { FormField, Input, PhotoUpload, SubmitBtn, CancelBtn } from '../components/FormField'
-import Spinner from '../components/Spinner'
 import { useAdminToast } from '../hooks/ToastContext'
 import { useDebounce } from '../hooks/useDebounce'
 import playerService from '../services/playerService'
 import { validateRequired, buildFormData, API_IMG, formatDate } from '../utils/helpers'
-
-// ── Mock data ──────────────────────────────
-const MOCK_PLAYERS = [
-  { id: 1, playerName: 'Arjun Kumar',   sportsName: 'Boxing',    photo: null, createdAt: '2024-12-01' },
-  { id: 2, playerName: 'Priya Singh',   sportsName: 'Athletics', photo: null, createdAt: '2024-11-20' },
-  { id: 3, playerName: 'Rohit Sharma',  sportsName: 'Cricket',   photo: null, createdAt: '2024-11-15' },
-  { id: 4, playerName: 'Anjali Devi',   sportsName: 'Badminton', photo: null, createdAt: '2024-11-08' },
-]
-// ──────────────────────────────────────────
 
 const EMPTY_FORM = { playerName: '', sportsName: '', photo: null }
 
@@ -44,21 +34,30 @@ export default function Players() {
 
   // Fetch players
   useEffect(() => {
+    let mounted = true
+
     const fetch = async () => {
       setLoading(true)
       try {
-        // Real: const { data } = await playerService.getPlayers({ search: dSearch })
-        await new Promise(r => setTimeout(r, 400))
-        const filtered = MOCK_PLAYERS.filter(p =>
-          p.playerName.toLowerCase().includes(dSearch.toLowerCase()) ||
-          p.sportsName.toLowerCase().includes(dSearch.toLowerCase())
-        )
-        setPlayers(filtered)
-      } catch { toast.error('Failed to load players') }
+        const res = await playerService.getPlayers(dSearch ? { search: dSearch } : {})
+        const list = Array.isArray(res?.data) ? res.data : []
+        if (!mounted) return
+        setPlayers(list.map((p) => ({
+          id: p._id,
+          playerName: p.playerName || '',
+          sportsName: p.sportsName || '',
+          photo: p.photo || null,
+          createdAt: p.createdAt,
+        })))
+      } catch (e) {
+        if (!mounted) return
+        toast.error(e?.response?.data?.message || 'Failed to load players')
+      }
       finally { setLoading(false) }
     }
     fetch()
-  }, [dSearch])
+    return () => { mounted = false }
+  }, [dSearch, toast])
 
   const openAdd = () => {
     setSelected(null)
@@ -104,30 +103,53 @@ export default function Players() {
     if (!validate()) return
     setSaving(true)
     try {
-      const fd = buildFormData(form)
+      const fd = buildFormData({
+        playerName: form.playerName?.trim(),
+        sportsName: form.sportsName?.trim(),
+        photo: form.photo || undefined,
+      })
       if (selected) {
-        // await playerService.updatePlayer(selected.id, fd)
-        setPlayers(prev => prev.map(p => p.id === selected.id ? { ...p, ...form } : p))
+        const res = await playerService.updatePlayer(selected.id, fd)
+        const p = res?.data || {}
+        const updated = {
+          id: p._id || selected.id,
+          playerName: p.playerName || form.playerName,
+          sportsName: p.sportsName || form.sportsName,
+          photo: p.photo || selected.photo || null,
+          createdAt: p.createdAt || selected.createdAt,
+        }
+        setPlayers(prev => prev.map(item => item.id === selected.id ? updated : item))
         toast.success('Player updated successfully!')
       } else {
-        // await playerService.addPlayer(fd)
-        const newP = { id: Date.now(), ...form, photo: null, createdAt: new Date().toISOString() }
-        setPlayers(prev => [newP, ...prev])
+        const res = await playerService.addPlayer(fd)
+        const p = res?.data || {}
+        const created = {
+          id: p._id,
+          playerName: p.playerName || form.playerName,
+          sportsName: p.sportsName || form.sportsName,
+          photo: p.photo || null,
+          createdAt: p.createdAt || new Date().toISOString(),
+        }
+        setPlayers(prev => [created, ...prev])
         toast.success('Player added successfully!')
       }
       setFormOpen(false)
-    } catch { toast.error('Failed to save player') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to save player')
+    }
     finally { setSaving(false) }
   }
 
   const handleDelete = async () => {
     setDeleting(true)
     try {
-      // await playerService.deletePlayer(selected.id)
+      await playerService.deletePlayer(selected.id)
       setPlayers(prev => prev.filter(p => p.id !== selected.id))
       toast.success('Player deleted successfully!')
       setDelOpen(false)
-    } catch { toast.error('Failed to delete player') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to delete player')
+    }
     finally { setDeleting(false) }
   }
 

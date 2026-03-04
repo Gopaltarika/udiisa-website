@@ -1,5 +1,5 @@
 // admin/pages/members/ManagingCommittee.jsx
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import Table from '../../components/Table'
 import Modal from '../../components/Modal'
@@ -11,21 +11,15 @@ import { FormField, Input, PhotoUpload, SubmitBtn, CancelBtn } from '../../compo
 import Badge from '../../components/Badge'
 import { useAdminToast } from '../../hooks/ToastContext'
 import { useDebounce } from '../../hooks/useDebounce'
-import { validateRequired, API_IMG, formatDate } from '../../utils/helpers'
-
-const MOCK = [
-  { id: 1, name: 'Rajesh Sharma',  position: 'Chairman',        companyName: 'UDI Sports NGO',          photo: null, createdAt: '2024-01-01' },
-  { id: 2, name: 'Priya Verma',    position: 'Vice Chairman',   companyName: 'India Sports Foundation', photo: null, createdAt: '2024-01-01' },
-  { id: 3, name: 'Amit Gupta',     position: 'Secretary',       companyName: 'Sports Council Delhi',    photo: null, createdAt: '2024-01-01' },
-  { id: 4, name: 'Sunita Mehta',   position: 'Treasurer',       companyName: 'FitIndia Trust',          photo: null, createdAt: '2024-01-01' },
-]
+import memberService from '../../services/memberService'
+import { validateRequired, API_IMG, buildFormData } from '../../utils/helpers'
 
 const POSITIONS = ['Chairman', 'Vice Chairman', 'Secretary', 'Treasurer', 'Director', 'Member', 'Advisor']
 const EMPTY = { name: '', position: '', companyName: '', photo: null }
 
 export default function ManagingCommittee() {
   const toast = useAdminToast()
-  const [members,  setMembers]  = useState(MOCK)
+  const [members,  setMembers]  = useState([])
   const [loading,  setLoading]  = useState(false)
   const [saving,   setSaving]   = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -39,11 +33,34 @@ export default function ManagingCommittee() {
   const [preview,  setPreview]  = useState(null)
   const [errors,   setErrors]   = useState({})
 
-  const filtered = members.filter(m =>
-    m.name.toLowerCase().includes(dSearch.toLowerCase()) ||
-    m.position.toLowerCase().includes(dSearch.toLowerCase()) ||
-    m.companyName.toLowerCase().includes(dSearch.toLowerCase())
-  )
+  useEffect(() => {
+    let mounted = true
+
+    const loadCommittee = async () => {
+      setLoading(true)
+      try {
+        const res = await memberService.getCommittee(dSearch ? { search: dSearch } : {})
+        const list = Array.isArray(res?.data) ? res.data : []
+        if (!mounted) return
+        setMembers(list.map((m) => ({
+          id: m._id,
+          name: m.name || '',
+          position: m.position || '',
+          companyName: m.companyName || '',
+          photo: m.photo || null,
+          createdAt: m.createdAt,
+        })))
+      } catch (e) {
+        if (!mounted) return
+        toast.error(e?.response?.data?.message || 'Failed to fetch committee members')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    loadCommittee()
+    return () => { mounted = false }
+  }, [dSearch, toast])
 
   const openAdd  = () => { setSelected(null); setForm(EMPTY); setPreview(null); setErrors({}); setFormOpen(true) }
   const openEdit = (row) => { setSelected(row); setForm({ name: row.name, position: row.position, companyName: row.companyName, photo: null }); setPreview(row.photo ? API_IMG(row.photo) : null); setErrors({}); setFormOpen(true) }
@@ -62,24 +79,56 @@ export default function ManagingCommittee() {
     if (Object.keys(err).length > 0) return
     setSaving(true)
     try {
+      const payload = buildFormData({
+        name: form.name?.trim(),
+        position: form.position,
+        companyName: form.companyName?.trim(),
+        photo: form.photo || undefined,
+      })
+
       if (selected) {
-        setMembers(prev => prev.map(m => m.id === selected.id ? { ...m, ...form } : m))
+        const res = await memberService.updateCommittee(selected.id, payload)
+        const m = res?.data || {}
+        const updated = {
+          id: m._id || selected.id,
+          name: m.name || form.name,
+          position: m.position || form.position,
+          companyName: m.companyName || form.companyName || '',
+          photo: m.photo || selected.photo || null,
+          createdAt: m.createdAt || selected.createdAt,
+        }
+        setMembers(prev => prev.map(item => item.id === selected.id ? updated : item))
         toast.success('Committee member updated!')
       } else {
-        setMembers(prev => [{ id: Date.now(), ...form, photo: null, createdAt: new Date().toISOString() }, ...prev])
+        const res = await memberService.addCommittee(payload)
+        const m = res?.data || {}
+        const created = {
+          id: m._id,
+          name: m.name || form.name,
+          position: m.position || form.position,
+          companyName: m.companyName || form.companyName || '',
+          photo: m.photo || null,
+          createdAt: m.createdAt || new Date().toISOString(),
+        }
+        setMembers(prev => [created, ...prev])
         toast.success('Committee member added!')
       }
       setFormOpen(false)
-    } catch { toast.error('Failed to save') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to save')
+    }
     finally { setSaving(false) }
   }
 
   const handleDelete = async () => {
     setDeleting(true)
     try {
+      await memberService.deleteCommittee(selected.id)
       setMembers(prev => prev.filter(m => m.id !== selected.id))
       toast.success('Deleted!')
       setDelOpen(false)
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to delete')
     } finally { setDeleting(false) }
   }
 
@@ -126,7 +175,7 @@ export default function ManagingCommittee() {
         }
       />
       <div className="mb-[16px]"><SearchBar value={search} onChange={setSearch} placeholder="Search committee…" /></div>
-      <Table columns={columns} data={filtered} loading={loading} emptyText="No committee members found" />
+      <Table columns={columns} data={members} loading={loading} emptyText="No committee members found" />
 
       {/* Form */}
       <Modal isOpen={formOpen} onClose={() => setFormOpen(false)} title={`${selected ? 'Edit' : 'Add'} Committee Member`} size="sm">

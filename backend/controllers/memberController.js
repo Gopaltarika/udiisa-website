@@ -1,12 +1,12 @@
 import GeneralMember from '../models/GeneralMember.js'
 import SpecialMember from '../models/SpecialMember.js'
 import CommitteeMember from '../models/CommitteeMember.js'
-
-const baseUrl = (req) => req.protocol + '://' + req.get('host')
+import { uploadImageFromFile } from '../utils/cloudinary.js'
+import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
 const withImage = (doc, req) => {
   const out = doc.toObject ? doc.toObject() : doc
-  if (out.photo) out.photo = baseUrl(req) + out.photo
+  out.photo = toPublicMediaUrl(req, out.photo)
   return out
 }
 
@@ -85,8 +85,7 @@ export const getSpecialMembers = async (req, res) => {
       ]
     }
     const list = await SpecialMember.find(filter).sort({ createdAt: -1 }).lean()
-    const base = baseUrl(req)
-    list.forEach(m => { if (m.photo) m.photo = base + m.photo })
+    list.forEach((m) => { m.photo = toPublicMediaUrl(req, m.photo) })
     return res.json(list)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to fetch' })
@@ -96,7 +95,9 @@ export const getSpecialMembers = async (req, res) => {
 export const addSpecialMember = async (req, res) => {
   try {
     const { name, companyName } = req.body
-    const photo = req.file ? `/uploads/image/${req.file.filename}` : null
+    const photo = req.file
+      ? (await uploadImageFromFile(req.file, 'udiisa/special-members')) || `/uploads/image/${req.file.filename}`
+      : null
     const doc = await SpecialMember.create({ name: name || '', companyName: companyName || '', photo })
     return res.status(201).json(withImage(doc, req))
   } catch (e) {
@@ -110,7 +111,10 @@ export const updateSpecialMember = async (req, res) => {
     if (!doc) return res.status(404).json({ message: 'Not found' })
     if (req.body.name !== undefined) doc.name = req.body.name
     if (req.body.companyName !== undefined) doc.companyName = req.body.companyName
-    if (req.file) doc.photo = `/uploads/image/${req.file.filename}`
+    if (req.file) {
+      doc.photo =
+        (await uploadImageFromFile(req.file, 'udiisa/special-members')) || `/uploads/image/${req.file.filename}`
+    }
     await doc.save()
     return res.json(withImage(doc, req))
   } catch (e) {
@@ -141,8 +145,7 @@ export const getCommittee = async (req, res) => {
       ]
     }
     const list = await CommitteeMember.find(filter).sort({ createdAt: -1 }).lean()
-    const base = baseUrl(req)
-    list.forEach(m => { if (m.photo) m.photo = base + m.photo })
+    list.forEach((m) => { m.photo = toPublicMediaUrl(req, m.photo) })
     return res.json(list)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to fetch' })
@@ -152,7 +155,9 @@ export const getCommittee = async (req, res) => {
 export const addCommittee = async (req, res) => {
   try {
     const { name, position, companyName } = req.body
-    const photo = req.file ? `/uploads/image/${req.file.filename}` : null
+    const photo = req.file
+      ? (await uploadImageFromFile(req.file, 'udiisa/committee')) || `/uploads/image/${req.file.filename}`
+      : null
     const doc = await CommitteeMember.create({
       name: name || '',
       position: position || '',
@@ -172,7 +177,10 @@ export const updateCommittee = async (req, res) => {
     if (req.body.name !== undefined) doc.name = req.body.name
     if (req.body.position !== undefined) doc.position = req.body.position
     if (req.body.companyName !== undefined) doc.companyName = req.body.companyName
-    if (req.file) doc.photo = `/uploads/image/${req.file.filename}`
+    if (req.file) {
+      doc.photo =
+        (await uploadImageFromFile(req.file, 'udiisa/committee')) || `/uploads/image/${req.file.filename}`
+    }
     await doc.save()
     return res.json(withImage(doc, req))
   } catch (e) {

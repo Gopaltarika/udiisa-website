@@ -7,33 +7,29 @@ import SearchBar from '../../components/SearchBar'
 import ActionButtons from '../../components/ActionButtons'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import PageHeader from '../../components/PageHeader'
-import { FormField, Input, Select, SubmitBtn, CancelBtn } from '../../components/FormField'
-import Badge from '../../components/Badge'
+import { FormField, Input, SubmitBtn, CancelBtn } from '../../components/FormField'
 import { useAdminToast } from '../../hooks/ToastContext'
 import { useDebounce } from '../../hooks/useDebounce'
 import memberService from '../../services/memberService'
 import { validateRequired, formatDate } from '../../utils/helpers'
 
-// ── Mock data ─────────────────────────────────
-const MOCK_INDIVIDUAL = [
-  { id: 1, name: 'Rahul Verma',   email: 'rahul@email.com',  phone: '9876543210', createdAt: '2024-12-01' },
-  { id: 2, name: 'Sunita Devi',   email: 'sunita@email.com', phone: '9123456789', createdAt: '2024-11-25' },
-  { id: 3, name: 'Vikash Kumar',  email: 'vikash@email.com', phone: '9988776655', createdAt: '2024-11-18' },
-]
-const MOCK_CORPORATE = [
-  { id: 4, name: 'Sports Inc.',    companyName: 'Sports Inc. Pvt. Ltd.',    contactPerson: 'Amit Shah',    createdAt: '2024-12-10' },
-  { id: 5, name: 'FitLife Corp.',  companyName: 'FitLife Corporation',      contactPerson: 'Neha Gupta',   createdAt: '2024-11-30' },
-]
-// ─────────────────────────────────────────────
-
 const TABS = ['Individual', 'Body Corporate']
 
 const EMPTY_IND  = { name: '', email: '', phone: '' }
 const EMPTY_CORP = { name: '', companyName: '', contactPerson: '' }
+const TYPE_BY_TAB = { Individual: 'individual', 'Body Corporate': 'body-corporate' }
 
 function MemberTable({ data, loading, onView, onEdit, onDelete, type }) {
   const indCols = [
-    { key: '#',  label: '#',    render: (_, __, i) => <span className="text-slate-400 text-[12px]">{i + 1}</span> },
+    {
+      key: '__serial',
+      label: '#',
+      render: (_, __, i) => (
+        <span className="inline-flex min-w-[28px] h-[22px] items-center justify-center rounded-[6px] bg-slate-100 text-slate-700 text-[11px] font-extrabold">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+      ),
+    },
     { key: 'name',  label: 'Name' },
     { key: 'email', label: 'Email' },
     { key: 'phone', label: 'Phone' },
@@ -41,7 +37,15 @@ function MemberTable({ data, loading, onView, onEdit, onDelete, type }) {
     { key: 'act', label: 'Actions', render: (_, row) => <ActionButtons onView={() => onView(row)} onEdit={() => onEdit(row)} onDelete={() => onDelete(row)} /> },
   ]
   const corpCols = [
-    { key: '#', label: '#', render: (_, __, i) => <span className="text-slate-400 text-[12px]">{i + 1}</span> },
+    {
+      key: '__serial',
+      label: '#',
+      render: (_, __, i) => (
+        <span className="inline-flex min-w-[28px] h-[22px] items-center justify-center rounded-[6px] bg-slate-100 text-slate-700 text-[11px] font-extrabold">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+      ),
+    },
     { key: 'name',          label: 'Name' },
     { key: 'companyName',   label: 'Company' },
     { key: 'contactPerson', label: 'Contact Person' },
@@ -54,7 +58,7 @@ function MemberTable({ data, loading, onView, onEdit, onDelete, type }) {
 export default function GeneralMembers() {
   const toast = useAdminToast()
   const [activeTab, setActiveTab]   = useState('Individual')
-  const [data,      setData]        = useState({ Individual: MOCK_INDIVIDUAL, 'Body Corporate': MOCK_CORPORATE })
+  const [data,      setData]        = useState({ Individual: [], 'Body Corporate': [] })
   const [loading,   setLoading]     = useState(false)
   const [saving,    setSaving]      = useState(false)
   const [deleting,  setDeleting]    = useState(false)
@@ -67,11 +71,46 @@ export default function GeneralMembers() {
   const [form,      setForm]        = useState(EMPTY_IND)
   const [errors,    setErrors]      = useState({})
 
-  const currentData = (data[activeTab] || []).filter(m =>
-    Object.values(m).some(v => String(v).toLowerCase().includes(dSearch.toLowerCase()))
-  )
+  const currentData = data[activeTab] || []
 
   const emptyForm = activeTab === 'Individual' ? EMPTY_IND : EMPTY_CORP
+
+  useEffect(() => {
+    let mounted = true
+
+    const loadMembers = async () => {
+      setLoading(true)
+      try {
+        const params = {
+          type: TYPE_BY_TAB[activeTab],
+          ...(dSearch ? { search: dSearch } : {}),
+        }
+        const res = await memberService.getGeneralMembers(params)
+        const list = Array.isArray(res?.data) ? res.data : []
+        if (!mounted) return
+
+        const mapped = list.map((m) => ({
+          id: m._id,
+          name: m.name || '',
+          email: m.email || '',
+          phone: m.phone || '',
+          companyName: m.companyName || '',
+          contactPerson: m.contactPerson || '',
+          createdAt: m.createdAt,
+          type: m.type || TYPE_BY_TAB[activeTab],
+        }))
+        setData((prev) => ({ ...prev, [activeTab]: mapped }))
+      } catch (e) {
+        if (!mounted) return
+        toast.error(e?.response?.data?.message || 'Failed to fetch members')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    loadMembers()
+    return () => { mounted = false }
+  }, [activeTab, dSearch, toast])
 
   const openAdd = () => {
     setSelected(null)
@@ -82,7 +121,11 @@ export default function GeneralMembers() {
 
   const openEdit = (row) => {
     setSelected(row)
-    setForm({ ...row })
+    setForm(
+      activeTab === 'Individual'
+        ? { name: row.name || '', email: row.email || '', phone: row.phone || '' }
+        : { name: row.name || '', companyName: row.companyName || '', contactPerson: row.contactPerson || '' }
+    )
     setErrors({})
     setFormOpen(true)
   }
@@ -98,26 +141,63 @@ export default function GeneralMembers() {
     if (!validate()) return
     setSaving(true)
     try {
+      const payload = {
+        type: TYPE_BY_TAB[activeTab],
+        name: form.name?.trim(),
+        email: activeTab === 'Individual' ? (form.email || '').trim() : '',
+        phone: activeTab === 'Individual' ? (form.phone || '').trim() : '',
+        companyName: activeTab === 'Body Corporate' ? (form.companyName || '').trim() : '',
+        contactPerson: activeTab === 'Body Corporate' ? (form.contactPerson || '').trim() : '',
+      }
+
       if (selected) {
-        setData(d => ({ ...d, [activeTab]: d[activeTab].map(m => m.id === selected.id ? { ...m, ...form } : m) }))
+        const res = await memberService.updateGeneralMember(selected.id, payload)
+        const m = res?.data || {}
+        const updated = {
+          id: m._id || selected.id,
+          name: m.name || payload.name,
+          email: m.email || '',
+          phone: m.phone || '',
+          companyName: m.companyName || '',
+          contactPerson: m.contactPerson || '',
+          createdAt: m.createdAt || selected.createdAt,
+          type: m.type || payload.type,
+        }
+        setData(d => ({ ...d, [activeTab]: d[activeTab].map(item => item.id === selected.id ? updated : item) }))
         toast.success('Member updated!')
       } else {
-        const newM = { id: Date.now(), ...form, createdAt: new Date().toISOString() }
-        setData(d => ({ ...d, [activeTab]: [newM, ...d[activeTab]] }))
+        const res = await memberService.addGeneralMember(payload)
+        const m = res?.data || {}
+        const created = {
+          id: m._id,
+          name: m.name || payload.name,
+          email: m.email || '',
+          phone: m.phone || '',
+          companyName: m.companyName || '',
+          contactPerson: m.contactPerson || '',
+          createdAt: m.createdAt || new Date().toISOString(),
+          type: m.type || payload.type,
+        }
+        setData(d => ({ ...d, [activeTab]: [created, ...d[activeTab]] }))
         toast.success('Member added!')
       }
       setFormOpen(false)
-    } catch { toast.error('Failed to save') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to save')
+    }
     finally { setSaving(false) }
   }
 
   const handleDelete = async () => {
     setDeleting(true)
     try {
+      await memberService.deleteGeneralMember(selected.id)
       setData(d => ({ ...d, [activeTab]: d[activeTab].filter(m => m.id !== selected.id) }))
       toast.success('Member deleted!')
       setDelOpen(false)
-    } catch { toast.error('Failed to delete') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to delete')
+    }
     finally { setDeleting(false) }
   }
 
