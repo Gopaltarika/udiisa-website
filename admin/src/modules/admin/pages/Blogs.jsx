@@ -1,5 +1,5 @@
 // admin/pages/Blogs.jsx
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import Table from '../components/Table'
 import Modal from '../components/Modal'
@@ -12,17 +12,9 @@ import Badge from '../components/Badge'
 import { useAdminToast } from '../hooks/ToastContext'
 import { useDebounce } from '../hooks/useDebounce'
 import blogService from '../services/blogService'
-import { validateRequired, buildFormData, API_IMG, formatDate, truncate } from '../utils/helpers'
-
-// NOTE: CKEditor — install with: npm install @ckeditor/ckeditor5-react @ckeditor/ckeditor5-classic-build
-// Then import: import { CKEditor } from '@ckeditor/ckeditor5-react'; import ClassicEditor from '@ckeditor/ckeditor5-classic-build'
-// Replace the <Textarea> below for content with <CKEditor>
-
-const MOCK = [
-  { id: 1, heading: 'Annual Sports Talent Hunt 2024', pageName: 'events', shortContent: 'Our biggest event with 5,000 athletes from 28 states.', content: '<p>Full content here...</p>', image: null, createdAt: '2024-12-10' },
-  { id: 2, heading: "From Fields to Glory: India's Boxer", pageName: 'success-stories', shortContent: 'Young boxer clinches national gold medal.', content: '<p>Full content here...</p>', image: null, createdAt: '2024-12-05' },
-  { id: 3, heading: 'Girl Empowerment Initiative Launches', pageName: 'initiatives', shortContent: 'New chapter for female athletes in India.', content: '<p>Full content here...</p>', image: null, createdAt: '2024-12-01' },
-]
+import { validateRequired, buildFormData, API_IMG, formatDate } from '../utils/helpers'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor'
 
 const PAGE_OPTIONS = ['home', 'events', 'success-stories', 'initiatives', 'partnerships', 'mentorship', 'general']
 
@@ -30,7 +22,7 @@ const EMPTY = { heading: '', pageName: '', shortContent: '', content: '', image:
 
 export default function Blogs() {
   const toast = useAdminToast()
-  const [blogs,    setBlogs]   = useState(MOCK)
+  const [blogs,    setBlogs]   = useState([])
   const [loading,  setLoading] = useState(false)
   const [saving,   setSaving]  = useState(false)
   const [deleting, setDeleting]= useState(false)
@@ -44,10 +36,38 @@ export default function Blogs() {
   const [preview,  setPreview] = useState(null)
   const [errors,   setErrors]  = useState({})
 
-  const filtered = blogs.filter(b =>
-    b.heading.toLowerCase().includes(dSearch.toLowerCase()) ||
-    b.pageName.toLowerCase().includes(dSearch.toLowerCase())
-  )
+  useEffect(() => {
+    let mounted = true
+
+    const loadBlogs = async () => {
+      setLoading(true)
+      try {
+        const res = await blogService.getBlogs(dSearch ? { search: dSearch } : {})
+        const list = Array.isArray(res?.data) ? res.data : []
+        if (!mounted) return
+
+        setBlogs(
+          list.map((b) => ({
+            id: b._id,
+            heading: b.heading || '',
+            pageName: b.pageName || '',
+            shortContent: b.shortContent || '',
+            content: b.content || '',
+            image: b.image || null,
+            createdAt: b.createdAt,
+          }))
+        )
+      } catch (e) {
+        if (!mounted) return
+        toast.error(e?.response?.data?.message || 'Failed to load blogs')
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    loadBlogs()
+    return () => { mounted = false }
+  }, [dSearch, toast])
 
   const openAdd  = () => { setSelected(null); setForm(EMPTY); setPreview(null); setErrors({}); setFormOpen(true) }
   const openEdit = (row) => {
@@ -76,28 +96,60 @@ export default function Blogs() {
     if (!validate()) return
     setSaving(true)
     try {
+      const payload = buildFormData({
+        heading: form.heading?.trim(),
+        pageName: form.pageName,
+        shortContent: form.shortContent?.trim(),
+        content: form.content || '',
+        image: form.image || undefined,
+      })
+
       if (selected) {
-        // Real: await blogService.updateBlog(selected.id, buildFormData(form))
-        setBlogs(prev => prev.map(b => b.id === selected.id ? { ...b, ...form } : b))
+        const res = await blogService.updateBlog(selected.id, payload)
+        const b = res?.data || {}
+        const updated = {
+          id: b._id || selected.id,
+          heading: b.heading || form.heading,
+          pageName: b.pageName || form.pageName,
+          shortContent: b.shortContent || form.shortContent,
+          content: b.content || form.content || '',
+          image: b.image || selected.image || null,
+          createdAt: b.createdAt || selected.createdAt,
+        }
+        setBlogs(prev => prev.map(item => item.id === selected.id ? updated : item))
         toast.success('Blog updated successfully!')
       } else {
-        const newB = { id: Date.now(), ...form, image: null, createdAt: new Date().toISOString() }
-        setBlogs(prev => [newB, ...prev])
+        const res = await blogService.addBlog(payload)
+        const b = res?.data || {}
+        const created = {
+          id: b._id,
+          heading: b.heading || form.heading,
+          pageName: b.pageName || form.pageName,
+          shortContent: b.shortContent || form.shortContent,
+          content: b.content || form.content || '',
+          image: b.image || null,
+          createdAt: b.createdAt || new Date().toISOString(),
+        }
+        setBlogs(prev => [created, ...prev])
         toast.success('Blog published successfully!')
       }
       setFormOpen(false)
-    } catch { toast.error('Failed to save blog') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to save blog')
+    }
     finally { setSaving(false) }
   }
 
   const handleDelete = async () => {
     setDeleting(true)
     try {
-      // await blogService.deleteBlog(selected.id)
+      await blogService.deleteBlog(selected.id)
       setBlogs(prev => prev.filter(b => b.id !== selected.id))
       toast.success('Blog deleted!')
       setDelOpen(false)
-    } catch { toast.error('Failed to delete') }
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Failed to delete')
+    }
     finally { setDeleting(false) }
   }
 
@@ -136,7 +188,7 @@ export default function Blogs() {
         }
       />
       <div className="mb-[16px]"><SearchBar value={search} onChange={setSearch} placeholder="Search blogs…" /></div>
-      <Table columns={columns} data={filtered} loading={loading} emptyText="No blogs found" />
+      <Table columns={columns} data={blogs} loading={loading} emptyText="No blogs found" />
 
       {/* Form Modal */}
       <Modal isOpen={formOpen} onClose={() => setFormOpen(false)} title={`${selected ? 'Edit' : 'New'} Blog Post`} size="lg">
@@ -169,29 +221,22 @@ export default function Blogs() {
             />
           </FormField>
 
-          {/* CKEditor area — use Textarea as placeholder */}
-          <FormField label="Full Blog Content (CKEditor)">
+          <FormField label="Full Blog Content">
             <div className="rounded-[10px] border border-slate-200 overflow-hidden">
-              <div className="bg-slate-50 border-b border-slate-200 px-[12px] py-[8px] text-[11px] font-bold text-slate-500 uppercase tracking-[0.8px]">
-                📝 CKEditor Integration Point
-              </div>
-              {/* 
-                REPLACE this Textarea with CKEditor:
-                
-                import { CKEditor } from '@ckeditor/ckeditor5-react'
-                import ClassicEditor from '@ckeditor/ckeditor5-classic-build'
-                
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={form.content}
-                  onChange={(_, editor) => setForm(f => ({ ...f, content: editor.getData() }))}
-                />
-              */}
-              <Textarea
-                placeholder="Full blog content goes here… (Replace with CKEditor: npm install @ckeditor/ckeditor5-react @ckeditor/ckeditor5-classic-build)"
-                rows={8}
-                value={form.content}
-                onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
+              <CKEditor
+                editor={ClassicEditor}
+                data={form.content || ''}
+                config={{
+                  placeholder: 'Write full blog content here...',
+                  toolbar: [
+                    'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                    '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo',
+                  ],
+                }}
+                onChange={(_, editor) => {
+                  const data = editor.getData()
+                  setForm((f) => ({ ...f, content: data }))
+                }}
               />
             </div>
           </FormField>
