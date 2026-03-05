@@ -10,6 +10,28 @@ import GeneralMember from '../models/GeneralMember.js'
 import Player from '../models/Player.js'
 import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
+const CATEGORY_TO_PAGE = {
+  'success story': 'success-stories',
+  event: 'events',
+  initiative: 'initiatives',
+  partnership: 'partnerships',
+  mentorship: 'mentorship',
+}
+
+const PAGE_TO_CATEGORY = {
+  home: 'General',
+  general: 'General',
+  events: 'Event',
+  'success-stories': 'Success Story',
+  initiatives: 'Initiative',
+  partnerships: 'Partnership',
+  mentorship: 'Mentorship',
+}
+
+function normalizeCategory(value = '') {
+  return String(value).trim().toLowerCase()
+}
+
 // ─── Format date for frontend ─────────────────────────────
 function formatDate(d) {
   if (!d) return { display: '', iso: '' }
@@ -33,7 +55,13 @@ export const getPublicBlogs = async (req, res) => {
       ]
     }
     if (category && category.trim() && category !== 'All') {
-      filter.category = category.trim()
+      const normalized = normalizeCategory(category)
+      const mappedPageName = CATEGORY_TO_PAGE[normalized]
+      filter.$or = [
+        { category: category.trim() },
+        { category: new RegExp(`^${category.trim()}$`, 'i') },
+        ...(mappedPageName ? [{ pageName: mappedPageName }] : []),
+      ]
     }
     const skip = (Math.max(1, parseInt(page, 10)) - 1) * Math.min(50, Math.max(1, parseInt(limit, 10)))
     const limitNum = Math.min(50, Math.max(1, parseInt(limit, 10)))
@@ -47,7 +75,7 @@ export const getPublicBlogs = async (req, res) => {
         id: b._id.toString(),
         slug: b.pageName || b._id.toString(),
         title: b.heading,
-        category: b.category || '',
+        category: b.category || PAGE_TO_CATEGORY[b.pageName] || 'General',
         excerpt: b.shortContent,
         image: toPublicMediaUrl(req, b.image),
         author: b.author || 'UDI Sports',
@@ -75,7 +103,7 @@ export const getPublicBlogBySlug = async (req, res) => {
       id: blog._id.toString(),
       slug: blog.pageName || blog._id.toString(),
       title: blog.heading,
-      category: blog.category || '',
+      category: blog.category || PAGE_TO_CATEGORY[blog.pageName] || 'General',
       excerpt: blog.shortContent,
       image: toPublicMediaUrl(req, blog.image),
       author: blog.author || 'UDI Sports',
