@@ -213,7 +213,7 @@ const OTPModal = ({ email, onVerified, onClose }) => {
                                     onChange={e => setDigit(i, e.target.value)}
                                     onKeyDown={e => onKey(i, e)}
                                     className={`
-                                        flex-1 h-[54px] rounded-[12px] text-center
+                                        w-full h-[54px] rounded-[12px] text-center
                                         text-[22px] font-extrabold border-[2px] bg-white
                                         focus:outline-none transition-all duration-200 caret-transparent
                                         ${err

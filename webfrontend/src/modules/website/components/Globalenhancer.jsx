@@ -441,19 +441,6 @@ export default function GlobalEnhancer({
     audio.volume = 0.4;
     audioRef.current = audio;
 
-    // Try autoplay (will be blocked in most browsers without interaction)
-    const tryAutoplay = async () => {
-      try {
-        await audio.play();
-        setIsPlaying(true);
-        setHasInteracted(true);
-      } catch {
-        // Browser blocked autoplay — user must interact first
-        setIsPlaying(false);
-      }
-    };
-    tryAutoplay();
-
     // Cleanup: pause + remove src on unmount
     return () => {
       audio.pause();

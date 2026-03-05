@@ -65,7 +65,7 @@ const HeroSection = () => {
             lineHeight: 1.75,
           }}
         >
-          This is like an unleasing Dream industry' where talented players in
+      An Unleasing Dream Industry' where talented players in
           sports will achieve their goal at the level of National &amp;
           International.
         </p>

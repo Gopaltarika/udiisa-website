@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaStar, FaUserCircle } from 'react-icons/fa'
 import { FaQuoteLeft } from 'react-icons/fa6'
-import satishjain from "@/assets/images/satishkumarjain.jpeg"
+import suniljalan from "@/assets/images/sunil-jalan.jpeg"
 
 const Leadership = () => {
   return (
@@ -53,8 +53,8 @@ const Leadership = () => {
 
                 {/* Photo */}
                 <img
-                  src={satishjain}
-                  alt="Satish Kumar Jain"
+                  src={suniljalan}
+                  alt="Sunil Jalan"
                   className="w-full h-full object-cover object-top"
                 />
 
@@ -84,7 +84,7 @@ const Leadership = () => {
                   fontSize: "clamp(28px, 5vw, 52px)",
                 }}
               >
-                Mr. Satish Kumar Jain
+                Mr. sunil jalan
               </h2>
 
               {/* Orange underline */}
@@ -92,17 +92,7 @@ const Leadership = () => {
 
               {/* Description */}
               <p className="text-[rgba(255,255,255,.7)] !m-0 !mb-[0px] w-full leading-[1.8] sm:leading-[1.85] text-[clamp(13px,1.5vw,15.5px)]">
-                Mr. Satish Kumar Jain, aged 76 years, is a prominent and proactive
-                personality who transformed his vision into quality construction work
-                by implementing the latest techniques in developing large-scale
-                buildings into reality at project sites. He has instilled strong
-                values of ethical leadership, responsible decision-making, and a
-                culture of healthy governance. He firmly believes in the Karma theory
-                of hard work and continues to apply his wisdom and vision in all his
-                endeavors. A devoted follower of Jainism, he is deeply committed to
-                nurturing excellence among talented and gifted sports players. He also
-                dedicates his hard-earned resources to noble causes and charitable
-                activities for the betterment of society.
+              He is also co-founder and Chairman of A-One Steel Group. He is proactive in providing assistance to the talented and gifted players in recognized way at all level in sports mission. He lends his expertise to each significant aspect in growing up the managing of Association, strategy, operations and finance objectives. He is responsible for the successful leadership and management of Association which is registered under section 8 of company Act. He implements comprehensive industry plans in sports, enhances the company culture, and ensures a safe working environment for unpleasing dreams industry, for creating future champions, in sports.
               </p>
 
             </div>
