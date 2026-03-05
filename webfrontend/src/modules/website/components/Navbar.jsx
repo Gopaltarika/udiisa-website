@@ -1,44 +1,54 @@
-import { useState, useEffect, useRef } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
-import { FaTrophy, FaChevronDown, FaUsers, FaMedal } from "react-icons/fa";
-import { BsStarFill } from "react-icons/bs";
-import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md";
-import { IoFlash } from "react-icons/io5";
+// Navbar.jsx — full Tailwind, no inline style
+
+import { useState, useEffect, useRef } from "react"
+import { HiMenu, HiX } from "react-icons/hi"
+import { FaTrophy, FaChevronDown, FaUsers } from "react-icons/fa"
+import { BsStarFill } from "react-icons/bs"
+import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md"
+import { committees } from "../pages/committee/committeeData"
+
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [active, setActive] = useState("Home");
-  const [dropOpen, setDropOpen] = useState(false);
-  const [mobileDropOpen, setMobileDropOpen] = useState(false);
-  const hoverTimer = useRef(null);
+  const [menuOpen,            setMenuOpen]            = useState(false)
+  const [active,              setActive]              = useState("Home")
+  const [membersDrop,         setMembersDrop]         = useState(false)
+  const [committeeDrop,       setCommitteeDrop]       = useState(false)
+  const [mobileMembersDrop,   setMobileMembersDrop]   = useState(false)
+  const [mobileCommitteeDrop, setMobileCommitteeDrop] = useState(false)
+
+  const membersTimer   = useRef(null)
+  const committeeTimer = useRef(null)
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
+    document.body.style.overflow = menuOpen ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
+  }, [menuOpen])
 
   const closeAll = (label) => {
-    setActive(label);
-    setMenuOpen(false);
-    setMobileDropOpen(false);
-    setDropOpen(false);
-  };
+    setActive(label)
+    setMenuOpen(false)
+    setMobileMembersDrop(false)
+    setMobileCommitteeDrop(false)
+    setMembersDrop(false)
+    setCommitteeDrop(false)
+  }
 
-  const onEnter = () => { clearTimeout(hoverTimer.current); setDropOpen(true); };
-  const onLeave = () => { hoverTimer.current = setTimeout(() => setDropOpen(false), 130); };
+  const onMEnter = () => { clearTimeout(membersTimer.current);   setMembersDrop(true) }
+  const onMLeave = () => { membersTimer.current   = setTimeout(() => setMembersDrop(false),   130) }
+  const onCEnter = () => { clearTimeout(committeeTimer.current); setCommitteeDrop(true) }
+  const onCLeave = () => { committeeTimer.current = setTimeout(() => setCommitteeDrop(false),  130) }
 
-  const dropItems = [
-    { label: "General Member", href: "/members/general-members", icon: <FaUsers />, desc: "Open for everyone" },
+  const memberItems = [
+    { label: "General Member", href: "/members/general-members", icon: <FaUsers />,    desc: "Open for everyone"   },
     { label: "Special Member", href: "/members/special-members", icon: <BsStarFill />, desc: "By invitation only" },
-  ];
+  ]
+
+  // Active link colour helper
+  const linkCls = (label) =>
+    `nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 !px-[15px] !py-2 text-[14px] font-semibold font-[Plus_Jakarta_Sans] whitespace-nowrap hover:bg-[rgba(240,90,26,.06)] ${active === label ? "on text-[#F05A1A]" : "text-slate-800"}`
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-
         @keyframes shim { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
         .accent {
           height: 3px;
@@ -46,163 +56,68 @@ export default function Navbar() {
           background-size: 300% 100%;
           animation: shim 3s linear infinite;
         }
-
         @keyframes dpIn {
           from { opacity:0; transform:translateX(-50%) translateY(-10px) scale(.96); }
-          to   { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+          to   { opacity:1; transform:translateX(-50%) translateY(0)      scale(1); }
         }
         .drop-anim { animation: dpIn .2s cubic-bezier(.16,1,.3,1) both; }
 
-        @keyframes hup {
-          from { opacity:0; transform:translateY(40px); }
-          to   { opacity:1; transform:translateY(0); }
-        }
-        .hero-anim { animation: hup .9s cubic-bezier(.16,1,.3,1) both; }
-
-        @keyframes sb {
-          0%,100%{transform:translateY(0);opacity:1}
-          60%{transform:translateY(10px);opacity:.2}
-        }
-        .scroll-dot { animation: sb 2s ease-in-out infinite; }
-
         .nl::after {
-          content: '';
-          position: absolute;
-          bottom: 4px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 0;
-          height: 2px;
-          background: #F05A1A;
-          border-radius: 2px;
-          transition: width .25s;
+          content:''; position:absolute; bottom:4px; left:50%; transform:translateX(-50%);
+          width:0; height:2px; background:#F05A1A; border-radius:2px; transition:width .25s;
         }
         .nl:hover::after, .nl.on::after { width: calc(100% - 22px); }
 
-        .acc { overflow: hidden; max-height: 0; transition: max-height .32s ease; }
-        .acc.open { max-height: 200px; }
-
-        .hero-grid {
-          position: absolute;
-          inset: 0;
-          background-image:
-            repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,.028) 60px,rgba(255,255,255,.028) 61px),
-            repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,.028) 60px,rgba(255,255,255,.028) 61px);
-        }
-
-        @media(max-width:1024px){
-          .dlinks { display: none !important; }
-          .ham { display: flex !important; }
-        }
-        @media(max-width:640px){
-          .stats-bar { padding: 20px 24px !important; }
-          .stat-div { margin: 0 20px !important; height: 40px !important; }
-        }
+        .acc { overflow:hidden; max-height:0; transition:max-height .32s ease; }
+        .acc.open { max-height:600px; }
       `}</style>
 
-      {/* ══════════════ NAVBAR ══════════════ */}
-      <nav
-        className="sticky top-0 left-0 right-0 z-[100] bg-[rgba(255,255,255,.97)]"
-        style={{
-          transition: "background .4s, box-shadow .4s",
-        }}
-      >
+      {/* ══ NAVBAR ══ */}
+      <nav className="sticky top-0 left-0 right-0 z-[100] bg-white/[.97] transition-all duration-300">
         <div className="accent" />
-        <div
-          className="dlinks-wrapper flex items-center justify-between"
-          style={{ maxWidth: 1280, margin: "0 auto", padding: "0 28px", height: 70 }}
-        >
+
+        <div className="flex items-center justify-between max-w-[1280px] !mx-auto !px-7 h-[70px]">
 
           {/* LOGO */}
-          <a
-            href="/"
-            className="flex items-center gap-3 no-underline group"
-            style={{ textDecoration: "none" }}
-            onClick={() => closeAll("Home")}
-          >
-            <img src="/Logo.png" alt="logo" className="w-full max-w-2/3" /></a>
+          <a href="/" className="no-underline" onClick={() => closeAll("Home")}>
+            <img src="/Logo.png" alt="logo" className="max-h-12 w-auto" />
+          </a>
 
+          {/* ── DESKTOP LINKS ── */}
+          <div className="hidden lg:flex items-center gap-0.5">
 
-          {/* DESKTOP LINKS */}
-          <div className="dlinks flex items-center" style={{ gap: 2 }}>
-
-            <a
-              href="/"
-              className={`nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Home" ? "on" : ""}`}
-              style={{
-                padding: "8px 15px", fontSize: 14, fontWeight: 600,
-                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
-                color: active === "Home"
-                  ? "#F05A1A"
-                  : "#1e293b"
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
-              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              onClick={() => closeAll("Home")}
-            >
+            {/* Home */}
+            <a href="/" className={linkCls("Home")} onClick={() => closeAll("Home")}>
               Home
             </a>
 
-            {/* MEMBERS DROPDOWN */}
-            <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
-              <button
-                className={`nl relative flex items-center gap-1.5 rounded-xl cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Members" ? "on" : ""}`}
-                style={{
-                  padding: "8px 15px", fontSize: 14, fontWeight: 600,
-                  fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
-                  color: active === "Blogs"
-                    ? "#F05A1A"
-                    : "#1e293b"
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
-                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              >
+            {/* Members dropdown */}
+            <div className="relative" onMouseEnter={onMEnter} onMouseLeave={onMLeave}>
+              <button className={linkCls("Members")}>
                 Members
-                <FaChevronDown style={{
-                  fontSize: 10, transition: "transform .25s",
-                  transform: dropOpen ? "rotate(180deg)" : "rotate(0)",
-                  color: dropOpen ? "#F05A1A" : "inherit",
-                }} />
+                <FaChevronDown className={`text-[10px] transition-transform duration-200 ${membersDrop ? "rotate-180 text-[#F05A1A]" : "rotate-0"}`} />
               </button>
 
-              {dropOpen && (
+              {membersDrop && (
                 <div
-                  className="drop-anim absolute z-[200] bg-white rounded-[18px]"
-                  style={{
-                    top: "calc(100% + 12px)", left: "50%",
-                    transform: "translateX(-50%)",
-                    padding: 8, minWidth: 240,
-                    boxShadow: "0 24px 60px rgba(11,30,75,.16), 0 4px 16px rgba(0,0,0,.06)",
-                    border: "1px solid #eef2f8",
-                  }}
-                  onMouseEnter={onEnter}
-                  onMouseLeave={onLeave}
+                  className="drop-anim absolute z-[200] bg-white rounded-[18px] !p-2 min-w-[240px] shadow-[0_24px_60px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-[150%] -translate-x-1/2"
+                  onMouseEnter={onMEnter} onMouseLeave={onMLeave}
                 >
-                  <div style={{
-                    position: "absolute", top: -6, left: "50%",
-                    transform: "translateX(-50%) rotate(45deg)",
-                    width: 12, height: 12, background: "#fff",
-                    borderLeft: "1px solid #eef2f8", borderTop: "1px solid #eef2f8",
-                  }} />
-                  {dropItems.map(item => (
+                  {/* Arrow */}
+                  <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rotate-45 w-3 h-3 bg-white border-l border-t border-[#eef2f8]" />
+
+                  {memberItems.map(item => (
                     <a
-                      key={item.label}
-                      href={item.href}
-                      className="flex items-center gap-3 rounded-xl no-underline transition-all duration-150 group/di"
-                      style={{ padding: "11px 12px", color: "#374151", textDecoration: "none" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; }}
+                      key={item.label} href={item.href}
+                      className="flex items-center gap-3 !px-3 !py-[11px] rounded-xl no-underline text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
                       onClick={() => closeAll("Members")}
                     >
-                      <div
-                        className="flex-shrink-0 flex items-center justify-center rounded-[10px] transition-colors duration-150"
-                        style={{ width: 36, height: 36, background: "#FFF3EC", color: "#F05A1A", fontSize: 15 }}
-                      >
+                      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[#FFF3EC] text-[#F05A1A] text-[15px]">
                         {item.icon}
                       </div>
                       <div>
-                        <div style={{ fontSize: 13, fontWeight: 700 }}>{item.label}</div>
-                        <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 1 }}>{item.desc}</div>
+                        <div className="text-[13px] font-bold">{item.label}</div>
+                        <div className="text-[11px] text-slate-400 !mt-0.5">{item.desc}</div>
                       </div>
                     </a>
                   ))}
@@ -210,206 +125,158 @@ export default function Navbar() {
               )}
             </div>
 
-            <a
-              href="/blogs/"
-              className={`nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Blogs" ? "on" : ""}`}
-              style={{
-                padding: "8px 15px", fontSize: 14, fontWeight: 600,
-                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
-                color: active === "Blogs"
-                  ? "#F05A1A"
-                  : "#1e293b"
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
-              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              onClick={() => closeAll("Blogs")}
-            >
+            {/* Committee dropdown */}
+            <div className="relative" onMouseEnter={onCEnter} onMouseLeave={onCLeave}>
+              <button className={linkCls("Committee")}>
+                Committee
+                <FaChevronDown className={`text-[10px] transition-transform duration-200 ${committeeDrop ? "rotate-180 text-[#F05A1A]" : "rotate-0"}`} />
+              </button>
+
+              {committeeDrop && (
+                <div
+                  className="drop-anim absolute z-[200] bg-white rounded-[18px] !p-2 min-w-[280px] max-h-[420px] overflow-y-auto shadow-[0_24px_60px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-[150%] -translate-x-1/2"
+                  onMouseEnter={onCEnter} onMouseLeave={onCLeave}
+                >
+                  <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rotate-45 w-3 h-3 bg-white border-l border-t border-[#eef2f8]" />
+
+                  {/* All committees link */}
+                  <a
+                    href="/committee"
+                    className="flex items-center gap-3 !px-3 !py-2.5 rounded-xl no-underline text-[#0B1E4B] transition-all duration-150 hover:bg-[#EFF6FF] !mb-1 border-b border-slate-100"
+                    onClick={() => closeAll("Committee")}
+                  >
+                    <div className="w-8 h-8 rounded-[9px] flex items-center justify-center flex-shrink-0 bg-[#EFF6FF] text-[#0B1E4B]">
+                      <MdGroups className="text-[17px]" />
+                    </div>
+                    <div>
+                      <div className="text-[12px] font-bold">All Committees</div>
+                      <div className="text-[10px] text-slate-400 !mt-0.5">View full overview</div>
+                    </div>
+                  </a>
+
+                  {/* Each committee */}
+                  {committees.map(c => (
+                    <a
+                      key={c.slug}
+                      href={`/committee#${c.slug}`}
+                      className="flex items-center gap-2.5 !px-3 !py-2 rounded-[10px] no-underline text-slate-600 text-[12px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
+                      onClick={() => closeAll("Committee")}
+                    >
+                      <span className="text-[17px] w-6 text-center">{c.icon}</span>
+                      {c.shortLabel}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Blogs */}
+            <a href="/blogs/" className={linkCls("Blogs")} onClick={() => closeAll("Blogs")}>
               Blogs
             </a>
 
-            <a
-              href="/talented-players"
-              className={` relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 ${active === "Talented Players" ? "on" : ""}`}
-              style={{
-                padding: "8px 15px", fontSize: 14, fontWeight: 600,
-                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
-                color: active === "Talented Players"
-                  ? "#F05A1A"
-                  : "#1e293b"
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(240,90,26,.06)"}
-              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              onClick={() => closeAll("Talented Players")}
-            >
+            {/* Talented Players */}
+            <a href="/talented-players" className={linkCls("Talented Players")} onClick={() => closeAll("Talented Players")}>
               Talented Players
             </a>
-
-
           </div>
-          <div className="dlinks flex items-center" style={{ gap: 2 }}>
-            {/* BECOME A MEMBER */}
+
+          {/* ── CTA BUTTONS ── */}
+          <div className="hidden lg:flex items-center gap-1.5">
             <a
               href="/membership/special-member"
-              className="flex items-center gap-1.5 rounded-[10px] no-underline cursor-pointer transition-all duration-[250ms]"
-              style={{
-                padding: "9px 18px", fontSize: 13, fontWeight: 700,
-                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
-                marginLeft: 6,
-                color: "#0B1E4B",
-                background: "transparent",
-                textDecoration: "none",
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = "#0B1E4B";
-                e.currentTarget.style.color = "#fff";
-                e.currentTarget.style.borderColor = "#0B1E4B";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = "#0B1E4B";
-                e.currentTarget.style.borderColor = "#0B1E4B";
-              }}
+              className="flex items-center gap-1.5 !px-[18px] !py-[9px] rounded-[10px] no-underline text-[13px] font-bold font-[Plus_Jakarta_Sans] whitespace-nowrap text-[#0B1E4B] bg-transparent border-0 transition-all duration-200 hover:bg-[#0B1E4B] hover:text-white"
               onClick={() => closeAll("Become a Member")}
             >
-              <MdVolunteerActivism style={{ fontSize: 16 }} />
+              <MdVolunteerActivism className="text-[16px]" />
               Become a Special Member
             </a>
 
-            {/* CONTACT US */}
             <a
               href="/contact-us"
-              className="flex items-center gap-1.5 rounded-[10px] no-underline cursor-pointer transition-all duration-[250ms] hover:-translate-y-0.5"
-              style={{
-                padding: "10px 20px", fontSize: 13, fontWeight: 700,
-                fontFamily: "'Plus Jakarta Sans', sans-serif", whiteSpace: "nowrap",
-                color: "#fff",
-                background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
-                boxShadow: "0 4px 18px rgba(240,90,26,.36)",
-                textDecoration: "none",
-              }}
-              onMouseEnter={e => e.currentTarget.style.boxShadow = "0 10px 28px rgba(240,90,26,.50)"}
-              onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 18px rgba(240,90,26,.36)"}
+              className="flex items-center gap-1.5 !px-5 !py-2.5 rounded-[10px] no-underline text-[13px] font-bold font-[Plus_Jakarta_Sans] whitespace-nowrap text-white bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] shadow-[0_4px_18px_rgba(240,90,26,.36)] transition-all duration-200 hover:shadow-[0_10px_28px_rgba(240,90,26,.50)] hover:-translate-y-0.5"
               onClick={() => closeAll("Contact")}
             >
-              <MdContactMail style={{ fontSize: 16 }} />
+              <MdContactMail className="text-[16px]" />
               Contact Us
             </a>
           </div>
+
           {/* HAMBURGER */}
           <button
-            className="ham hidden items-center justify-center rounded-[11px] border-0 cursor-pointer transition-all duration-200"
-            style={{
-              width: 42, height: 42,
-              background: "#F3F4F6"
-            }}
+            className="lg:hidden flex items-center justify-center w-[42px] h-[42px] rounded-[11px] border-0 cursor-pointer bg-slate-100 transition-all duration-200"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
             {menuOpen
-              ? <HiX style={{ fontSize: 22, color: "#F05A1A" }} />
-              : <HiMenu style={{ fontSize: 22, color: "#0B1E4B" }} />
+              ? <HiX className="text-[22px] text-[#F05A1A]" />
+              : <HiMenu className="text-[22px] text-[#0B1E4B]" />
             }
           </button>
         </div>
       </nav>
 
-      {/* ══════════════ MOBILE MENU ══════════════ */}
-      <div
-        className="fixed inset-0 z-[99] transition-all duration-300"
-        style={{ visibility: menuOpen ? "visible" : "hidden", opacity: menuOpen ? 1 : 0 }}
-      >
+      {/* ══ MOBILE OVERLAY ══ */}
+      <div className={`fixed inset-0 z-[99] transition-all duration-300 ${menuOpen ? "visible opacity-100" : "invisible opacity-0"}`}>
+
+        {/* Backdrop */}
         <div
-          className="absolute inset-0"
-          style={{ background: "rgba(11,30,75,.78)", backdropFilter: "blur(8px)" }}
+          className="absolute inset-0 bg-[rgba(11,30,75,.78)] backdrop-blur-[8px]"
           onClick={() => setMenuOpen(false)}
         />
-        <div
-          className="absolute top-0 right-0 bottom-0 flex flex-col bg-white"
-          style={{
-            width: 300,
-            boxShadow: "-10px 0 60px rgba(0,0,0,.18)",
-            transform: menuOpen ? "translateX(0)" : "translateX(100%)",
-            transition: "transform .32s cubic-bezier(.4,0,.2,1)",
-          }}
-        >
+
+        {/* Drawer */}
+        <div className={`absolute top-0 right-0 bottom-0 flex flex-col bg-white w-[300px] shadow-[-10px_0_60px_rgba(0,0,0,.18)] transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}>
           <div className="accent" />
 
-          <div className="flex items-center justify-between" style={{ padding: "16px 20px", borderBottom: "1px solid #F1F5F9" }}>
-            <div className="flex items-center" style={{ gap: 10 }}>
-              <div
-                className="flex items-center justify-center rounded-[9px]"
-                style={{ width: 36, height: 36, background: "linear-gradient(135deg,#F05A1A,#FF7D42)", boxShadow: "0 4px 14px rgba(240,90,26,.35)" }}
-              >
-                <FaTrophy style={{ color: "#fff", fontSize: 16 }} />
+          {/* Mobile header */}
+          <div className="flex items-center justify-between !px-5 !py-4 border-b border-slate-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-[9px] flex items-center justify-center bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] shadow-[0_4px_14px_rgba(240,90,26,.35)]">
+                <FaTrophy className="text-white text-[16px]" />
               </div>
-              <span style={{ fontFamily: "'Bebas Neue',cursive", fontSize: 20, letterSpacing: 2, color: "#0B1E4B" }}>
-                UDI <span style={{ color: "#F05A1A" }}>SPORTS</span>
+              <span className="font-[Bebas_Neue] text-[20px] tracking-[2px] text-[#0B1E4B]">
+                UDI <span className="text-[#F05A1A]">SPORTS</span>
               </span>
             </div>
             <button
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center rounded-lg border-0 cursor-pointer"
-              style={{ width: 32, height: 32, background: "#F3F4F6" }}
+              className="w-8 h-8 rounded-lg border-0 cursor-pointer bg-slate-100 flex items-center justify-center"
             >
-              <HiX style={{ fontSize: 17, color: "#6B7280" }} />
+              <HiX className="text-[17px] text-slate-500" />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto" style={{ padding: 12 }}>
+          {/* Links */}
+          <div className="flex-1 overflow-y-auto !p-3">
+
+            {/* Home */}
             <a
-              href="#home"
-              className={`flex items-center w-full rounded-xl no-underline border-0 cursor-pointer transition-all duration-150 ${active === "Home" ? "is-active" : ""}`}
-              style={{
-                gap: 10, padding: "13px 15px", fontSize: 14, fontWeight: 600,
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                color: active === "Home" ? "#F05A1A" : "#374151",
-                background: active === "Home" ? "#FFF3EC" : "transparent",
-                textDecoration: "none",
-              }}
-              onMouseEnter={e => { if (active !== "Home") { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; } }}
-              onMouseLeave={e => { if (active !== "Home") { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; } }}
+              href="/"
+              className={`flex items-center gap-2.5 !px-[15px] !py-[13px] rounded-xl no-underline text-[14px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 ${active === "Home" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
               onClick={() => closeAll("Home")}
             >
               Home
             </a>
 
+            {/* Members accordion */}
             <div>
               <button
-                className="flex items-center justify-between w-full rounded-xl border-0 cursor-pointer transition-all duration-150"
-                style={{
-                  gap: 10, padding: "13px 15px", fontSize: 14, fontWeight: 600,
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: active === "Members" ? "#F05A1A" : "#374151",
-                  background: active === "Members" ? "#FFF3EC" : "transparent",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = active === "Members" ? "#FFF3EC" : "transparent"; e.currentTarget.style.color = active === "Members" ? "#F05A1A" : "#374151"; }}
-                onClick={() => setMobileDropOpen(p => !p)}
+                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${active === "Members" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                onClick={() => setMobileMembersDrop(p => !p)}
               >
                 <span>Members</span>
-                <FaChevronDown style={{
-                  fontSize: 11, color: mobileDropOpen ? "#F05A1A" : "#94a3b8",
-                  transition: "transform .25s",
-                  transform: mobileDropOpen ? "rotate(180deg)" : "rotate(0)",
-                }} />
+                <FaChevronDown className={`text-[11px] transition-transform duration-200 ${mobileMembersDrop ? "rotate-180 text-[#F05A1A]" : "text-slate-400"}`} />
               </button>
-              <div className={`acc ${mobileDropOpen ? "open" : ""}`}>
-                <div style={{ paddingLeft: 10 }}>
-                  {dropItems.map(item => (
+              <div className={`acc ${mobileMembersDrop ? "open" : ""}`}>
+                <div className="!pl-2.5">
+                  {memberItems.map(item => (
                     <a
-                      key={item.label}
-                      href={item.href}
-                      className="flex items-center rounded-xl no-underline transition-all duration-150"
-                      style={{
-                        gap: 10, padding: "13px 12px", fontSize: 13, fontWeight: 600,
-                        fontFamily: "'Plus Jakarta Sans', sans-serif",
-                        color: "#374151", textDecoration: "none",
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; }}
+                      key={item.label} href={item.href}
+                      className="flex items-center gap-2.5 !px-3 !py-3 rounded-[10px] no-underline text-[13px] font-semibold font-[Plus_Jakarta_Sans] text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
                       onClick={() => closeAll("Members")}
                     >
-                      <span style={{ color: "#F05A1A", fontSize: 14 }}>{item.icon}</span>
+                      <span className="text-[#F05A1A] text-[14px]">{item.icon}</span>
                       {item.label}
                     </a>
                   ))}
@@ -417,61 +284,70 @@ export default function Navbar() {
               </div>
             </div>
 
-            {["Blogs", "Talented Players"].map((label) => (
-              <a
-                key={label}
-                href={`#${label.toLowerCase().replace(" ", "-")}`}
-                className="flex items-center w-full rounded-xl no-underline border-0 cursor-pointer transition-all duration-150"
-                style={{
-                  gap: 10, padding: "13px 15px", fontSize: 14, fontWeight: 600,
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: active === label ? "#F05A1A" : "#374151",
-                  background: active === label ? "#FFF3EC" : "transparent",
-                  textDecoration: "none",
-                }}
-                onMouseEnter={e => { if (active !== label) { e.currentTarget.style.background = "#FFF3EC"; e.currentTarget.style.color = "#F05A1A"; } }}
-                onMouseLeave={e => { if (active !== label) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; } }}
-                onClick={() => closeAll(label)}
+            {/* Committee accordion */}
+            <div>
+              <button
+                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${active === "Committee" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                onClick={() => setMobileCommitteeDrop(p => !p)}
               >
-                {label}
+                <span>Committee</span>
+                <FaChevronDown className={`text-[11px] transition-transform duration-200 ${mobileCommitteeDrop ? "rotate-180 text-[#F05A1A]" : "text-slate-400"}`} />
+              </button>
+              <div className={`acc ${mobileCommitteeDrop ? "open" : ""}`}>
+                <div className="!pl-2.5">
+                  <a
+                    href="/committee"
+                    className="flex items-center gap-2.5 !px-3 !py-2.5 rounded-[10px] no-underline text-[12px] font-bold text-[#0B1E4B] border-b border-slate-100 !mb-1 transition-all duration-150 hover:bg-[#EFF6FF]"
+                    onClick={() => closeAll("Committee")}
+                  >
+                    <MdGroups className="text-[16px]" /> All Committees
+                  </a>
+                  {committees.map(c => (
+                    <a
+                      key={c.slug}
+                      href={`/committee#${c.slug}`}
+                      className="flex items-center gap-2.5 !px-3 !py-2.5 rounded-[10px] no-underline text-[12px] font-semibold font-[Plus_Jakarta_Sans] text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
+                      onClick={() => closeAll("Committee")}
+                    >
+                      <span className="text-[15px]">{c.icon}</span>
+                      {c.shortLabel}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Blogs & Talented Players */}
+            {[{ label: "Blogs", href: "/blogs/" }, { label: "Talented Players", href: "/talented-players" }].map(item => (
+              <a
+                key={item.label} href={item.href}
+                className={`flex items-center gap-2.5 !px-[15px] !py-[13px] rounded-xl no-underline text-[14px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 ${active === item.label ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                onClick={() => closeAll(item.label)}
+              >
+                {item.label}
               </a>
             ))}
           </div>
 
-          <div className="flex flex-col" style={{ padding: 16, borderTop: "1px solid #F1F5F9", gap: 10 }}>
+          {/* Mobile CTAs */}
+          <div className="!p-4 border-t border-slate-100 flex flex-col gap-2.5">
             <a
-              href="#become"
-              className="flex items-center justify-center rounded-xl no-underline transition-all duration-200"
-              style={{
-                gap: 8, padding: 13, fontSize: 14, fontWeight: 700,
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                color: "#0B1E4B", border: "2px solid #0B1E4B",
-                textDecoration: "none",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#0B1E4B"; e.currentTarget.style.color = "#fff"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0B1E4B"; }}
+              href="/membership/special-member"
+              className="flex items-center justify-center gap-2 !p-[13px] rounded-xl no-underline text-[14px] font-bold font-[Plus_Jakarta_Sans] text-[#0B1E4B] border-2 border-[#0B1E4B] transition-all duration-200 hover:bg-[#0B1E4B] hover:text-white"
               onClick={() => closeAll("Become a Member")}
             >
-              <MdVolunteerActivism style={{ fontSize: 18 }} /> Become a Special Member
+              <MdVolunteerActivism className="text-[18px]" /> Become a Special Member
             </a>
             <a
               href="/contact-us"
-              className="flex items-center justify-center rounded-xl no-underline"
-              style={{
-                gap: 8, padding: 13, fontSize: 14, fontWeight: 700,
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                color: "#fff",
-                background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
-                boxShadow: "0 4px 16px rgba(240,90,26,.35)",
-                textDecoration: "none",
-              }}
+              className="flex items-center justify-center gap-2 !p-[13px] rounded-xl no-underline text-[14px] font-bold font-[Plus_Jakarta_Sans] text-white bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] shadow-[0_4px_16px_rgba(240,90,26,.35)]"
               onClick={() => closeAll("Contact")}
             >
-              <MdContactMail style={{ fontSize: 18 }} /> Contact Us
+              <MdContactMail className="text-[18px]" /> Contact Us
             </a>
           </div>
         </div>
       </div>
     </>
-  );
+  )
 }

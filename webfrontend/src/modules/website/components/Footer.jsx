@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaLinkedinIn, FaMapMarkerAlt, FaPhone, FaEnvelope, FaChevronRight } from 'react-icons/fa'
-
+import { VscInfo } from "react-icons/vsc";
 const quickLinks = [
   { label: 'Home',             href: '/' },
   { label: 'Members',          href: '/members/special-members' },
@@ -13,14 +13,14 @@ const quickLinks = [
 const programs = [
   { label: 'Managing Committee', href: '/members/managing-committee' },
   { label: 'About us',           href: '/about-us' },
-  { label: 'Terms & Conditions', href: '/programs/girl-empowerment' },
+  { label: 'Terms & Conditions', href: '/terms&conditions' },
 ]
 
 const contactInfo = [
-  { icon: <FaMapMarkerAlt />, value: '123 Sports Complex, Sector 12, New Delhi – 110001' },
+  { icon: <FaMapMarkerAlt />, value: '5091, gth Floor, Tower5, Parker Residency, Tehsil Rai, District Sonepat, Haryana' },
   { icon: <FaPhone />,        value: '+91 83075 98050' },
   { icon: <FaEnvelope />,     value: 'info@udisports.in' },
-  { icon: <FaEnvelope />,     value: 'CIN No. U94990HR2026NPL141182' },
+  { icon: <VscInfo />,     value: 'CIN No. U94990HR2026NPL141182' },
 ]
 
 const socials = [

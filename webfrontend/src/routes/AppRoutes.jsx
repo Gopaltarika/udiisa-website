@@ -8,6 +8,7 @@ import ContactUs from "../modules/website/pages/ContactUs/ContactUs";
 import BlogRoutes from "../modules/website/pages/blog/MainBlogs";
 import AboutUs from "../modules/website/pages/about/aboutus";
 import WebsiteLayout from "../shared/layouts/WebsiteLayout";
+import CommitteePage from "../modules/website/pages/committee/CommitteePage";
 const AppRoutes = () => {
   function RequireAuth({ children }) {
   const token = localStorage.getItem('adminToken')
@@ -29,7 +30,7 @@ const AppRoutes = () => {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about-us" element={<AboutUs />} />
        <Route path="/blogs/*" element={<BlogRoutes />} />
-
+<Route path="/committee" element={<CommitteePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

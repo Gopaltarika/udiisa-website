@@ -106,9 +106,9 @@ const CommitteeCard = ({ member, index }) => {
       <div style={{ position: 'absolute', bottom: -32, left: -32, width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,173,92,0.08) 0%,transparent 70%)', pointerEvents: 'none' }} />
 
       {/* Number badge */}
-      <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, width: 28, height: 28, borderRadius: '50%', background: highlight ? 'linear-gradient(135deg,#F05A1A,#FF9D42)' : 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: highlight ? '0 4px 10px rgba(240,90,26,0.35)' : 'none' }}>
+      {/* <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, width: 28, height: 28, borderRadius: '50%', background: highlight ? 'linear-gradient(135deg,#F05A1A,#FF9D42)' : 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: highlight ? '0 4px 10px rgba(240,90,26,0.35)' : 'none' }}>
         <span style={{ fontSize: 9.5, fontWeight: 900, color: '#fff' }}>{String(member.id).padStart(2, '0')}</span>
-      </div>
+      </div> */}
 
       {/* Verified icon */}
       <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
@@ -381,23 +381,6 @@ const MembersData = () => {
               <div style={{ padding: 40, textAlign: 'center', color: '#64748b', fontSize: 14 }}>Loading…</div>
             ) : (
               <>
-            {/* Stats strip */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 32 }}
-              className="stats-strip">
-              <style>{`.stats-strip { grid-template-columns: repeat(4,1fr); } @media(max-width:640px){ .stats-strip{ grid-template-columns: repeat(2,1fr) !important; } }`}</style>
-              {[
-                { label: 'Total Members',    value: managingCommittee.length },
-                { label: 'Office Bearers',   value: 5 },
-                { label: 'Exec. Members',    value: 3 },
-                { label: 'States Covered',   value: 12 },
-              ].map(s => (
-                <div key={s.label} style={{ background: '#fff', border: '1.5px solid #e8ecf4', borderRadius: 16, padding: '18px 16px', textAlign: 'center', boxShadow: '0 2px 10px rgba(11,30,75,0.06)' }}>
-                  <div style={{ fontFamily: "'Bebas Neue',cursive", fontSize: 34, letterSpacing: 1, color: '#F05A1A', lineHeight: 1 }}>{s.value}</div>
-                  <div style={{ fontSize: 10.5, fontWeight: 600, color: '#94a3b8', marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.8px' }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-
             {/* ── 4-column card grid ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 18 }} className="committee-grid">
               <style>{`

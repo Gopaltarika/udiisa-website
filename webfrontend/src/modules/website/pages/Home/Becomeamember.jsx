@@ -17,8 +17,8 @@ const BecomeAMember = () => {
   const selectedLabel = memberTypes.find(m => m.value === selected)?.label
 
   const routeMap = {
-    special: "/members/special-members",
-    general: "/members/general-members",
+    special: "/membership/special-member",
+    general: "/membership/general-member",
   };
   const navigate = useNavigate();
   const handleSubmit = () => {

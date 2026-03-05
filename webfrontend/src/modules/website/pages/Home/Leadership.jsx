@@ -92,7 +92,7 @@ const Leadership = () => {
 
               {/* Description */}
               <p className="text-[rgba(255,255,255,.7)] !m-0 !mb-[0px] w-full leading-[1.8] sm:leading-[1.85] text-[clamp(13px,1.5vw,15.5px)]">
-              He is also co-founder and Chairman of A-One Steel Group. He is proactive in providing assistance to the talented and gifted players in recognized way at all level in sports mission. He lends his expertise to each significant aspect in growing up the managing of Association, strategy, operations and finance objectives. He is responsible for the successful leadership and management of Association which is registered under section 8 of company Act. He implements comprehensive industry plans in sports, enhances the company culture, and ensures a safe working environment for unpleasing dreams industry, for creating future champions, in sports.
+                   He is also the Co-Founder and Chairman of A-One Steel Group. He is proactive in providing assistance to talented and gifted players in a recognized manner at all levels in the sports mission. He lends his expertise to each significant aspect of managing the Association, including strategy, operations, and finance objectives. He is responsible for the successful leadership and management of the Association, which is registered under Section 8 of the Companies Act. He implements comprehensive industry plans in sports, enhances the organizational culture, and ensures a safe working environment for the Unpleasing Dreams industry, with the aim of creating future champions in sports.
               </p>
 
             </div>

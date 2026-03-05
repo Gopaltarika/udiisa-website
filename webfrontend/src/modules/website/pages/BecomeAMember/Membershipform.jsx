@@ -721,9 +721,9 @@ const SpecialPanel = () => (
         <div className="flex items-start !gap-[10px] !p-[15px] rounded-[14px] bg-[#FFF3EC] border border-[rgba(240,90,26,0.2)]">
             <FaShieldAlt className="text-[#F05A1A] text-[15px] flex-shrink-0 !mt-[1px]" />
             <div>
-                <p className="text-[12px] font-extrabold text-[#0B1E4B] !m-0 !mb-[3px]">Application Review Process</p>
+                <p className="text-[12px] font-extrabold text-[#0B1E4B] !m-0 !mb-[3px]">Note: </p>
                 <p className="text-[12px] text-slate-500 !m-0 leading-[1.6]">
-                    Applications are reviewed by the Managing Committee. You will be notified via email within <strong className="text-[#0B1E4B]">7 working days</strong>.
+                   All submitted data is secured with industry-grade encryption to protect your privacy.
                 </p>
             </div>
         </div>
@@ -1104,8 +1104,8 @@ const SpecialForm = () => {
                 </Field>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 !gap-[14px]">
-                    <Field label="Designation / Role" required>
-                        <Input type="text" placeholder="e.g. Managing Director" value={form.designation} err={errors.designation} onChange={e => { set('designation', e.target.value); clrErr('designation') }} />
+                    <Field label="Mobile Number" required>
+                        <Input type="number" placeholder="+91 9876543210" value={form.designation} err={errors.designation} onChange={e => { set('designation', e.target.value); clrErr('designation') }} />
                         <Err msg={errors.designation} />
                     </Field>
                     <Field label="Organization / Company" required>
@@ -1113,20 +1113,14 @@ const SpecialForm = () => {
                         <Err msg={errors.organization} />
                     </Field>
                 </div>
-
+ <Field label="Aadhaar Number" required>
+                        <Input type="number" placeholder="e.g. 1234 5678 9012" value={form.aadhar} err={errors.aadhar} onChange={e => { set('aadhar', e.target.value); clrErr('aadhar') }} />
+                        <Err msg={errors.aadhar} />
+                    </Field>
                 <Field label="Full Address" required>
                     <Input type="text" placeholder="House No., Street, Area, City, State – PIN Code" value={form.fullAddress} err={errors.fullAddress} onChange={e => { set('fullAddress', e.target.value); clrErr('fullAddress') }} />
                     <Err msg={errors.fullAddress} />
                 </Field>
-
-                <Field label="LinkedIn / Website (Optional)">
-                    <Input type="url" placeholder="https://linkedin.com/in/yourprofile" value={form.linkedin} onChange={e => set('linkedin', e.target.value)} />
-                </Field>
-
-                <Field label="Contribution to Sports (Optional)" hint="Briefly describe how you have contributed or plan to contribute to sports development in India">
-                    <Textarea rows={3} placeholder="Describe your contributions…" value={form.contribution} onChange={e => set('contribution', e.target.value)} />
-                </Field>
-
                 <Field label="Message to Committee (Optional)">
                     <Textarea rows={3} placeholder="Any message for the Managing Committee…" value={form.message} onChange={e => set('message', e.target.value)} />
                 </Field>

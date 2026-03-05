@@ -5,8 +5,8 @@ import lakshaya     from "@/assets/images/lakshaya.jpeg"
 import udita        from "@/assets/images/udita.jpeg"
 
 const promoters = [
-  { id: 1, name: 'Sh. Chander Kanta', role: 'Senior Founder & Promoter', img: chanderkanta },
-  { id: 2, name: 'Mr. Lakshaya',      role: 'Young Founder & Promoter',  img: lakshaya     },
+  { id: 1, name: 'Sh. Chander Kanta', role: 'Senior  Promoter', img: chanderkanta },
+  { id: 2, name: 'Mr. Lakshaya',      role: 'Young Promoter',  img: lakshaya     },
   { id: 3, name: 'Miss Udita',        role: 'Young Promoter',            img: udita        },
 ]
 

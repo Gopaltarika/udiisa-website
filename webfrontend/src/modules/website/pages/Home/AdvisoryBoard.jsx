@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 import { FaArrowRight, FaTimes } from 'react-icons/fa'
-import suniljalan from "@/assets/images/sunil-jalan.jpeg"
+import suniljalan from "@/assets/images/satishkumarjain.jpeg"
 import sureshjindal from "@/assets/images/suresh-jindal.jpeg"
 
 const chairmen = [
   {
-    name: 'Mr. Sunil Jalan',
+    name: 'Mr. satish kumar jain',
     role: 'Advisory Board Chairman',
     roleBadge: 'Chairman',
     desc: 'Whole time Chairman, Advisory Board. UDIISA.',
     img: suniljalan,
     modalTitle: 'Whole time Chairman, Advisory Board. UDIISA.',
     modalContent: [
-      'He is also co-founder and Chairman of A-One Steel Group. He is proactive in providing assistance to the talented and gifted players in recognized way at all level in sports mission. He lends his expertise to each significant aspect in growing up the managing of Association, strategy, operations and finance objectives. He is responsible for the successful leadership and management of Association which is registered under section 8 of company Act. He implements comprehensive industry plans in sports, enhances the company culture, and ensures a safe working environment for unpleasing dreams industry, for creating future champions, in sports.',
+      'Mr. Satish Kumar Jain, aged 76 years, is a prominent and proactive personality who transformed his vision into quality construction work by implementing the latest techniques and developing large-scale buildings into reality at project sites. He has instilled strong values of ethical leadership, responsible decision-making, and a culture of healthy governance. He firmly believes in the theory of Karma and hard work and continues to apply his wisdom and vision in all his endeavors. A devoted follower of Jainism, he is deeply committed to nurturing excellence among talented and gifted sports players. He also dedicates his hard-earned resources to noble causes and charitable activities for the betterment of society.',
     ],
   },
   {

@@ -114,7 +114,7 @@ const SportsCommittee = () => {
                 letterSpacing: 3, lineHeight: 1.05, color: '#0B1E4B',
               }}
             >
-              Sports <span style={{ color: '#F05A1A' }}>Committee</span> Of UDIISA
+              Sports <span style={{ color: '#F05A1A' }}>Members</span> Of UDIISA
             </h2>
 
             <div

@@ -3,15 +3,11 @@ import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import deepakgarg   from "@/assets/images/deepak-garg.jpeg"
 import manishgupta  from "@/assets/images/manish-gupta.jpeg"
-import sahiljindal  from "@/assets/images/sahil-jindal.jpeg"
-import ankurjain    from "@/assets/images/ankur-jain.jpeg"
 import shyamsunder  from "@/assets/images/shyam-sunder.jpeg"
 
 const members = [
   { id: 1, name: 'Mr. Deepak Garg',        role: 'Chairman',       isOrange: true,  img: deepakgarg  },
   { id: 2, name: 'Mr. Manish Gupta',        role: 'Vice Chairman',  isOrange: true,  img: manishgupta },
-  { id: 3, name: 'Mr. Sahil Jindal',        role: 'Joint Secretary',isOrange: false, img: sahiljindal },
-  { id: 4, name: 'Mr. Ankur Jain',          role: 'Secretary',      isOrange: true,  img: ankurjain   },
   { id: 5, name: 'Mr. Shyam Sunder Kocher', role: 'Treasurer',      isOrange: false, img: shyamsunder },
 ]
 
@@ -99,11 +95,11 @@ const ManagingCommittee = () => {
 
           {/* ── Cards Grid ── */}
           {/* Mobile: 2-col | sm: 3-col | lg: 5-col */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 !gap-[10px] sm:!gap-[14px] lg:!gap-[20px] !mb-[24px] sm:!mb-[32px] lg:!mb-[40px]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 !gap-[10px] sm:!gap-[14px] lg:!gap-[20px] !mb-[24px] sm:!mb-[32px] lg:!mb-[40px] justify-items-center justify-center place-items-center">
             {members.slice(0, 5).map((m) => (
               <div
                 key={m.id}
-                className="mc-card flex flex-col items-center text-center bg-white rounded-[14px] sm:rounded-[18px] lg:rounded-[20px] !p-[8px] sm:!p-[10px] lg:!p-[12px] shadow-[0_4px_16px_rgba(11,30,75,.07)] border border-slate-100"
+                className="mc-card max-w-[330px] flex flex-col items-center text-center bg-white rounded-[14px] sm:rounded-[18px] lg:rounded-[20px] !p-[8px] sm:!p-[10px] lg:!p-[12px] shadow-[0_4px_16px_rgba(11,30,75,.07)] border border-slate-100"
               >
                 {/* Photo */}
                 <div
