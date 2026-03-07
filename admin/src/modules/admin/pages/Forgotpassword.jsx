@@ -1,16 +1,19 @@
 // admin/pages/ForgotPassword.jsx
 //
 // Flow:
-//   Step 1 — Enter 6-digit OTP sent to the email (passed via router state)
-//   Step 2 — Enter new password + confirm password
+//   Step 1 — Enter email address to receive OTP
+//   Step 2 — Enter 6-digit OTP sent to the email
+//   Step 3 — Enter new password + confirm password
+//   Step 4 — Done
 //
 // API wiring (replace mock calls):
+//   authService.sendOtp(email)                     → POST /admin/auth/send-otp
 //   authService.verifyOtp(email, otp)              → POST /admin/auth/verify-otp
 //   authService.resetPassword(email, otp, newPass) → POST /admin/auth/reset-password
 
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { FaLock, FaEye, FaEyeSlash, FaArrowLeft, FaCheckCircle } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
+import { FaLock, FaEye, FaEyeSlash, FaArrowLeft, FaCheckCircle, FaEnvelope } from 'react-icons/fa'
 import { MdSecurity } from 'react-icons/md'
 import { useAdminToast } from '../hooks/ToastContext'
 
@@ -83,20 +86,20 @@ function OtpBox({ value, inputRef, onChange, onKeyDown, onPaste }) {
 
 // ─── MAIN PAGE ─────────────────────────────────────────────────────────────────
 export default function ForgotPassword() {
-  const toast    = useAdminToast()
+  const _toast   = useAdminToast()
+  const toast    = {
+    success: (msg) => _toast?.success?.(msg),
+    error:   (msg) => _toast?.error?.(msg),
+  }
   const navigate = useNavigate()
-  const location = useLocation()
 
-  // Email passed from Settings page via navigate state
-  const email = location.state?.email || ''
+  // ── Step: 'email' | 'otp' | 'reset' | 'done' ──
+  const [step, setStep] = useState('email')  // FIX: was 'otp' — must start at 'email'
 
-  // Redirect back if accessed directly without email
-  useEffect(() => {
-    if (!email) navigate('/admin/settings', { replace: true })
-  }, [email, navigate])
-
-  // ── Step: 'otp' | 'reset' | 'done' ──
-  const [step, setStep] = useState('otp')
+  // ── Email state ──
+  const [email,      setEmail]      = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [emailBusy,  setEmailBusy]  = useState(false)
 
   // ── OTP state ──
   const OTP_LENGTH = 6
@@ -104,7 +107,7 @@ export default function ForgotPassword() {
   const [otpError,   setOtpError]   = useState('')
   const [otpBusy,    setOtpBusy]    = useState(false)
   const [resendBusy, setResendBusy] = useState(false)
-  const [resendCool, setResendCool] = useState(0)   // countdown seconds
+  const [resendCool, setResendCool] = useState(0)
   const otpRefs = useRef([])
 
   // ── Password state ──
@@ -121,6 +124,29 @@ export default function ForgotPassword() {
     const t = setTimeout(() => setResendCool(c => c - 1), 1000)
     return () => clearTimeout(t)
   }, [resendCool])
+
+  // ── Send OTP to email ──
+  // FIX: setStep called inside finally AFTER setEmailBusy(false) to avoid React batching issues
+  const handleSendOtp = async () => {
+    if (!email.trim()) { setEmailError('Enter your email address'); return }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEmailError('Enter a valid email address'); return }
+    setEmailBusy(true)
+    let success = false
+    try {
+      // await authService.sendOtp(email)   ← replace with real call
+      await new Promise(r => setTimeout(r, 800)) // mock
+      toast.success('OTP sent! Check your email.')
+      success = true
+    } catch {
+      toast.error('Failed to send OTP')
+    } finally {
+      setEmailBusy(false)
+      if (success) {
+        setResendCool(60)
+        setStep('otp')
+      }
+    }
+  }
 
   // ── OTP box handlers ──
   const handleOtpChange = (i, val) => {
@@ -156,20 +182,25 @@ export default function ForgotPassword() {
   }
 
   // ── Verify OTP ──
+  // FIX: same pattern — setStep after busy flag cleared in finally
   const handleVerifyOtp = async () => {
     const code = otp.join('')
     if (code.length < OTP_LENGTH) { setOtpError('Please enter all 6 digits'); return }
     setOtpBusy(true)
+    let success = false
     try {
       // await authService.verifyOtp(email, code)   ← replace with real call
       await new Promise(r => setTimeout(r, 800))  // mock
       toast.success('OTP verified!')
-      setStep('reset')
+      success = true
     } catch (err) {
       setOtpError(err?.response?.data?.message || 'Invalid or expired OTP')
       setOtp(Array(OTP_LENGTH).fill(''))
       otpRefs.current[0]?.focus()
-    } finally { setOtpBusy(false) }
+    } finally {
+      setOtpBusy(false)
+      if (success) setStep('reset')
+    }
   }
 
   // ── Resend OTP ──
@@ -182,32 +213,48 @@ export default function ForgotPassword() {
       setOtp(Array(OTP_LENGTH).fill(''))
       setOtpError('')
       setResendCool(60)
-      otpRefs.current[0]?.focus()
-    } catch { toast.error('Failed to resend OTP') }
-    finally { setResendBusy(false) }
+      setTimeout(() => otpRefs.current[0]?.focus(), 50)
+    } catch {
+      toast.error('Failed to resend OTP')
+    } finally {
+      setResendBusy(false)
+    }
   }
 
   // ── Reset password ──
+  // FIX: same pattern — setStep after busy flag cleared in finally
   const handleResetPassword = async () => {
     const err = {}
-    if (!newPass)                       err.newPass     = 'New password required'
-    if (newPass && newPass.length < 6)  err.newPass     = 'Minimum 6 characters'
-    if (!confirmPass)                   err.confirmPass = 'Please confirm password'
-    if (newPass !== confirmPass)        err.confirmPass = 'Passwords do not match'
+    if (!newPass)                      err.newPass     = 'New password required'
+    if (newPass && newPass.length < 6) err.newPass     = 'Minimum 6 characters'
+    if (!confirmPass)                  err.confirmPass = 'Please confirm password'
+    if (newPass !== confirmPass)       err.confirmPass = 'Passwords do not match'
     if (Object.keys(err).length) { setPassErrors(err); return }
 
     setResetBusy(true)
+    let success = false
     try {
       // await authService.resetPassword(email, otp.join(''), newPass)  ← replace
       await new Promise(r => setTimeout(r, 900)) // mock
-      setStep('done')
+      success = true
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Failed to reset password')
-    } finally { setResetBusy(false) }
+    } finally {
+      setResetBusy(false)
+      if (success) setStep('done')
+    }
   }
 
   // ── Masked email display ──
   const maskedEmail = email.replace(/(.{2}).+(@.+)/, '$1***$2')
+
+  // ── Step meta ──
+  const stepsMeta = [
+    { key: 'email', label: 'Enter Email'  },
+    { key: 'otp',   label: 'Verify OTP'   },
+    { key: 'reset', label: 'New Password' },
+  ]
+  const stepIndex = { email: 0, otp: 1, reset: 2, done: 3 }
 
   // ─────────────────────────────────────────────────────────────────────────────
   return (
@@ -229,11 +276,13 @@ export default function ForgotPassword() {
               </div>
               <div>
                 <h2 className="text-[18px] font-extrabold text-[#0B1E4B] m-0 leading-tight">
+                  {step === 'email' && 'Forgot Password'}
                   {step === 'otp'   && 'Verify OTP'}
                   {step === 'reset' && 'Reset Password'}
                   {step === 'done'  && 'All Done!'}
                 </h2>
                 <p className="text-[12px] text-slate-400 m-0 mt-[3px]">
+                  {step === 'email' && 'Enter your email to receive an OTP'}
                   {step === 'otp'   && `Code sent to ${maskedEmail}`}
                   {step === 'reset' && 'Create your new password'}
                   {step === 'done'  && 'Your password has been updated'}
@@ -244,21 +293,22 @@ export default function ForgotPassword() {
             {/* ── Step indicator ── */}
             {step !== 'done' && (
               <div className="flex items-center gap-[8px] mb-[28px]">
-                {['otp', 'reset'].map((s, i) => {
-                  const isActive   = step === s
-                  const isComplete = (step === 'reset' && s === 'otp')
+                {stepsMeta.map((s, i) => {
+                  const currentIdx = stepIndex[step]
+                  const isActive   = step === s.key
+                  const isComplete = currentIdx > i
                   return (
-                    <div key={s} className="flex items-center gap-[8px] flex-1">
+                    <div key={s.key} className="flex items-center gap-[8px] flex-1">
                       <div className={`
                         flex items-center justify-center w-[26px] h-[26px] rounded-full text-[11px] font-extrabold flex-shrink-0 transition-all duration-300
                         ${isComplete ? 'bg-emerald-500 text-white' : isActive ? 'bg-[#F05A1A] text-white shadow-[0_2px_8px_rgba(240,90,26,.4)]' : 'bg-slate-100 text-slate-400'}
                       `}>
                         {isComplete ? <FaCheckCircle className="text-[12px]" /> : i + 1}
                       </div>
-                      <span className={`text-[11.5px] font-bold transition-colors ${isActive ? 'text-[#0B1E4B]' : isComplete ? 'text-emerald-600' : 'text-slate-400'}`}>
-                        {s === 'otp' ? 'Verify OTP' : 'New Password'}
+                      <span className={`text-[11.5px] font-bold transition-colors whitespace-nowrap ${isActive ? 'text-[#0B1E4B]' : isComplete ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {s.label}
                       </span>
-                      {i === 0 && (
+                      {i < stepsMeta.length - 1 && (
                         <div className={`flex-1 h-[2px] rounded-full transition-colors duration-300 ${isComplete ? 'bg-emerald-400' : 'bg-slate-100'}`} />
                       )}
                     </div>
@@ -268,11 +318,55 @@ export default function ForgotPassword() {
             )}
 
             {/* ════════════════════════════════════════
-                STEP 1 — OTP
+                STEP 1 — Email
+            ════════════════════════════════════════ */}
+            {step === 'email' && (
+              <div className="flex flex-col gap-[20px]">
+                <p className="text-[13px] text-slate-500 leading-relaxed m-0">
+                  Enter the <span className="font-bold text-[#0B1E4B]">admin email address</span> associated with your account. We'll send you a verification code.
+                </p>
+
+                <div className="flex flex-col gap-[6px]">
+                  <label className="text-[11.5px] font-extrabold text-[#0B1E4B] uppercase tracking-wider">
+                    Email Address <span className="text-[#F05A1A]">*</span>
+                  </label>
+                  <div className="relative">
+                    <FaEnvelope className="absolute left-[13px] top-1/2 -translate-y-1/2 text-slate-400 text-[12px] pointer-events-none" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => { setEmail(e.target.value); setEmailError('') }}
+                      onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
+                      placeholder="Enter your admin email"
+                      className={`
+                        w-full h-[44px] pl-[36px] pr-[12px] rounded-[10px]
+                        border bg-white text-[13.5px] font-medium text-slate-700
+                        placeholder:text-slate-300
+                        focus:outline-none focus:border-[#F05A1A] focus:ring-2 focus:ring-[#F05A1A]/10
+                        transition-all duration-200
+                        ${emailError ? 'border-red-400 bg-red-50' : 'border-slate-200'}
+                      `}
+                    />
+                  </div>
+                  {emailError && <p className="text-[11.5px] text-red-500 font-medium mt-[2px]">{emailError}</p>}
+                </div>
+
+                <button
+                  onClick={handleSendOtp}
+                  disabled={emailBusy}
+                  className="w-full h-[46px] rounded-[12px] bg-gradient-to-r from-[#0B1E4B] to-[#152B6B] text-white text-[14px] font-extrabold flex items-center justify-center gap-[8px] hover:shadow-[0_4px_18px_rgba(11,30,75,.35)] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+                >
+                  {emailBusy ? <Spinner /> : <FaEnvelope className="text-[12px]" />}
+                  {emailBusy ? 'Sending OTP…' : 'Send OTP'}
+                </button>
+              </div>
+            )}
+
+            {/* ════════════════════════════════════════
+                STEP 2 — OTP
             ════════════════════════════════════════ */}
             {step === 'otp' && (
               <div className="flex flex-col gap-[20px]">
-
                 <p className="text-[13px] text-slate-500 leading-relaxed m-0">
                   Enter the <span className="font-bold text-[#0B1E4B]">6-digit OTP</span> we sent to{' '}
                   <span className="font-bold text-[#F05A1A]">{maskedEmail}</span>
@@ -325,15 +419,14 @@ export default function ForgotPassword() {
             )}
 
             {/* ════════════════════════════════════════
-                STEP 2 — New Password
+                STEP 3 — New Password
             ════════════════════════════════════════ */}
             {step === 'reset' && (
               <div className="flex flex-col gap-[16px]">
-
                 <PasswordInput
                   label="New Password"
                   value={newPass}
-                  onChange={e => { setNewPass(e.target.value); setPassErrors(p => ({...p, newPass:''})) }}
+                  onChange={e => { setNewPass(e.target.value); setPassErrors(p => ({ ...p, newPass: '' })) }}
                   show={showNew}
                   onToggle={() => setShowNew(p => !p)}
                   placeholder="Enter new password (min 6 chars)"
@@ -343,7 +436,7 @@ export default function ForgotPassword() {
                 <PasswordInput
                   label="Confirm New Password"
                   value={confirmPass}
-                  onChange={e => { setConfirmPass(e.target.value); setPassErrors(p => ({...p, confirmPass:''})) }}
+                  onChange={e => { setConfirmPass(e.target.value); setPassErrors(p => ({ ...p, confirmPass: '' })) }}
                   show={showConfirm}
                   onToggle={() => setShowConfirm(p => !p)}
                   placeholder="Re-enter new password"
@@ -353,14 +446,18 @@ export default function ForgotPassword() {
                 {/* Password strength hint */}
                 {newPass.length > 0 && (
                   <div className="flex gap-[4px] mt-[-4px]">
-                    {[1,2,3,4].map(n => {
-                      const strength = newPass.length >= 10 && /[A-Z]/.test(newPass) && /\d/.test(newPass) && /[^A-Za-z0-9]/.test(newPass) ? 4
-                                     : newPass.length >= 8  && /[A-Z\d]/.test(newPass) ? 3
-                                     : newPass.length >= 6  ? 2 : 1
-                      const color = strength >= 4 ? 'bg-emerald-500'
-                                  : strength >= 3 ? 'bg-yellow-400'
-                                  : strength >= 2 ? 'bg-orange-400' : 'bg-red-400'
-                      return <div key={n} className={`flex-1 h-[3px] rounded-full transition-all ${n <= strength ? color : 'bg-slate-100'}`} />
+                    {[1, 2, 3, 4].map(n => {
+                      const strength =
+                        newPass.length >= 10 && /[A-Z]/.test(newPass) && /\d/.test(newPass) && /[^A-Za-z0-9]/.test(newPass) ? 4
+                        : newPass.length >= 8 && /[A-Z\d]/.test(newPass) ? 3
+                        : newPass.length >= 6 ? 2 : 1
+                      const color =
+                        strength >= 4 ? 'bg-emerald-500'
+                        : strength >= 3 ? 'bg-yellow-400'
+                        : strength >= 2 ? 'bg-orange-400' : 'bg-red-400'
+                      return (
+                        <div key={n} className={`flex-1 h-[3px] rounded-full transition-all ${n <= strength ? color : 'bg-slate-100'}`} />
+                      )
                     })}
                   </div>
                 )}
@@ -377,7 +474,7 @@ export default function ForgotPassword() {
             )}
 
             {/* ════════════════════════════════════════
-                STEP 3 — Done
+                STEP 4 — Done
             ════════════════════════════════════════ */}
             {step === 'done' && (
               <div className="flex flex-col items-center gap-[16px] py-[8px]">
@@ -387,7 +484,7 @@ export default function ForgotPassword() {
                 <div className="text-center">
                   <p className="text-[15px] font-extrabold text-[#0B1E4B] m-0">Password Reset Successful</p>
                   <p className="text-[13px] text-slate-400 m-0 mt-[6px] leading-relaxed">
-                    Your password has been updated.<br/>You can now log in with your new password.
+                    Your password has been updated.<br />You can now log in with your new password.
                   </p>
                 </div>
                 <button
@@ -405,10 +502,15 @@ export default function ForgotPassword() {
         {/* Back link */}
         {step !== 'done' && (
           <button
-            onClick={() => navigate('/admin/settings')}
+            onClick={() => {
+              if (step === 'email') navigate('/admin/login')
+              else if (step === 'otp') setStep('email')
+              else if (step === 'reset') setStep('otp')
+            }}
             className="mt-[16px] mx-auto flex items-center gap-[6px] text-[12.5px] text-slate-400 hover:text-[#0B1E4B] font-semibold transition-colors"
           >
-            <FaArrowLeft className="text-[11px]" /> Back to Settings
+            <FaArrowLeft className="text-[11px]" />
+            {step === 'email' ? 'Back to Login' : 'Back'}
           </button>
         )}
       </div>

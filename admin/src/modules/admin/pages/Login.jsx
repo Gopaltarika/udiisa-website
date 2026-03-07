@@ -155,7 +155,7 @@ export default function Login() {
 
           <p className="text-center text-[12px] text-slate-400">
             Forgot password?{' '}
-            <a href="/admin/settings" className="text-[#F05A1A] font-bold hover:underline">
+            <a href="/admin/forgot-password" className="text-[#F05A1A] font-bold hover:underline">
               Reset here
             </a>
           </p>

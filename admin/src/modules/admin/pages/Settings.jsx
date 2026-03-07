@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   FaLock, FaEye, FaEyeSlash,
-  FaSignOutAlt, FaKey, FaEnvelope,
+  FaSignOutAlt, FaKey,
 } from 'react-icons/fa'
 import { MdSecurity } from 'react-icons/md'
 import PageHeader from '../components/PageHeader'
@@ -53,9 +53,6 @@ export default function Settings() {
   const [errors, setErrors] = useState({})
   const [saving, setSaving] = useState(false)
 
-  const [forgotEmail,  setForgotEmail]  = useState('')
-  const [forgotSaving, setForgotSaving] = useState(false)
-
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm(f => ({ ...f, [name]: value }))
@@ -84,21 +81,6 @@ export default function Settings() {
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Failed to change password')
     } finally { setSaving(false) }
-  }
-
-  // Send OTP to email, then navigate to ForgotPassword page
-  const handleForgotPassword = async () => {
-    if (!forgotEmail.trim()) { toast.error('Enter your email address'); return }
-    setForgotSaving(true)
-    try {
-      // await authService.sendOtp(forgotEmail)   ← replace with real call
-      await new Promise(r => setTimeout(r, 800)) // mock
-      toast.success('OTP sent! Check your email.')
-      // Pass email via route state so ForgotPassword page knows which address was used
-      navigate('/admin/forgot-password', { state: { email: forgotEmail } })
-    } catch {
-      toast.error('Failed to send OTP')
-    } finally { setForgotSaving(false) }
   }
 
   const handleLogout = () => {
@@ -148,49 +130,17 @@ export default function Settings() {
             <SubmitBtn loading={saving} onClick={handleChangePassword}>
               <FaKey className="text-[11px]" /> Update Password
             </SubmitBtn>
+             <p className="text-center text-[12px] text-slate-400">
+            Forgot password?{' '}
+            <a href="/admin/forgot-password" className="text-[#F05A1A] font-bold hover:underline">
+              Reset here
+            </a>
+          </p>
           </div>
         </div>
 
         {/* ── Right column ── */}
         <div className="flex flex-col gap-[20px]">
-
-          {/* Forgot Password */}
-          <div className="bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_18px_rgba(11,30,75,0.07)] p-[24px]">
-            <div className="flex items-center gap-[10px] mb-[18px]">
-              <div className="w-[38px] h-[38px] rounded-[10px] bg-[#FFF3EC] flex items-center justify-center">
-                <FaEnvelope className="text-[#F05A1A] text-[15px]" />
-              </div>
-              <div>
-                <h3 className="text-[15px] font-extrabold text-[#0B1E4B] m-0">Forgot Password?</h3>
-                <p className="text-[12px] text-slate-400 m-0">Enter email to receive an OTP</p>
-              </div>
-            </div>
-
-            <div className="flex gap-[10px]">
-              <div className="relative flex-1">
-                <FaEnvelope className="absolute left-[12px] top-1/2 -translate-y-1/2 text-slate-400 text-[12px] pointer-events-none" />
-                <input
-                  type="email"
-                  value={forgotEmail}
-                  onChange={e => setForgotEmail(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleForgotPassword()}
-                  placeholder="Admin email address"
-                  className="w-full h-[42px] pl-[36px] pr-[12px] rounded-[10px] border border-slate-200 bg-white text-[13.5px] font-medium text-slate-700 placeholder:text-slate-300 focus:outline-none focus:border-[#F05A1A] focus:ring-2 focus:ring-[#F05A1A]/10 transition-all"
-                />
-              </div>
-              <button
-                onClick={handleForgotPassword}
-                disabled={forgotSaving}
-                className="px-[18px] h-[42px] rounded-[10px] bg-[#0B1E4B] text-white text-[13px] font-extrabold hover:bg-[#152B6B] disabled:opacity-60 transition-all flex items-center gap-[6px] whitespace-nowrap"
-              >
-                {forgotSaving
-                  ? <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  : <FaEnvelope className="text-[11px]" />
-                }
-                Send OTP
-              </button>
-            </div>
-          </div>
 
           {/* Account Info */}
           <div className="bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_18px_rgba(11,30,75,0.07)] p-[24px]">

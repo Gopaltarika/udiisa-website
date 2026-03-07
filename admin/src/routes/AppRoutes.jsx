@@ -41,8 +41,8 @@ const AppRoutes = () => {
           <Route path="incoming/contacts" element={<IncomingContacts />} />
           <Route path="blogs" element={<Blogs />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
+          <Route path="/admin/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </BrowserRouter>
   );
