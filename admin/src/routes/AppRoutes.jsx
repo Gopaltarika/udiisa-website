@@ -9,7 +9,7 @@ import GeneralMembers from "../modules/admin/pages/members/GeneralMembers";
 import SpecialMembers from "../modules/admin/pages/members/SpecialMembers";
 import IncomingMembers from "../modules/admin/pages/incoming/IncomingMembers";
 import IncomingContacts from "../modules/admin/pages/incoming/IncomingContacts";
-import CommitteeAdmin from "../modules/admin/pages/committee/CommitteeAdmin";
+import CommitteeAdmin from "../modules/admin/pages/committee/Committeeadmin";
 import ForgotPassword from "../modules/admin/pages/Forgotpassword";
 
 const AppRoutes = () => {

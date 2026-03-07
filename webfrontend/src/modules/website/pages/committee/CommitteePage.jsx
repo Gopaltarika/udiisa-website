@@ -1,11 +1,14 @@
 // CommitteePage.jsx — full Tailwind, no inline style
 // Route: /committee
 
-import { useEffect } from "react"
-import { committees } from "./committeeData"
+import { useEffect, useState } from "react"
 import CommitteeSection from "./CommitteeSection"
+import { getPublicCommittees } from "@/shared/services/publicApi"
 
 export default function CommitteePage() {
+  const [committees, setCommittees] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [apiError, setApiError] = useState("")
 
   useEffect(() => {
     const scrollToHash = () => {
@@ -22,6 +25,24 @@ export default function CommitteePage() {
     scrollToHash()
     window.addEventListener("hashchange", scrollToHash)
     return () => window.removeEventListener("hashchange", scrollToHash)
+  }, [])
+
+  useEffect(() => {
+    let active = true
+    const loadCommittees = async () => {
+      setLoading(true)
+      setApiError("")
+      try {
+        const list = await getPublicCommittees()
+        if (active) setCommittees(Array.isArray(list) ? list : [])
+      } catch (err) {
+        if (active) setApiError(err?.response?.data?.message || "Unable to load committees right now.")
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+    loadCommittees()
+    return () => { active = false }
   }, [])
 
   const jumpTo = (slug) => { window.location.hash = slug }
@@ -108,8 +129,26 @@ export default function CommitteePage() {
 
         {/* ── Committee Sections ── */}
         <div className="flex-1 flex flex-col gap-7 min-w-0">
-          {committees.map(committee => (
-            <CommitteeSection key={committee.slug} committee={committee} />
+          {loading && (
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_32px_rgba(11,30,75,.07)] !p-8 text-center text-slate-500 font-[Plus_Jakarta_Sans]">
+              Loading committees...
+            </div>
+          )}
+
+          {!loading && apiError && (
+            <div className="bg-red-50 rounded-3xl border border-red-200 !p-8 text-center text-red-600 font-[Plus_Jakarta_Sans]">
+              {apiError}
+            </div>
+          )}
+
+          {!loading && !apiError && committees.length === 0 && (
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_32px_rgba(11,30,75,.07)] !p-8 text-center text-slate-500 font-[Plus_Jakarta_Sans]">
+              No committees available yet.
+            </div>
+          )}
+
+          {!loading && !apiError && committees.map(committee => (
+            <CommitteeSection key={committee._id || committee.slug} committee={committee} />
           ))}
         </div>
       </div>

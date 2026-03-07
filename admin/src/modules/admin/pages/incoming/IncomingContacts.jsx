@@ -38,7 +38,8 @@ export default function IncomingContacts() {
             name: item.fullName || '—',
             email: item.email || '—',
             phone: item.phone || '—',
-            subject: item.subject || 'Contact Form Submission',
+            // Website contact form sends "Your Message", not a separate subject.
+            subject: item.message || item.subject || '—',
             message: item.message || '—',
             submittedAt: item.createdAt,
           }))

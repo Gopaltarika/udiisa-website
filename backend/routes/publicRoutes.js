@@ -8,6 +8,7 @@ r.get('/blogs', ctrl.getPublicBlogs)
 r.get('/blogs/slug/:slug', ctrl.getPublicBlogBySlug)
 
 // Public members (no auth)
+r.get('/committees', ctrl.getPublicCommittees)
 r.get('/members/committee', ctrl.getPublicCommittee)
 r.get('/members/special', ctrl.getPublicSpecialMembers)
 r.get('/members/general', ctrl.getPublicGeneralMembers)

@@ -9,7 +9,7 @@ import { MdVerified, MdClose, MdGroups } from 'react-icons/md'
 import { HiSparkles, HiArrowRight } from 'react-icons/hi'
 import { BsStarFill, BsBuildingsFill } from 'react-icons/bs'
 import { GiDiamondTrophy, GiLaurelCrown } from 'react-icons/gi'
-import { sendOtp, verifyOtp } from '../../../../shared/services/publicApi'
+import { sendOtp, verifyOtp, submitMemberForm } from '../../../../shared/services/publicApi'
 
 /* ════════════════════════════════════════════════════════
    EXACT MEMBERSHIP DATA FROM SPREADSHEET
@@ -388,8 +388,20 @@ function QueryFormModal({ tabData, onClose }) {
     if (Object.keys(errs).length) { setErrors(errs); return }
     setBusy(true)
     try {
-      // await submitMemberForm({ ...form, category: tabData.id })  ← replace with real API call
-      await new Promise(r => setTimeout(r, 900))
+      const payload = new FormData()
+      payload.append('formType', 'membership-query')
+      payload.append('category', tabData.id)
+      payload.append('fullName', form.fullName.trim())
+      payload.append('email', form.email.trim().toLowerCase())
+      payload.append('phone', form.phone.trim())
+      payload.append('gender', form.gender)
+      payload.append('age', String(form.age))
+      payload.append('address', form.address.trim())
+      payload.append('membershipType', form.membershipType)
+      payload.append('message', form.message.trim())
+      payload.append('termsAccepted', form.terms ? 'true' : 'false')
+
+      await submitMemberForm(payload)
       setSuccess(true)
     } catch (e) {
       setErrors({ submit: e?.response?.data?.message || 'Submission failed. Please try again.' })

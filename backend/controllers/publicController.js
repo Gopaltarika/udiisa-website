@@ -5,6 +5,7 @@
 
 import Blog from '../models/Blog.js'
 import CommitteeMember from '../models/CommitteeMember.js'
+import CommitteeGroup from '../models/CommitteeGroup.js'
 import SpecialMember from '../models/SpecialMember.js'
 import GeneralMember from '../models/GeneralMember.js'
 import Player from '../models/Player.js'
@@ -134,6 +135,34 @@ export const getPublicCommittee = async (req, res) => {
     return res.json(members)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to fetch committee' })
+  }
+}
+
+export const getPublicCommittees = async (req, res) => {
+  try {
+    const list = await CommitteeGroup.find({}).sort({ createdAt: -1 }).lean()
+    const committees = list.map((c) => ({
+      _id: c._id.toString(),
+      slug: c.slug,
+      label: c.label,
+      shortLabel: c.shortLabel,
+      icon: c.icon,
+      role: c.role,
+      description: c.description,
+      cardVariant: c.cardVariant,
+      members: Array.isArray(c.members)
+        ? c.members.map((m) => ({
+            _id: m._id?.toString?.() || null,
+            name: m.name,
+            role: m.role,
+            company: m.company || '',
+            image: m.image || null,
+          }))
+        : [],
+    }))
+    return res.json(committees)
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to fetch committees' })
   }
 }
 

@@ -2,6 +2,10 @@ import GeneralMember from '../models/GeneralMember.js'
 import SpecialMember from '../models/SpecialMember.js'
 import CommitteeMember from '../models/CommitteeMember.js'
 import CommitteeGroup from '../models/CommitteeGroup.js'
+import Blog from '../models/Blog.js'
+import Player from '../models/Player.js'
+import IncomingMember from '../models/IncomingMember.js'
+import IncomingContact from '../models/IncomingContact.js'
 import { uploadImageFromFile } from '../utils/cloudinary.js'
 import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
@@ -328,12 +332,32 @@ export const deleteCommitteeGroupMember = async (req, res) => {
 
 export const getSummary = async (req, res) => {
   try {
-    const [general, special, committee] = await Promise.all([
+    const [general, special, committee, players, blogs, incomingMembers, incomingContacts, committeeGroups] = await Promise.all([
       GeneralMember.countDocuments(),
       SpecialMember.countDocuments(),
       CommitteeMember.countDocuments(),
+      Player.countDocuments(),
+      Blog.countDocuments(),
+      IncomingMember.countDocuments(),
+      IncomingContact.countDocuments(),
+      CommitteeGroup.find({}, { members: 1 }).lean(),
     ])
-    return res.json({ general, special, committee })
+    const committeeGroupMembers = committeeGroups.reduce((acc, c) => acc + (Array.isArray(c.members) ? c.members.length : 0), 0)
+    const committeeTotal = committee + committeeGroupMembers
+
+    return res.json({
+      // Legacy fields
+      general,
+      special,
+      committee: committeeTotal,
+      // Dashboard fields
+      totalMembers: general + special + committeeTotal,
+      totalSpecial: special,
+      totalPlayers: players,
+      totalBlogs: blogs,
+      incomingMembers,
+      incomingContacts,
+    })
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed' })
   }

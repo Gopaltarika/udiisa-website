@@ -38,6 +38,9 @@ export const getPublicBlogBySlug = (slug) =>
 export const getPublicCommittee = () =>
   publicApi.get('/public/members/committee').then((res) => res.data)
 
+export const getPublicCommittees = () =>
+  publicApi.get('/public/committees').then((res) => res.data)
+
 export const getPublicSpecialMembers = () =>
   publicApi.get('/public/members/special').then((res) => res.data)
 

@@ -9,16 +9,14 @@ import Spinner from '../components/Spinner'
 import memberService from '../services/memberService'
 import { useAdminToast } from '../hooks/ToastContext'
 
-// ── Mock data (replace with API) ──────────────────────
-const MOCK_SUMMARY = {
-  totalMembers:       128,
-  totalSpecial:        42,
-  totalPlayers:        67,
-  totalBlogs:          24,
-  incomingMembers:     13,
-  incomingContacts:     8,
+const DEFAULT_SUMMARY = {
+  totalMembers: 0,
+  totalSpecial: 0,
+  totalPlayers: 0,
+  totalBlogs: 0,
+  incomingMembers: 0,
+  incomingContacts: 0,
 }
-// ─────────────────────────────────────────────────────
 
 const CARDS = (d) => [
   {
@@ -117,23 +115,24 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        // ── Real API call ──────────────────────────────
-        // const { data } = await memberService.getSummary()
-        // setSummary(data)
-        // ──────────────────────────────────────────────
-
-        // Mock (remove when API ready)
-        await new Promise(r => setTimeout(r, 600))
-        setSummary(MOCK_SUMMARY)
+        const { data } = await memberService.getSummary()
+        setSummary({
+          totalMembers: data?.totalMembers ?? 0,
+          totalSpecial: data?.totalSpecial ?? 0,
+          totalPlayers: data?.totalPlayers ?? 0,
+          totalBlogs: data?.totalBlogs ?? 0,
+          incomingMembers: data?.incomingMembers ?? 0,
+          incomingContacts: data?.incomingContacts ?? 0,
+        })
       } catch {
         toast.error('Failed to load dashboard data')
-        setSummary(MOCK_SUMMARY) // fallback
+        setSummary(DEFAULT_SUMMARY)
       } finally {
         setLoading(false)
       }
     }
     fetchSummary()
-  }, [])
+  }, [toast])
 
   if (loading) return <Spinner center size="lg" />
 

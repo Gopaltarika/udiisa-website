@@ -1,4 +1,3 @@
-export { default } from './Committeeadmin'
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Ic, Spin, Toast, ConfirmDialog, Btn } from "./Committeeutils"
 import { CommitteeModal, MembersPanel, CommitteeItem } from "./CommitteeComponents"
