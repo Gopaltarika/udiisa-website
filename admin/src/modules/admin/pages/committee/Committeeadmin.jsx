@@ -1,6 +1,8 @@
+export { default } from './Committeeadmin'
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Ic, Spin, Toast, ConfirmDialog, Btn } from "./Committeeutils"
 import { CommitteeModal, MembersPanel, CommitteeItem } from "./CommitteeComponents"
+import memberService from "../../services/memberService"
 
 export default function CommitteeAdmin() {
   const [data,       setData]       = useState([])
@@ -192,39 +194,41 @@ export default function CommitteeAdmin() {
   )
 }
 
-// ════════════════════════════════════════════════════════════════════════════════
-//  MOCK API — Replace with your real API calls (axios/fetch)
-// ════════════════════════════════════════════════════════════════════════════════
-let _db = [
-  {
-    _id:"c1", slug:"managing-community", label:"Managing Community", shortLabel:"Managing",
-    icon:"🏛️", role:"Strategic Leadership & Governance",
-    description:"The apex governing body of UDIISA.", cardVariant:"orange",
-    members:[
-      { _id:"m1", name:"Deepak Garg",         role:"Member", company:"", image:null },
-      { _id:"m2", name:"Manish Gupta",         role:"Member", company:"", image:null },
-      { _id:"m3", name:"Shyam Sunder Kochar", role:"Member", company:"", image:null },
-    ],
-  },
-  {
-    _id:"c2", slug:"sports-community", label:"Sports Community", shortLabel:"Sports",
-    icon:"⚽", role:"Sports Development & Excellence",
-    description:"Drives development of sport at all levels under UDIISA.", cardVariant:"lime",
-    members:[
-      { _id:"m4", name:"Sanjay Bharatwas", role:"Member", company:"", image:null },
-      { _id:"m5", name:"Joginder Sharma",  role:"Member", company:"", image:null },
-    ],
-  },
-]
-let _nid = 200
-const wait = () => new Promise(r => setTimeout(r, 300))
+const pickCommitteePayload = (data = {}) => ({
+  slug: data.slug,
+  label: data.label,
+  shortLabel: data.shortLabel,
+  icon: data.icon,
+  role: data.role,
+  description: data.description,
+  cardVariant: data.cardVariant,
+})
 
 const API = {
-  getAll:       async ()           => { await wait(); return JSON.parse(JSON.stringify(_db)) },
-  create:       async (d)          => { await wait(); const n={...d,_id:`c${++_nid}`,members:[]}; _db.push(n); return n },
-  update:       async (id, d)      => { await wait(); _db=_db.map(c=>c._id===id?{...c,...d}:c); return _db.find(c=>c._id===id) },
-  delete:       async (id)         => { await wait(); _db=_db.filter(c=>c._id!==id) },
-  addMember:    async (cid, d)     => { await wait(); const m={...d,_id:`m${++_nid}`}; _db=_db.map(c=>c._id===cid?{...c,members:[...c.members,m]}:c); return m },
-  updateMember: async (cid,mid, d) => { await wait(); _db=_db.map(c=>c._id===cid?{...c,members:c.members.map(m=>m._id===mid?{...m,...d}:m)}:c) },
-  deleteMember: async (cid, mid)   => { await wait(); _db=_db.map(c=>c._id===cid?{...c,members:c.members.filter(m=>m._id!==mid)}:c) },
+  getAll: async () => {
+    const { data } = await memberService.getCommitteeGroups()
+    return data || []
+  },
+  create: async (d) => {
+    const { data } = await memberService.addCommitteeGroup(pickCommitteePayload(d))
+    return data
+  },
+  update: async (id, d) => {
+    const { data } = await memberService.updateCommitteeGroup(id, pickCommitteePayload(d))
+    return data
+  },
+  delete: async (id) => {
+    await memberService.deleteCommitteeGroup(id)
+  },
+  addMember: async (cid, d) => {
+    const { data } = await memberService.addCommitteeGroupMember(cid, d)
+    return data
+  },
+  updateMember: async (cid, mid, d) => {
+    const { data } = await memberService.updateCommitteeGroupMember(cid, mid, d)
+    return data
+  },
+  deleteMember: async (cid, mid) => {
+    await memberService.deleteCommitteeGroupMember(cid, mid)
+  },
 }

@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaLock, FaEye, FaEyeSlash, FaArrowLeft, FaCheckCircle, FaEnvelope } from 'react-icons/fa'
 import { MdSecurity } from 'react-icons/md'
 import { useAdminToast } from '../hooks/ToastContext'
+import authService from '../services/authService'
 
 // ─── Tiny spinner ─────────────────────────────────────────────────────────────
 const Spinner = () => (
@@ -133,12 +134,11 @@ export default function ForgotPassword() {
     setEmailBusy(true)
     let success = false
     try {
-      // await authService.sendOtp(email)   ← replace with real call
-      await new Promise(r => setTimeout(r, 800)) // mock
+      await authService.sendOtp(email.trim().toLowerCase())
       toast.success('OTP sent! Check your email.')
       success = true
-    } catch {
-      toast.error('Failed to send OTP')
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to send OTP')
     } finally {
       setEmailBusy(false)
       if (success) {
@@ -189,8 +189,7 @@ export default function ForgotPassword() {
     setOtpBusy(true)
     let success = false
     try {
-      // await authService.verifyOtp(email, code)   ← replace with real call
-      await new Promise(r => setTimeout(r, 800))  // mock
+      await authService.verifyOtp(email.trim().toLowerCase(), code)
       toast.success('OTP verified!')
       success = true
     } catch (err) {
@@ -207,15 +206,14 @@ export default function ForgotPassword() {
   const handleResend = async () => {
     setResendBusy(true)
     try {
-      // await authService.sendOtp(email)   ← replace with real call
-      await new Promise(r => setTimeout(r, 800)) // mock
+      await authService.sendOtp(email.trim().toLowerCase())
       toast.success('New OTP sent!')
       setOtp(Array(OTP_LENGTH).fill(''))
       setOtpError('')
       setResendCool(60)
       setTimeout(() => otpRefs.current[0]?.focus(), 50)
-    } catch {
-      toast.error('Failed to resend OTP')
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to resend OTP')
     } finally {
       setResendBusy(false)
     }
@@ -234,8 +232,7 @@ export default function ForgotPassword() {
     setResetBusy(true)
     let success = false
     try {
-      // await authService.resetPassword(email, otp.join(''), newPass)  ← replace
-      await new Promise(r => setTimeout(r, 900)) // mock
+      await authService.resetPassword(email.trim().toLowerCase(), otp.join(''), newPass)
       success = true
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Failed to reset password')

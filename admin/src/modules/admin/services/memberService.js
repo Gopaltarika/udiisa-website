@@ -20,6 +20,15 @@ const memberService = {
   updateCommittee:(id, data)  => api.put(`/members/committee/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
   deleteCommittee:(id)        => api.delete(`/members/committee/${id}`),
 
+  // Committee groups (new committee admin page)
+  getCommitteeGroups:        ()              => api.get('/members/committees'),
+  addCommitteeGroup:         (data)          => api.post('/members/committees', data),
+  updateCommitteeGroup:      (id, data)      => api.put(`/members/committees/${id}`, data),
+  deleteCommitteeGroup:      (id)            => api.delete(`/members/committees/${id}`),
+  addCommitteeGroupMember:   (id, data)      => api.post(`/members/committees/${id}/members`, data),
+  updateCommitteeGroupMember:(id, mid, data) => api.put(`/members/committees/${id}/members/${mid}`, data),
+  deleteCommitteeGroupMember:(id, mid)       => api.delete(`/members/committees/${id}/members/${mid}`),
+
   // Dashboard summary
   getSummary: () => api.get('/members/summary'),
 }

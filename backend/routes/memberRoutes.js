@@ -22,4 +22,12 @@ r.post('/committee', uploadSingle('photo'), ctrl.addCommittee)
 r.put('/committee/:id', uploadSingle('photo'), ctrl.updateCommittee)
 r.delete('/committee/:id', ctrl.deleteCommittee)
 
+r.get('/committees', ctrl.getCommitteeGroups)
+r.post('/committees', ctrl.addCommitteeGroup)
+r.put('/committees/:id', ctrl.updateCommitteeGroup)
+r.delete('/committees/:id', ctrl.deleteCommitteeGroup)
+r.post('/committees/:id/members', ctrl.addCommitteeGroupMember)
+r.put('/committees/:id/members/:memberId', ctrl.updateCommitteeGroupMember)
+r.delete('/committees/:id/members/:memberId', ctrl.deleteCommitteeGroupMember)
+
 export default r

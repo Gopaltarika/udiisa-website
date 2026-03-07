@@ -1,6 +1,7 @@
 import GeneralMember from '../models/GeneralMember.js'
 import SpecialMember from '../models/SpecialMember.js'
 import CommitteeMember from '../models/CommitteeMember.js'
+import CommitteeGroup from '../models/CommitteeGroup.js'
 import { uploadImageFromFile } from '../utils/cloudinary.js'
 import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
@@ -9,6 +10,13 @@ const withImage = (doc, req) => {
   out.photo = toPublicMediaUrl(req, out.photo)
   return out
 }
+
+const normalizeCommitteeMember = (member = {}) => ({
+  name: String(member.name || '').trim(),
+  role: String(member.role || '').trim(),
+  company: String(member.company || '').trim(),
+  image: member.image || null,
+})
 
 // ─── General Members ─────────────────────────────
 export const getGeneralMembers = async (req, res) => {
@@ -195,6 +203,126 @@ export const deleteCommittee = async (req, res) => {
     return res.json({ message: 'Deleted' })
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to delete' })
+  }
+}
+
+// ─── Committee Groups (new admin page) ─────────────────────
+export const getCommitteeGroups = async (req, res) => {
+  try {
+    const list = await CommitteeGroup.find({}).sort({ createdAt: -1 }).lean()
+    return res.json(list)
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to fetch committees' })
+  }
+}
+
+export const addCommitteeGroup = async (req, res) => {
+  try {
+    const payload = req.body || {}
+    const doc = await CommitteeGroup.create({
+      slug: String(payload.slug || '').trim(),
+      label: String(payload.label || '').trim(),
+      shortLabel: String(payload.shortLabel || '').trim(),
+      icon: String(payload.icon || '🏛️').trim(),
+      role: String(payload.role || '').trim(),
+      description: String(payload.description || '').trim(),
+      cardVariant: String(payload.cardVariant || 'orange').trim(),
+      members: [],
+    })
+    return res.status(201).json(doc)
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to add committee' })
+  }
+}
+
+export const updateCommitteeGroup = async (req, res) => {
+  try {
+    const payload = req.body || {}
+    const doc = await CommitteeGroup.findById(req.params.id)
+    if (!doc) return res.status(404).json({ message: 'Not found' })
+
+    if (payload.slug !== undefined) doc.slug = String(payload.slug || '').trim()
+    if (payload.label !== undefined) doc.label = String(payload.label || '').trim()
+    if (payload.shortLabel !== undefined) doc.shortLabel = String(payload.shortLabel || '').trim()
+    if (payload.icon !== undefined) doc.icon = String(payload.icon || '🏛️').trim()
+    if (payload.role !== undefined) doc.role = String(payload.role || '').trim()
+    if (payload.description !== undefined) doc.description = String(payload.description || '').trim()
+    if (payload.cardVariant !== undefined) doc.cardVariant = String(payload.cardVariant || 'orange').trim()
+
+    await doc.save()
+    return res.json(doc)
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to update committee' })
+  }
+}
+
+export const deleteCommitteeGroup = async (req, res) => {
+  try {
+    const doc = await CommitteeGroup.findByIdAndDelete(req.params.id)
+    if (!doc) return res.status(404).json({ message: 'Not found' })
+    return res.json({ message: 'Deleted' })
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to delete committee' })
+  }
+}
+
+export const addCommitteeGroupMember = async (req, res) => {
+  try {
+    const doc = await CommitteeGroup.findById(req.params.id)
+    if (!doc) return res.status(404).json({ message: 'Committee not found' })
+
+    const member = normalizeCommitteeMember(req.body)
+    if (!member.name || !member.role) {
+      return res.status(400).json({ message: 'Member name and role are required' })
+    }
+
+    doc.members.push(member)
+    await doc.save()
+    return res.status(201).json(doc.members[doc.members.length - 1])
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to add member' })
+  }
+}
+
+export const updateCommitteeGroupMember = async (req, res) => {
+  try {
+    const { id, memberId } = req.params
+    const doc = await CommitteeGroup.findById(id)
+    if (!doc) return res.status(404).json({ message: 'Committee not found' })
+
+    const member = doc.members.id(memberId)
+    if (!member) return res.status(404).json({ message: 'Member not found' })
+
+    const payload = req.body || {}
+    if (payload.name !== undefined) member.name = String(payload.name || '').trim()
+    if (payload.role !== undefined) member.role = String(payload.role || '').trim()
+    if (payload.company !== undefined) member.company = String(payload.company || '').trim()
+    if (payload.image !== undefined) member.image = payload.image || null
+
+    if (!member.name || !member.role) {
+      return res.status(400).json({ message: 'Member name and role are required' })
+    }
+
+    await doc.save()
+    return res.json(member)
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to update member' })
+  }
+}
+
+export const deleteCommitteeGroupMember = async (req, res) => {
+  try {
+    const { id, memberId } = req.params
+    const doc = await CommitteeGroup.findById(id)
+    if (!doc) return res.status(404).json({ message: 'Committee not found' })
+
+    const member = doc.members.id(memberId)
+    if (!member) return res.status(404).json({ message: 'Member not found' })
+    member.deleteOne()
+    await doc.save()
+    return res.json({ message: 'Deleted' })
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to delete member' })
   }
 }
 
