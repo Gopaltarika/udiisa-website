@@ -12,7 +12,7 @@ import Promoters from "./Promoters";
 import SpecialMembersSection from "./SpecialMember";
 import SportsCommittee from "./SportsCommittee";
 import WhatWeDo from "./WhatWeDo";
-
+// MONGODB_URI=mongodb+srv://info_db_user:qR2mvJBP6qLRXwQl@cluster0.eb3vukj.mongodb.net/
 const Home = () => {
   return (
     <>
@@ -26,9 +26,9 @@ const Home = () => {
      <SpecialMembersSection />
      <BecomeAMember />
      <GeneralMembers />
-     <ContactUs />
      <SportsCommittee />
      <BlogSection />
+     <ContactUs />
 
     </>
   );

@@ -69,31 +69,91 @@ export function CommitteeModal({ initial, onSave, onClose, saving }) {
 
           {/* Icon + Name */}
           <div className="flex gap-3 items-start">
-            <div className="relative flex-shrink-0">
-              <button
-                onClick={() => setEmojiOpen(p => !p)}
-                className="w-14 h-14 rounded-2xl border-[1.5px] border-slate-200 text-2xl cursor-pointer bg-slate-50 flex items-center justify-center flex-col gap-0.5 hover:bg-slate-100 transition-colors"
-              >
-                {f.icon}
-              </button>
-              <p className="!m-0 !mt-1 text-[10px] text-slate-400 text-center font-[Plus_Jakarta_Sans,sans-serif]">Icon</p>
-              {emojiOpen && (
-                <div className="absolute top-[calc(100%+4px)] left-0 z-20 bg-white rounded-[18px] shadow-[0_12px_40px_rgba(0,0,0,.15)] border border-slate-200 !p-3 grid grid-cols-6 gap-1 w-[230px]">
-                  {EMOJIS.map(em => (
-                    <button
-                      key={em}
-                      onClick={() => { set("icon", em); setEmojiOpen(false) }}
-                      className={`text-xl border-none rounded-lg cursor-pointer !p-1.5 leading-none transition-colors ${f.icon===em ? "bg-[#FFF3EC]" : "bg-transparent hover:bg-slate-100"}`}
-                    >
-                      {em}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+
+<div className="relative w-[50%]">
+
+  {/* ── Label ── */}
+  <p className="!m-0 !mb-1.5 text-[11px] font-extrabold text-[#0B1E4B] uppercase tracking-[1px]">
+    Icon
+  </p>
+
+  {/* ── Trigger button — looks like a select/dropdown ── */}
+  <button
+    type="button"
+    onClick={() => setEmojiOpen(p => !p)}
+    className={`
+      w-full h-[42px] flex items-center justify-between gap-2
+      px-3 rounded-[10px] border-[1.5px] bg-white
+      text-[13.5px] font-medium cursor-pointer
+      transition-all duration-200
+      ${emojiOpen
+        ? 'border-[#F05A1A] ring-2 ring-[#F05A1A]/10'
+        : 'border-slate-200 hover:border-slate-300'}
+    `}
+  >
+    {/* Left: selected emoji + label */}
+    <span className="flex items-center gap-2">
+      <span className="text-[20px] leading-none">{f.icon}</span>
+      <span className="text-[13px] text-slate-500">
+        {f.icon ? 'Change icon' : 'Select an icon'}
+      </span>
+    </span>
+
+    {/* Right: chevron */}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14" height="14" viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" strokeWidth="2.5"
+      strokeLinecap="round" strokeLinejoin="round"
+      className={`text-slate-400 flex-shrink-0 transition-transform duration-200 ${emojiOpen ? 'rotate-180' : ''}`}
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  </button>
+
+  {/* ── Dropdown panel ── */}
+  {emojiOpen && (
+    <div
+      className="
+        absolute top-[calc(100%+6px)] left-0 z-30
+        bg-white rounded-[16px]
+        shadow-[0_12px_40px_rgba(0,0,0,0.13)]
+        border border-slate-200
+        p-3 w-full min-w-[260px]
+      "
+    >
+      {/* Header */}
+      <p className="text-[10.5px] font-extrabold text-slate-400 uppercase tracking-[1px] m-0 mb-2 px-1">
+        Choose an icon
+      </p>
+
+      {/* Grid */}
+      <div className="grid grid-cols-8 gap-1">
+        {EMOJIS.map(em => (
+          <button
+            key={em}
+            type="button"
+            onClick={() => { set("icon", em); setEmojiOpen(false) }}
+            title={em}
+            className={`
+              w-full aspect-square rounded-[8px] text-[18px]
+              flex items-center justify-center
+              border transition-all duration-150 cursor-pointer
+              ${f.icon === em
+                ? 'bg-[#FFF3EC] border-[#F05A1A] shadow-[0_0_0_2px_rgba(240,90,26,.15)]'
+                : 'bg-transparent border-transparent hover:bg-slate-100 hover:border-slate-200'}
+            `}
+          >
+            {em}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
             <Field label="Committee Name *" error={err.label}>
-              <div className="flex-1 min-w-0">
-                <Input value={f.label} onChange={e => set("label", e.target.value)} placeholder="e.g. Managing Community" error={err.label}/>
+              <div className="flex-1 min-w-0 w-full">
+                <Input value={f.label} onChange={e => set("label", e.target.value)} placeholder="e.g. Managing Community" error={err.label} className="w-full"/>
               </div>
             </Field>
           </div>

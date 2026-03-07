@@ -106,7 +106,7 @@ const HeroSection = () => {
         {/* CTA Buttons */}
         <div className="hero-btns flex justify-center flex-wrap !gap-[10px] sm:!gap-[14px] !mb-[36px] sm:!mb-[52px] lg:!mb-[64px] w-full sm:w-auto">
           <a
-            href="/membership"
+            href="/membership/individual-patron"
             className="btn-shine btn-primary flex items-center no-underline transition-all duration-[250ms] !gap-[8px] sm:!gap-[9px] !px-[22px] sm:!px-[34px] !py-[12px] sm:!py-[15px] rounded-[12px] sm:rounded-[14px] text-[13px] sm:text-[15px] font-extrabold text-white"
             style={{
               background: "linear-gradient(135deg,#F05A1A,#FF7D42)",

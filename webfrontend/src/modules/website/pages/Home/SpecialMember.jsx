@@ -106,13 +106,13 @@ function MemberCard({ member, isCenter }) {
         <>
           <div style={{
             position: "absolute", top: -60, right: -60,
-            width: 200, height: 200, borderRadius: "50%",
+            width: 200, height: 150, borderRadius: "50%",
             background: "radial-gradient(circle, rgba(240,90,26,0.18) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
           <div style={{
             position: "absolute", bottom: -40, left: -40,
-            width: 150, height: 150, borderRadius: "50%",
+            width: 150, height: 100, borderRadius: "50%",
             background: "radial-gradient(circle, rgba(255,173,92,0.12) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
@@ -132,7 +132,7 @@ function MemberCard({ member, isCenter }) {
         position: "relative", zIndex: 1,
       }}>
         <div style={{ width: 5, height: 5, borderRadius: "50%", background: isCenter ? "#FFAD5C" : tag.dot }} />
-        {member.tag}
+        Special Member
       </div>
 
       {/* PHOTO */}
@@ -209,37 +209,8 @@ function MemberCard({ member, isCenter }) {
         width: "100%",
         height: 1,
         background: isCenter ? "rgba(255,255,255,0.1)" : "#f1f5f9",
-        marginBottom: 14,
         position: "relative", zIndex: 1,
       }} />
-
-      {/* COMPANY */}
-      <div style={{
-        display: "flex", alignItems: "center", gap: 8,
-        padding: "8px 14px", borderRadius: 12,
-        background: isCenter ? "rgba(255,255,255,0.08)" : "#f8fafc",
-        border: isCenter ? "1px solid rgba(255,255,255,0.1)" : "1px solid #f1f5f9",
-        width: "100%", justifyContent: "center",
-        position: "relative", zIndex: 1,
-      }}>
-        <div style={{
-          width: 28, height: 28, borderRadius: 8,
-          background: isCenter ? "rgba(240,90,26,0.25)" : "#FFF3EC",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0,
-        }}>
-          <FaLinkedin style={{ color: isCenter ? "#FFAD5C" : "#F05A1A", fontSize: 13 }} />
-        </div>
-        <span style={{
-          fontSize: 12, fontWeight: 700,
-          color: isCenter ? "rgba(255,255,255,0.85)" : "#374151",
-          maxWidth: 130,
-          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
-        }}>
-          {member.company}
-        </span>
-      </div>
     </div>
   );
 }
@@ -247,7 +218,7 @@ function MemberCard({ member, isCenter }) {
 export default function SpecialMembersSection() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
-  const [isAutoPlay, setIsAutoPlay] = useState(true);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
   const autoRef = useRef(null);
@@ -486,7 +457,7 @@ export default function SpecialMembersSection() {
                   }}
                   style={{
                     width: isCenter ? 260 : isSide1 ? 220 : 195,
-                    height: isCenter ? 340 : 300,
+                    height: isCenter ? 290 : 260,
                     flexShrink: 0,
                     transition: "all 0.45s cubic-bezier(0.34,1.2,0.64,1)",
                   }}

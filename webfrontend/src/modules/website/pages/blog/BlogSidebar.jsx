@@ -128,7 +128,7 @@ export default function BlogSidebar ({ activeCategory = 'All', onCategoryChange,
             Be part of India's grassroots sports revolution.
           </p>
           <button
-            onClick={() => navigate('/membership')}
+            onClick={() => navigate('/membership/individual-patron')}
             className="
               !mt-[4px] !px-[20px] !py-[9px] rounded-[10px]
               bg-gradient-to-r from-[#F05A1A] to-[#FF7D42]

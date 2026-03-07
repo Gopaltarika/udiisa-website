@@ -25,7 +25,9 @@ const AppRoutes = () => {
           <Route path="/members/special-members" element={<Members />} />
           <Route path="/members/general-members" element={<Members />} />
           <Route path="/talented-players" element={<TalentedPlayers />} />
-          <Route path="/membership" element={<Main />} />
+          <Route path="/membership/individual-patron" element={<Main />} />
+          <Route path="/membership/individual-player" element={<Main />} />
+          <Route path="/membership/lifetime-corporate" element={<Main />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about-us" element={<AboutUs />} />
        <Route path="/blogs/*" element={<BlogRoutes />} />

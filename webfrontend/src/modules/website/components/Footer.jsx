@@ -7,7 +7,7 @@ const quickLinks = [
   { label: 'Blogs',            href: '/blogs/' },
   { label: 'Players',          href: '/talented-players' },
   { label: 'Contact',          href: '/contact-us' },
-  { label: 'Become a member',  href: '/membership' },
+  { label: 'Become a member',  href: '/membership/individual-patron' },
 ]
 
 const programs = [

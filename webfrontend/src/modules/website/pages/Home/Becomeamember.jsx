@@ -1,15 +1,36 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { FaChevronDown, FaAngleDoubleRight } from 'react-icons/fa'
 import becomeMemberImg from "@/assets/images/member-card-img.png";
 import becomeMemberImgMobile from "@/assets/images/become-a-member-small-screen-img.webp";
 import becomeMemberBg from "@/assets/images/bg-become_A_Member.png";
 import { useNavigate } from 'react-router-dom';
 
+const MEMBERSHIP_OPTIONS = [
+  { label: 'Individual Players',  path: '/membership/individual-player'  },
+  { label: 'Individual Patron',   path: '/membership/individual-patron'  },
+  { label: 'Lifetime Corporate',  path: '/membership/lifetime-corporate' },
+]
+
 const BecomeAMember = () => {
   const navigate = useNavigate();
+  const [dropOpen,  setDropOpen]  = useState(false)
+  const [selected,  setSelected]  = useState(MEMBERSHIP_OPTIONS[0])
+  const dropRef = useRef(null)
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
+        setDropOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
   const handleSubmit = () => {
-    navigate('/membership');
-  };
+    navigate(selected.path)
+  }
 
   return (
     <>
@@ -61,30 +82,23 @@ const BecomeAMember = () => {
 
         /* ── Mobile ── */
         @media (max-width: 767px) {
-
-          .bam-card {
-            border-radius: 18px !important;
-          }
-
+          .bam-card { border-radius: 18px !important; }
           .bam-inner {
             display: flex !important;
             flex-direction: column !important;
             padding: 0 !important;
           }
-
           .bam-left {
             order: 2 !important;
             padding: 16px 16px 22px 16px !important;
             max-width: 100% !important;
           }
-
           .bam-mobile-img-wrap {
             order: 1 !important;
             width: 100% !important;
             overflow: hidden !important;
             line-height: 0 !important;
           }
-
           .bam-mobile-img-wrap img {
             width: 100% !important;
             height: auto !important;
@@ -93,18 +107,14 @@ const BecomeAMember = () => {
             object-position: top center !important;
             max-height: 220px !important;
           }
-
-          /* Dropdown + button stack */
           .bam-form-row {
             flex-direction: column !important;
             gap: 10px !important;
           }
-
           .bam-dropdown-btn {
             border-radius: 10px !important;
             border-right: 1px solid #e5e7eb !important;
           }
-
           .submit-btn {
             border-radius: 10px !important;
             width: 100% !important;
@@ -123,8 +133,8 @@ const BecomeAMember = () => {
           >
             <div className="bam-inner grid grid-cols-1 md:grid-cols-2 md:!p-[0px_2px_85px_20px]">
 
-              {/* ── Mobile Image — only on small screens ── */}
-              <div className=" block md:!hidden">
+              {/* ── Mobile Image ── */}
+              <div className="block md:!hidden">
                 <img
                   src={becomeMemberImgMobile}
                   alt="Become a Member"
@@ -167,8 +177,9 @@ const BecomeAMember = () => {
                 <div className="bam-form-row !flex !items-stretch !gap-0" style={{ maxWidth: 420 }}>
 
                   {/* Dropdown */}
-                  <div className="!relative !flex-1">
+                  <div className="!relative !flex-1" ref={dropRef}>
                     <button
+                      onClick={() => setDropOpen(o => !o)}
                       className="bam-dropdown-btn !w-full !flex !items-center !justify-between !border-0 !cursor-pointer !outline-none"
                       style={{
                         padding: '13px 18px',
@@ -181,12 +192,55 @@ const BecomeAMember = () => {
                         borderRight: '1px solid #e5e7eb',
                       }}
                     >
-                      <span>
-                        Become a Member
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {selected.label}
                       </span>
+                      <FaChevronDown
+                        className={`chev ${dropOpen ? 'open' : ''}`}
+                        style={{ fontSize: 12, marginLeft: 8, flexShrink: 0, color: '#6B7280' }}
+                      />
                     </button>
 
-                   
+                    {/* Dropdown list */}
+                    {dropOpen && (
+                      <ul
+                        className="drop-list !absolute !left-0 !right-0 !top-[calc(100%+6px)] !m-0 !p-[4px] !list-none !z-50"
+                        style={{
+                          background: '#fff',
+                          borderRadius: 12,
+                          boxShadow: '0 8px 30px rgba(0,0,0,0.13)',
+                          border: '1px solid #e5e7eb',
+                        }}
+                      >
+                        {MEMBERSHIP_OPTIONS.map(opt => (
+                          <li
+                            key={opt.path}
+                            className={`drop-item ${selected.path === opt.path ? 'active-item' : ''}`}
+                            onClick={() => { setSelected(opt); setDropOpen(false) }}
+                            style={{
+                              padding: '10px 14px',
+                              borderRadius: 8,
+                              fontSize: 13.5,
+                              fontWeight: selected.path === opt.path ? 700 : 500,
+                              color: selected.path === opt.path ? '#1D4ED8' : '#374151',
+                              fontFamily: "'Plus Jakarta Sans', sans-serif",
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 8,
+                            }}
+                          >
+                            {/* Active dot */}
+                            <span style={{
+                              width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
+                              background: selected.path === opt.path ? '#1D4ED8' : 'transparent',
+                              border: selected.path === opt.path ? 'none' : '1.5px solid #D1D5DB',
+                              transition: 'background .15s',
+                            }} />
+                            {opt.label}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
 
                   {/* Submit */}
@@ -205,7 +259,7 @@ const BecomeAMember = () => {
                     }}
                     onClick={handleSubmit}
                   >
-                    Send
+                    Join Now
                     <FaAngleDoubleRight style={{ fontSize: 13 }} />
                   </button>
                 </div>

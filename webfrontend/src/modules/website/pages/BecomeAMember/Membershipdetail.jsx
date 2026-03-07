@@ -9,6 +9,8 @@ import { MdVerified, MdClose, MdGroups } from 'react-icons/md'
 import { HiSparkles, HiArrowRight } from 'react-icons/hi'
 import { BsStarFill, BsBuildingsFill } from 'react-icons/bs'
 import { GiDiamondTrophy, GiLaurelCrown } from 'react-icons/gi'
+// ── CHANGE 1: added useNavigate, useLocation ──────────────────────────────────
+import { useNavigate, useLocation } from 'react-router-dom'
 import { sendOtp, verifyOtp, submitMemberForm } from '../../../../shared/services/publicApi'
 
 /* ════════════════════════════════════════════════════════
@@ -182,6 +184,18 @@ const TABS = [
   { id: 'player',     label: 'Individual Patron',   shortLabel: 'Patron',     Icon: FaRunning },
   { id: 'corporate',  label: 'Lifetime Corporate',  shortLabel: 'Corporate',  Icon: FaBuilding },
 ]
+
+// ── CHANGE 2: Path <-> tabId mapping (must match BecomeAMember paths) ─────────
+const PATH_TO_TAB = {
+  '/membership/individual-player':  'individual',
+  '/membership/individual-patron':  'player',
+  '/membership/lifetime-corporate': 'corporate',
+}
+const TAB_TO_PATH = {
+  individual: '/membership/individual-player',
+  player:     '/membership/individual-patron',
+  corporate:  '/membership/lifetime-corporate',
+}
 
 const GENDER_OPTS = ['', 'Male', 'Female', 'Other / Prefer not to say']
 
@@ -740,7 +754,6 @@ function TabContent({ data, onFillOnline }) {
           <p className="!m-0 !mt-1 text-[12.5px] text-slate-500">Fill the online query form and our team will respond within 48 hours.</p>
         </div>
         <div className="flex !gap-3 flex-wrap">
-        
           <button onClick={onFillOnline}
             className="flex items-center !gap-2 !px-5 !py-2.5 rounded-xl text-white text-[13px] font-extrabold transition-all hover:shadow-lg hover:-translate-y-px"
             style={{ background: `linear-gradient(135deg,${ac},${ac}dd)`, boxShadow: `0 4px 14px ${ac}30` }}>
@@ -757,9 +770,18 @@ function TabContent({ data, onFillOnline }) {
    MAIN EXPORT — MembershipDetail
 ════════════════════════════════════════════════════════ */
 export default function MembershipDetail() {
-  const [activeTab, setActiveTab] = useState('individual')
-  const [showForm,  setShowForm]  = useState(false)
+  // ── CHANGE 3: URL-based active tab ───────────────────────────────────────────
+  const navigate        = useNavigate()
+  const { pathname }    = useLocation()
+  const activeTab       = PATH_TO_TAB[pathname] || 'individual'
+  const [showForm, setShowForm] = useState(false)
   const tabData = MEMBERSHIP_DATA[activeTab]
+
+  // ── CHANGE 4: tab click navigates to new path & closes any open form ─────────
+  const handleTabChange = (tabId) => {
+    setShowForm(false)
+    navigate(TAB_TO_PATH[tabId])
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F4F6FB] to-white">
@@ -767,7 +789,6 @@ export default function MembershipDetail() {
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
         .fade-up{animation:fadeUp .35s ease both}
       `}</style>
-
 
       <div className="max-w-[1280px] !mx-auto !px-4 sm:!px-6 lg:!px-8 !py-10">
 
@@ -777,7 +798,8 @@ export default function MembershipDetail() {
             const m      = MEMBERSHIP_DATA[tab.id]
             const active = activeTab === tab.id
             return (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+              <button key={tab.id}
+                onClick={() => handleTabChange(tab.id)}   // ← CHANGE 4 applied here
                 className={`flex-1 flex items-center justify-center !gap-2.5 !py-3 !px-4 rounded-[13px] text-[13px] font-extrabold cursor-pointer transition-all duration-200
                   ${active ? 'text-white shadow-md' : 'text-slate-500 hover:text-[#0B1E4B] hover:bg-slate-50'}`}
                 style={active

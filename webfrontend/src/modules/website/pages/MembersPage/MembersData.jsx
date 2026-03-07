@@ -125,7 +125,7 @@ const IndividualTable = ({ data = [] }) => (
     <div style={{ minWidth: 520 }}>
       {/* Header */}
       <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '13px 22px', background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)', gap: 10 }}>
-        {['#', 'Full Name', 'Individual'].map(h => (
+        {['#', 'Full Name', 'COMPANY / ORGANIZATION'].map(h => (
           <div key={h} style={{ fontSize: 10, fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{h}</div>
         ))}
       </div>
@@ -150,7 +150,7 @@ const CorporateTable = ({ data = [] }) => (
   <div style={{ width: '100%', overflowX: 'auto', borderRadius: 18, border: '1.5px solid #e8ecf4', boxShadow: '0 4px 24px rgba(11,30,75,0.08)' }}>
     <div style={{ minWidth: 540 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '13px 22px', background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)', gap: 10 }}>
-        {['#', 'Representative', 'Organization'].map(h => (
+        {['#', 'Full Name', 'COMPANY / ORGANIZATION'].map(h => (
           <div key={h} style={{ fontSize: 10, fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{h}</div>
         ))}
       </div>

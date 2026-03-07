@@ -168,7 +168,7 @@ export default function Blogs() {
     },
     { key: 'heading',      label: 'Heading',  render: (v) => <span className="font-semibold line-clamp-1 max-w-[220px] block">{v}</span> },
     { key: 'pageName',     label: 'Page',     render: (v) => <Badge variant="navy">{v}</Badge> },
-    { key: 'shortContent', label: 'Excerpt',  render: (v) => <span className="text-slate-500 line-clamp-1 max-w-[200px] block text-[12px]">{v}</span> },
+    { key: 'shortContent', label: 'Excerpt',  render: (v) => <span className="text-slate-500 line-clamp-2 max-w-[200px] block text-[12px]">{v}</span> },
     { key: 'createdAt',    label: 'Published', render: (v) => formatDate(v) },
     {
       key: 'act', label: 'Actions',
