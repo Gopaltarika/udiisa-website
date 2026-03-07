@@ -1,5 +1,5 @@
 import React from 'react'
-import MembershipForm from './Membershipform'
+import MembershipForm from './Membershipdetail'
 import PageHero from '../../../../shared/components/PageHero'
 
 const Main = () => {

@@ -1,28 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FaChevronDown, FaAngleDoubleRight } from 'react-icons/fa'
 import becomeMemberImg from "@/assets/images/member-card-img.png";
 import becomeMemberImgMobile from "@/assets/images/become-a-member-small-screen-img.webp";
 import becomeMemberBg from "@/assets/images/bg-become_A_Member.png";
 import { useNavigate } from 'react-router-dom';
 
-const memberTypes = [
-  { value: 'special', label: 'Special Member' },
-  { value: 'general', label: 'General Member' },
-]
-
 const BecomeAMember = () => {
-  const [selected, setSelected] = useState('special')
-  const [dropOpen, setDropOpen] = useState(false)
-
-  const selectedLabel = memberTypes.find(m => m.value === selected)?.label
-
-  const routeMap = {
-    special: "/membership/special-member",
-    general: "/membership/general-member",
-  };
   const navigate = useNavigate();
   const handleSubmit = () => {
-    navigate(routeMap[selected]);
+    navigate('/membership');
   };
 
   return (
@@ -194,45 +180,13 @@ const BecomeAMember = () => {
                         fontFamily: "'Plus Jakarta Sans', sans-serif",
                         borderRight: '1px solid #e5e7eb',
                       }}
-                      onClick={() => setDropOpen(p => !p)}
                     >
-                      <span style={{ color: selected ? '#0B1E4B' : '#9ca3af' }}>
-                        {selectedLabel || 'Select Member Type'}
+                      <span>
+                        Become a Member
                       </span>
-                      <FaChevronDown
-                        className={`chev ${dropOpen ? 'open' : ''}`}
-                        style={{ fontSize: 12, color: '#6b7280', marginLeft: 8, flexShrink: 0 }}
-                      />
                     </button>
 
-                    {dropOpen && (
-                      <div
-                        className="drop-list !absolute !left-0 !right-0 !z-50 !bg-white !overflow-hidden"
-                        style={{
-                          top: 'calc(100% + 6px)',
-                          borderRadius: 12,
-                          boxShadow: '0 16px 48px rgba(11,30,75,.16)',
-                          border: '1px solid #e8ecf4',
-                        }}
-                      >
-                        {memberTypes.map(m => (
-                          <div
-                            key={m.value}
-                            className={`drop-item ${selected === m.value ? 'active-item' : ''}`}
-                            style={{
-                              padding: '11px 18px',
-                              fontSize: 13.5,
-                              fontWeight: selected === m.value ? 700 : 500,
-                              color: selected === m.value ? '#1D4ED8' : '#374151',
-                              background: selected === m.value ? '#EFF6FF' : 'transparent',
-                            }}
-                            onClick={() => { setSelected(m.value); setDropOpen(false); }}
-                          >
-                            {m.label}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                   
                   </div>
 
                   {/* Submit */}
@@ -251,7 +205,7 @@ const BecomeAMember = () => {
                     }}
                     onClick={handleSubmit}
                   >
-                    Submit
+                    Send
                     <FaAngleDoubleRight style={{ fontSize: 13 }} />
                   </button>
                 </div>

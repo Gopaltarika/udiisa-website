@@ -184,12 +184,12 @@ export default function Navbar() {
           {/* ── CTA BUTTONS ── */}
           <div className="hidden lg:flex items-center gap-1.5">
             <a
-              href="/membership/special-member"
+              href="/membership"
               className="flex items-center gap-1.5 !px-[18px] !py-[9px] rounded-[10px] no-underline text-[13px] font-bold font-[Plus_Jakarta_Sans] whitespace-nowrap text-[#0B1E4B] bg-transparent border-0 transition-all duration-200 hover:bg-[#0B1E4B] hover:text-white"
               onClick={() => closeAll("Become a Member")}
             >
               <MdVolunteerActivism className="text-[16px]" />
-              Become a Special Member
+              Become a Member
             </a>
 
             <a
@@ -332,11 +332,11 @@ export default function Navbar() {
           {/* Mobile CTAs */}
           <div className="!p-4 border-t border-slate-100 flex flex-col gap-2.5">
             <a
-              href="/membership/special-member"
+              href="/membership"
               className="flex items-center justify-center gap-2 !p-[13px] rounded-xl no-underline text-[14px] font-bold font-[Plus_Jakarta_Sans] text-[#0B1E4B] border-2 border-[#0B1E4B] transition-all duration-200 hover:bg-[#0B1E4B] hover:text-white"
               onClick={() => closeAll("Become a Member")}
             >
-              <MdVolunteerActivism className="text-[18px]" /> Become a Special Member
+              <MdVolunteerActivism className="text-[18px]" /> Become a Member
             </a>
             <a
               href="/contact-us"

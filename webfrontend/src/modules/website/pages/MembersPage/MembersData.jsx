@@ -7,7 +7,6 @@ import { MdGroups } from 'react-icons/md'
 import { BsPersonFill, BsBuildingsFill, BsShieldFillCheck } from 'react-icons/bs'
 import { HiSparkles } from 'react-icons/hi'
 import {
-  getPublicCommittee,
   getPublicSpecialMembers,
   getPublicGeneralMembers,
 } from '../../../../shared/services/publicApi'
@@ -15,13 +14,11 @@ import {
 /* ═══════════════════════════════════════════
    DATA — loaded from API in MembersData
 ═══════════════════════════════════════════ */
-const managingCommitteeFallback = []
 const specialMembersFallback = []
 const individualMembersFallback = []
 const corporateMembersFallback = []
 
 const TABS = [
-  { key: 'managing-committee', label: 'Managing Committee', Icon: MdGroups,  route: '/members/managing-committee' },
   { key: 'special-members',    label: 'Special Members',    Icon: FaStar,    route: '/members/special-members' },
   { key: 'general-members',    label: 'General Members',    Icon: FaUsers,   route: '/members/general-members' },
 ]
@@ -78,95 +75,6 @@ const SectionHeading = ({ white, orange, Icon, sub }) => (
   </div>
 )
 
-/* ═══════════════════════════════════════════
-   COMMITTEE CARD — Premium Dark
-═══════════════════════════════════════════ */
-const CommitteeCard = ({ member, index }) => {
-  const highlight = index < 3
-  return (
-    <div
-      className="ccard"
-      style={{
-        position: 'relative',
-        borderRadius: 20,
-        overflow: 'hidden',
-        background: 'linear-gradient(165deg,#0e2259 0%,#0B1E4B 50%,#112963 100%)',
-        border: `1.5px solid ${highlight ? 'rgba(240,90,26,0.25)' : 'rgba(255,255,255,0.07)'}`,
-        boxShadow: highlight
-          ? '0 8px 32px rgba(240,90,26,0.14), 0 2px 8px rgba(11,30,75,0.2)'
-          : '0 4px 20px rgba(11,30,75,0.16)',
-        cursor: 'default',
-      }}
-    >
-      {/* Shine overlay */}
-      <div className="cshine" style={{ position: 'absolute', inset: 0, zIndex: 20, pointerEvents: 'none', background: 'linear-gradient(90deg,transparent 20%,rgba(255,255,255,0.07) 50%,transparent 80%)', transform: 'translateX(-120%) skewX(-15deg)' }} />
-
-      {/* Glow blobs */}
-      <div style={{ position: 'absolute', top: -48, right: -48, width: 160, height: 160, borderRadius: '50%', background: `radial-gradient(circle,${highlight ? 'rgba(240,90,26,0.22)' : 'rgba(240,90,26,0.1)'} 0%,transparent 70%)`, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: -32, left: -32, width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,173,92,0.08) 0%,transparent 70%)', pointerEvents: 'none' }} />
-
-      {/* Number badge */}
-      {/* <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, width: 28, height: 28, borderRadius: '50%', background: highlight ? 'linear-gradient(135deg,#F05A1A,#FF9D42)' : 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: highlight ? '0 4px 10px rgba(240,90,26,0.35)' : 'none' }}>
-        <span style={{ fontSize: 9.5, fontWeight: 900, color: '#fff' }}>{String(member.id).padStart(2, '0')}</span>
-      </div> */}
-
-      {/* Verified icon */}
-      <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-        <BsShieldFillCheck style={{ color: highlight ? '#FFAD5C' : 'rgba(255,255,255,0.25)', fontSize: 16 }} />
-      </div>
-
-      {/* Photo */}
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 32, paddingBottom: 4, position: 'relative', zIndex: 10 }}>
-        <div style={{
-          borderRadius: '50%', padding: 3,
-          background: 'linear-gradient(135deg,#F05A1A,#FFAD5C 50%,rgba(255,255,255,0.12))',
-          boxShadow: highlight ? '0 0 0 5px rgba(240,90,26,0.15)' : '0 0 0 4px rgba(255,255,255,0.06)',
-          transition: 'box-shadow .35s',
-        }}>
-          <div style={{ width: 86, height: 86, borderRadius: '50%', overflow: 'hidden', border: '3px solid #0B1E4B' }}>
-            <img
-              src={member.img}
-              alt={member.name}
-              className="cimg"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', transition: 'transform .5s ease', display: 'block' }}
-              onError={e => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=F05A1A&color=fff&size=200` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Info */}
-      <div style={{ position: 'relative', zIndex: 10, padding: '10px 18px 20px', textAlign: 'center' }}>
-        {/* Name */}
-        <h3 style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 800, color: '#fff', fontFamily: "'Plus Jakarta Sans',sans-serif", letterSpacing: '-0.2px', lineHeight: 1.25 }}>
-          {member.name}
-        </h3>
-
-        {/* Role pill */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 12px', borderRadius: 999, background: highlight ? 'rgba(240,90,26,0.22)' : 'rgba(255,255,255,0.09)', border: `1px solid ${highlight ? 'rgba(240,90,26,0.45)' : 'rgba(255,255,255,0.13)'}`, marginBottom: 12 }}>
-          <FaUserTie style={{ color: '#FFAD5C', fontSize: 8 }} />
-          <span style={{ color: '#FFAD5C', fontSize: 9.5, fontWeight: 800, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
-            {member.role}
-          </span>
-        </div>
-
-        {/* Divider */}
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', marginBottom: 11 }} />
-
-        {/* Company */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          <FaBuilding style={{ color: 'rgba(255,255,255,0.28)', fontSize: 10, flexShrink: 0 }} />
-          <span style={{ color: 'rgba(255,255,255,0.48)', fontSize: 11.5, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 148 }}>
-            {member.company}
-          </span>
-        </div>
-      </div>
-
-      {/* Bottom accent bar */}
-      <div className="cbar" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg,#F05A1A,#FF7D42)', opacity: highlight ? 0.6 : 0.3, transition: 'opacity .35s' }} />
-    </div>
-  )
-}
 
 /* ═══════════════════════════════════════════
    SPECIAL CARD
@@ -217,7 +125,7 @@ const IndividualTable = ({ data = [] }) => (
     <div style={{ minWidth: 520 }}>
       {/* Header */}
       <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '13px 22px', background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)', gap: 10 }}>
-        {['#', 'Full Name', 'City / District', 'Sport / Activity'].map(h => (
+        {['#', 'Full Name', 'Individual'].map(h => (
           <div key={h} style={{ fontSize: 10, fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{h}</div>
         ))}
       </div>
@@ -227,13 +135,7 @@ const IndividualTable = ({ data = [] }) => (
           <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{i + 1}</div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: '#0B1E4B', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.name}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#64748b', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
-            <FaMapMarkerAlt style={{ color: '#F05A1A', fontSize: 9, flexShrink: 0 }} />
             {m.city}
-          </div>
-          <div>
-            <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 999, background: '#FFF3EC', border: '1px solid rgba(240,90,26,0.18)', color: '#F05A1A', fontSize: 10.5, fontWeight: 700, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
-              {m.sport}
-            </span>
           </div>
         </div>
       ))}
@@ -248,7 +150,7 @@ const CorporateTable = ({ data = [] }) => (
   <div style={{ width: '100%', overflowX: 'auto', borderRadius: 18, border: '1.5px solid #e8ecf4', boxShadow: '0 4px 24px rgba(11,30,75,0.08)' }}>
     <div style={{ minWidth: 540 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr', padding: '13px 22px', background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)', gap: 10 }}>
-        {['#', 'Representative', 'Organization', 'Sector'].map(h => (
+        {['#', 'Representative', 'Organization'].map(h => (
           <div key={h} style={{ fontSize: 10, fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{h}</div>
         ))}
       </div>
@@ -259,11 +161,6 @@ const CorporateTable = ({ data = [] }) => (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#374151', overflow: 'hidden', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
             <FaBuilding style={{ color: '#F05A1A', fontSize: 9, flexShrink: 0 }} />
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.company}</span>
-          </div>
-          <div>
-            <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 999, background: '#EFF6FF', border: '1px solid rgba(59,130,246,0.2)', color: '#3b82f6', fontSize: 10.5, fontWeight: 700, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
-              {m.sector}
-            </span>
           </div>
         </div>
       ))}
@@ -277,8 +174,6 @@ const CorporateTable = ({ data = [] }) => (
 const MembersData = () => {
   const navigate = useNavigate()
   const location = useLocation()
-
-  const [managingCommittee, setManagingCommittee] = useState(managingCommitteeFallback)
   const [specialMembers, setSpecialMembers] = useState(specialMembersFallback)
   const [individualMembers, setIndividualMembers] = useState(individualMembersFallback)
   const [corporateMembers, setCorporateMembers] = useState(corporateMembersFallback)
@@ -290,7 +185,6 @@ const MembersData = () => {
     setLoading(true)
     setError(null)
     Promise.all([
-      getPublicCommittee().then((data) => (cancelled ? null : setManagingCommittee(Array.isArray(data) ? data : []))),
       getPublicSpecialMembers().then((data) => (cancelled ? null : setSpecialMembers(Array.isArray(data) ? data : []))),
       getPublicGeneralMembers('individual').then((data) => (cancelled ? null : setIndividualMembers(Array.isArray(data) ? data : []))),
       getPublicGeneralMembers('corporate').then((data) => (cancelled ? null : setCorporateMembers(Array.isArray(data) ? data : []))),
@@ -366,35 +260,6 @@ const MembersData = () => {
             )
           })}
         </div>
-
-        {/* ════════════════════════════════
-            MANAGING COMMITTEE
-        ════════════════════════════════ */}
-        {activeTab === 'managing-committee' && (
-          <div>
-            <SectionHeading
-              white="Managing" orange="Committee" Icon={MdGroups}
-              sub="The elected governing body steering UDI Sports NGO towards its mission of grassroots sports development."
-            />
-
-            {loading ? (
-              <div style={{ padding: 40, textAlign: 'center', color: '#64748b', fontSize: 14 }}>Loading…</div>
-            ) : (
-              <>
-            {/* ── 4-column card grid ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 18 }} className="committee-grid">
-              <style>{`
-                .committee-grid { grid-template-columns: repeat(4,1fr); }
-                @media(max-width:1024px){ .committee-grid{ grid-template-columns: repeat(3,1fr) !important; } }
-                @media(max-width:768px){  .committee-grid{ grid-template-columns: repeat(2,1fr) !important; } }
-                @media(max-width:480px){  .committee-grid{ grid-template-columns: repeat(1,1fr) !important; } }
-              `}</style>
-              {managingCommittee.map((m, i) => <CommitteeCard key={m.id} member={m} index={i} />)}
-            </div>
-              </>
-            )}
-          </div>
-        )}
 
         {/* ════════════════════════════════
             SPECIAL MEMBERS

@@ -1,8 +1,10 @@
 import React from 'react'
-import { FaSearch, FaHandHoldingHeart, FaGraduationCap } from 'react-icons/fa'
+import { FaSearch, FaHandHoldingHeart, FaGraduationCap, FaArrowRight } from 'react-icons/fa'
 import about1 from "@/assets/images/about1.png"
 import about2 from "@/assets/images/about2.png"
 import about3 from "@/assets/images/about3.png"
+import { useNavigate } from 'react-router-dom'
+import { BsStarFill } from 'react-icons/bs'
 
 const features = [
   {
@@ -23,6 +25,7 @@ const features = [
 ]
 
 const AboutUs = () => {
+    const navigate = useNavigate();
   return (
     <>
       <style>{`
@@ -184,7 +187,14 @@ const AboutUs = () => {
                   </div>
                 ))}
               </div>
-
+{/* ── VIEW ALL BUTTON ── */}
+        <div className="mt-[18px] sm:mt-[28px] lg:mt-[30px]">
+          <button className="sms-view-all" onClick={() => navigate('/about-us')}>
+            <BsStarFill style={{ fontSize: 14 }} />
+            View More
+            <FaArrowRight className="arrow-icon" style={{ fontSize: 13 }} />
+          </button>
+        </div>
             </div>
           </div>
         </div>

@@ -13,7 +13,7 @@ import { HiSparkles, HiLightningBolt } from 'react-icons/hi'
 import { BsShieldFillCheck, BsStarFill } from 'react-icons/bs'
 import { GiLaurelCrown, GiTargetArrows } from 'react-icons/gi'
 import PageHero from '../../../../shared/components/PageHero'
-
+import aboutimg from '@/assets/images/about-img.jpeg'
 /* ═══════════════════════════════════════════════════════
    DATA MAPS — edit here to update all sections
 ═══════════════════════════════════════════════════════ */
@@ -46,9 +46,8 @@ const ROADMAP = [
   {
     year: '2013',
     title: 'Foundation',
-    desc: 'UDI Sports NGO was founded in Delhi with a mission to bridge the gap between rural talent and national sporting opportunity.',
+    desc: 'UDI Sports NGO was founded in sonipat with a mission to bridge the gap between rural talent and national sporting opportunity.',
     icon: <FaRocket className="text-[16px]" />,
-    highlight: '3 States',
     side: 'left',
   },
   {
@@ -56,7 +55,7 @@ const ROADMAP = [
     title: 'First Talent Hunt',
     desc: 'Launched our inaugural Annual Sports Talent Hunt, identifying 200+ athletes across 8 states in disciplines including Cricket, Athletics and Boxing.',
     icon: <MdEmojiEvents className="text-[16px]" />,
-    highlight: '200+ Athletes',
+
     side: 'right',
   },
   {
@@ -64,7 +63,7 @@ const ROADMAP = [
     title: 'Mentorship Program',
     desc: 'Launched the flagship Mentorship Program, pairing 100 promising athletes with elite national-level coaches for structured development.',
     icon: <MdSchool className="text-[16px]" />,
-    highlight: '100 Mentees',
+
     side: 'left',
   },
   {
@@ -72,7 +71,7 @@ const ROADMAP = [
     title: 'Girl Empowerment Initiative',
     desc: 'Dedicated ₹1.2 Cr to exclusively support female athletes — providing scholarships, safe infrastructure and women-only coaching networks.',
     icon: <MdVolunteerActivism className="text-[16px]" />,
-    highlight: '₹1.2 Cr Fund',
+
     side: 'right',
   },
   {
@@ -80,7 +79,7 @@ const ROADMAP = [
     title: 'National Partnerships',
     desc: 'Signed MoUs with 10 top sports academies across India, opening subsidised training slots for our athletes in cricket, badminton and athletics.',
     icon: <FaHandshake className="text-[16px]" />,
-    highlight: '10 Academies',
+
     side: 'left',
   },
   {
@@ -88,7 +87,7 @@ const ROADMAP = [
     title: 'Record Talent Hunt',
     desc: '5,000+ athletes from 28 states participated in our biggest ever talent identification event. ₹50 Lakh in scholarships announced.',
     icon: <BsStarFill className="text-[16px]" />,
-    highlight: '5000+ Athletes',
+
     side: 'right',
   },
   {
@@ -96,7 +95,7 @@ const ROADMAP = [
     title: 'Infrastructure Drive',
     desc: 'Launched a ₹2 Cr rural infrastructure initiative to build 15 playgrounds and mini-stadiums in underserved districts across India.',
     icon: <MdAutoGraph className="text-[16px]" />,
-    highlight: '15 Districts',
+
     side: 'left',
   },
   {
@@ -104,7 +103,6 @@ const ROADMAP = [
     title: 'Next Chapter',
     desc: 'Expanding to all 36 states and UTs, launching digital scouting platform, and targeting 10,000+ athlete registrations for the 2025 cohort.',
     icon: <GiLaurelCrown className="text-[16px]" />,
-    highlight: '36 States Goal',
     side: 'right',
     isUpcoming: true,
   },
@@ -136,8 +134,6 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-white font-['Plus_Jakarta_Sans',sans-serif]">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
         .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
         .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
         @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -173,36 +169,12 @@ export default function AboutUs() {
               {/* Main image */}
               <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-br from-[#0B1E4B] to-[#1565C0] aspect-[4/3]">
                 <img
-                  src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=700&q=80&fit=crop"
+                  src={aboutimg}
                   alt="UDI Sports athletes"
-                  className="w-full h-full object-cover opacity-90 mix-blend-luminosity"
+                  className="w-full h-full"
                   onError={e => { e.target.style.display = 'none' }}
                 />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(7,20,46,0.7)] via-transparent to-transparent" />
-                <div className="absolute bottom-[20px] left-[20px] right-[20px]">
-                  <div className="flex items-center gap-[10px]">
-                    <div className="w-[8px] h-[8px] rounded-full bg-green-400 animate-pulse" />
-                    <span className="text-white text-[13px] font-bold">Active in 28 States</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating card 1 */}
-              <div className="absolute -top-[18px] -right-[18px] bg-white rounded-[16px] shadow-[0_12px_40px_rgba(11,30,75,0.15)] !px-[18px] !py-[14px] border border-slate-100 max-w-[160px] hidden sm:block">
-                <div className="flex items-center gap-[8px] !mb-[6px]">
-                  <FaTrophy className="text-[#F05A1A] text-[14px]" />
-                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-[0.8px]">Medals</span>
-                </div>
-                <p className="text-[28px] font-extrabold text-[#0B1E4B] !m-0 leading-none">200+</p>
-                <p className="text-[11px] text-slate-400 !m-0 !mt-[2px]">Won by our athletes</p>
-              </div>
-
-              {/* Floating card 2 */}
-              <div className="absolute -bottom-[18px] -left-[18px] bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] rounded-[16px] shadow-[0_12px_40px_rgba(240,90,26,0.3)] !px-[18px] !py-[14px] max-w-[170px] hidden sm:block">
-                <p className="text-white/70 text-[10px] font-extrabold uppercase tracking-[1px] !m-0 !mb-[4px]">Est.</p>
-                <p className="text-white text-[32px] font-extrabold !m-0 leading-none">2013</p>
-                <p className="text-white/70 text-[11px] !m-0 !mt-[2px]">New Delhi, India</p>
+               
               </div>
             </div>
 

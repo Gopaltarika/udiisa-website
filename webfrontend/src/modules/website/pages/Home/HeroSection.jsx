@@ -106,7 +106,7 @@ const HeroSection = () => {
         {/* CTA Buttons */}
         <div className="hero-btns flex justify-center flex-wrap !gap-[10px] sm:!gap-[14px] !mb-[36px] sm:!mb-[52px] lg:!mb-[64px] w-full sm:w-auto">
           <a
-            href="/members/special-members"
+            href="/membership"
             className="btn-shine btn-primary flex items-center no-underline transition-all duration-[250ms] !gap-[8px] sm:!gap-[9px] !px-[22px] sm:!px-[34px] !py-[12px] sm:!py-[15px] rounded-[12px] sm:rounded-[14px] text-[13px] sm:text-[15px] font-extrabold text-white"
             style={{
               background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
@@ -115,20 +115,21 @@ const HeroSection = () => {
               textDecoration: "none",
             }}
           >
-            <MdVolunteerActivism className="text-[18px] sm:text-[20px] flex-shrink-0" />
-            Become a Special Member
+            <MdContactMail className="text-[18px] sm:text-[20px] flex-shrink-0" />
+            Become a Member
           </a>
 
           <a
-            href="/contact-us"
+            href="/donate-now"
             className="btn-shine btn-secondary flex items-center no-underline transition-all duration-[250ms] !gap-[8px] sm:!gap-[9px] !px-[22px] sm:!px-[34px] !py-[12px] sm:!py-[15px] rounded-[12px] sm:rounded-[14px] text-[13px] sm:text-[15px] font-bold text-white border-[2px] border-[rgba(255,255,255,.32)] bg-[rgba(255,255,255,.06)] backdrop-blur-[8px]"
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
               textDecoration: "none",
             }}
           >
-            <MdContactMail className="text-[18px] sm:text-[20px] flex-shrink-0" />
-            Contact Us
+            
+            <MdVolunteerActivism className="text-[18px] sm:text-[20px] flex-shrink-0" />
+            Donate Now
           </a>
         </div>
 

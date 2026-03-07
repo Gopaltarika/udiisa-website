@@ -55,7 +55,6 @@ export default function Settings() {
 
   const [forgotEmail,  setForgotEmail]  = useState('')
   const [forgotSaving, setForgotSaving] = useState(false)
-  const [forgotSent,   setForgotSent]   = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -87,16 +86,19 @@ export default function Settings() {
     } finally { setSaving(false) }
   }
 
+  // Send OTP to email, then navigate to ForgotPassword page
   const handleForgotPassword = async () => {
-    if (!forgotEmail) { toast.error('Enter your email address'); return }
+    if (!forgotEmail.trim()) { toast.error('Enter your email address'); return }
     setForgotSaving(true)
     try {
-      // await authService.forgotPassword(forgotEmail)
+      // await authService.sendOtp(forgotEmail)   ← replace with real call
       await new Promise(r => setTimeout(r, 800)) // mock
-      setForgotSent(true)
-      toast.success('Reset link sent! Check your email.')
-    } catch { toast.error('Failed to send reset link') }
-    finally { setForgotSaving(false) }
+      toast.success('OTP sent! Check your email.')
+      // Pass email via route state so ForgotPassword page knows which address was used
+      navigate('/admin/forgot-password', { state: { email: forgotEmail } })
+    } catch {
+      toast.error('Failed to send OTP')
+    } finally { setForgotSaving(false) }
   }
 
   const handleLogout = () => {
@@ -111,7 +113,7 @@ export default function Settings() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[24px]">
 
-        {/* Change Password Card */}
+        {/* ── Change Password Card ── */}
         <div className="bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_18px_rgba(11,30,75,0.07)] p-[28px]">
           <div className="flex items-center gap-[12px] mb-[24px] pb-[16px] border-b border-slate-100">
             <div className="w-[42px] h-[42px] rounded-[12px] bg-gradient-to-br from-[#0B1E4B] to-[#152B6B] flex items-center justify-center">
@@ -149,7 +151,7 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Forgot Password + Logout */}
+        {/* ── Right column ── */}
         <div className="flex flex-col gap-[20px]">
 
           {/* Forgot Password */}
@@ -160,37 +162,34 @@ export default function Settings() {
               </div>
               <div>
                 <h3 className="text-[15px] font-extrabold text-[#0B1E4B] m-0">Forgot Password?</h3>
-                <p className="text-[12px] text-slate-400 m-0">Get a reset link via email</p>
+                <p className="text-[12px] text-slate-400 m-0">Enter email to receive an OTP</p>
               </div>
             </div>
 
-            {forgotSent ? (
-              <div className="bg-green-50 border border-green-200 rounded-[12px] p-[16px] text-center">
-                <p className="text-green-700 font-bold text-[13.5px] m-0">✅ Reset link sent!</p>
-                <p className="text-green-600 text-[12px] m-0 mt-[4px]">Check your email inbox.</p>
+            <div className="flex gap-[10px]">
+              <div className="relative flex-1">
+                <FaEnvelope className="absolute left-[12px] top-1/2 -translate-y-1/2 text-slate-400 text-[12px] pointer-events-none" />
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={e => setForgotEmail(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleForgotPassword()}
+                  placeholder="Admin email address"
+                  className="w-full h-[42px] pl-[36px] pr-[12px] rounded-[10px] border border-slate-200 bg-white text-[13.5px] font-medium text-slate-700 placeholder:text-slate-300 focus:outline-none focus:border-[#F05A1A] focus:ring-2 focus:ring-[#F05A1A]/10 transition-all"
+                />
               </div>
-            ) : (
-              <div className="flex gap-[10px]">
-                <div className="relative flex-1">
-                  <FaEnvelope className="absolute left-[12px] top-1/2 -translate-y-1/2 text-slate-400 text-[12px] pointer-events-none" />
-                  <input
-                    type="email"
-                    value={forgotEmail}
-                    onChange={e => setForgotEmail(e.target.value)}
-                    placeholder="Admin email address"
-                    className="w-full h-[42px] pl-[36px] pr-[12px] rounded-[10px] border border-slate-200 bg-white text-[13.5px] font-medium text-slate-700 placeholder:text-slate-300 focus:outline-none focus:border-[#F05A1A] focus:ring-2 focus:ring-[#F05A1A]/10 transition-all"
-                  />
-                </div>
-                <button
-                  onClick={handleForgotPassword}
-                  disabled={forgotSaving}
-                  className="px-[16px] h-[42px] rounded-[10px] bg-[#0B1E4B] text-white text-[13px] font-extrabold hover:bg-[#152B6B] disabled:opacity-60 transition-all flex items-center gap-[6px]"
-                >
-                  {forgotSaving && <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-                  Send
-                </button>
-              </div>
-            )}
+              <button
+                onClick={handleForgotPassword}
+                disabled={forgotSaving}
+                className="px-[18px] h-[42px] rounded-[10px] bg-[#0B1E4B] text-white text-[13px] font-extrabold hover:bg-[#152B6B] disabled:opacity-60 transition-all flex items-center gap-[6px] whitespace-nowrap"
+              >
+                {forgotSaving
+                  ? <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  : <FaEnvelope className="text-[11px]" />
+                }
+                Send OTP
+              </button>
+            </div>
           </div>
 
           {/* Account Info */}
@@ -207,20 +206,14 @@ export default function Settings() {
             <div className="pt-[16px] border-t border-slate-100">
               <button
                 onClick={handleLogout}
-                className="
-                  w-full flex items-center justify-center gap-[8px]
-                  h-[42px] rounded-[10px]
-                  bg-red-50 border border-red-200
-                  text-red-600 text-[13px] font-extrabold
-                  hover:bg-red-500 hover:text-white hover:border-red-500
-                  transition-all duration-200
-                "
+                className="w-full flex items-center justify-center gap-[8px] h-[42px] rounded-[10px] bg-red-50 border border-red-200 text-red-600 text-[13px] font-extrabold hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200"
               >
                 <FaSignOutAlt className="text-[13px]" />
                 Logout from Admin Panel
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>

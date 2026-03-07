@@ -1,5 +1,6 @@
 // admin/layout/Sidebar.jsx
 import { NavLink } from 'react-router-dom'
+import logo from '../../../../public/white-short-logo.png'
 import {
   MdDashboard, MdPeople, MdStar, MdEmail,
   MdArticle, MdSettings, MdSportsCricket,
@@ -9,12 +10,12 @@ import { FaChevronLeft, FaChevronRight, FaBars, FaTimes } from 'react-icons/fa'
 const NAV = [
   { to: '/admin/dashboard',        icon: <MdDashboard />,      label: 'Dashboard' },
   { to: '/admin/players',          icon: <MdSportsCricket />,  label: 'Talented Players' },
+  { to: '/admin/committees',       icon: <MdPeople />,  label: 'Committees' },
   {
     label: 'Members', icon: <MdPeople />, isGroup: true,
     children: [
       { to: '/admin/members/general',   label: 'General Members' },
       { to: '/admin/members/special',   label: 'Special Members' },
-      { to: '/admin/members/committee', label: 'Managing Committee' },
     ],
   },
   {
@@ -101,9 +102,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           border-b border-white/10 flex-shrink-0
           ${collapsed ? 'justify-center' : ''}
         `}>
-          <div className="w-[36px] h-[36px] rounded-[10px] bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_rgba(240,90,26,0.4)]">
-            <span className="text-white font-extrabold text-[14px]">U</span>
-          </div>
+          <img src={logo} alt="logo" className='w-full max-w-[45px]' />
           {!collapsed && (
             <div>
               <p className="text-white font-extrabold text-[14px] m-0 leading-none">UDI Sports</p>

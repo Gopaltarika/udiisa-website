@@ -7,9 +7,10 @@ import Blogs from "../modules/admin/pages/Blogs";
 import Settings from "../modules/admin/pages/Settings";
 import GeneralMembers from "../modules/admin/pages/members/GeneralMembers";
 import SpecialMembers from "../modules/admin/pages/members/SpecialMembers";
-import ManagingCommittee from "../modules/admin/pages/members/ManagingCommittee";
 import IncomingMembers from "../modules/admin/pages/incoming/IncomingMembers";
 import IncomingContacts from "../modules/admin/pages/incoming/IncomingContacts";
+import CommitteeAdmin from "../modules/admin/pages/committee/CommitteeAdmin";
+import ForgotPassword from "../modules/admin/pages/Forgotpassword";
 
 const AppRoutes = () => {
   function RequireAuth({ children }) {
@@ -33,13 +34,14 @@ const AppRoutes = () => {
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="players" element={<Players />} />
+          <Route path="committees" element={<CommitteeAdmin />} />
           <Route path="members/general" element={<GeneralMembers />} />
           <Route path="members/special" element={<SpecialMembers />} />
-          <Route path="members/committee" element={<ManagingCommittee />} />
           <Route path="incoming/members" element={<IncomingMembers />} />
           <Route path="incoming/contacts" element={<IncomingContacts />} />
           <Route path="blogs" element={<Blogs />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
       </Routes>
     </BrowserRouter>

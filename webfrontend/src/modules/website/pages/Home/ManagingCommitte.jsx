@@ -141,7 +141,7 @@ const ManagingCommittee = () => {
             <button
               className="view-btn flex items-center !gap-[8px] sm:!gap-[10px] rounded-[12px] sm:rounded-[14px] border-0 cursor-pointer !px-[22px] sm:!px-[28px] lg:!px-[32px] !py-[10px] sm:!py-[12px] lg:!py-[13px] bg-[#2563EB] text-white text-[12.5px] sm:text-[13.5px] lg:text-[14px] font-extrabold shadow-[0_6px_20px_rgba(37,99,235,.32)] tracking-[0.3px]"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              onClick={() => navigate('/members/managing-committee')}
+              onClick={() => navigate('/committee#managing-community')}
             >
               <span>View All Members</span>
               <FaArrowRight className="btn-arrow text-[10px] sm:text-[11px] lg:text-[13px]" />

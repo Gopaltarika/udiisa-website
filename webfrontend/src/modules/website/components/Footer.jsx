@@ -7,11 +7,11 @@ const quickLinks = [
   { label: 'Blogs',            href: '/blogs/' },
   { label: 'Players',          href: '/talented-players' },
   { label: 'Contact',          href: '/contact-us' },
-  { label: 'Become a member',  href: '/membership/special-member' },
+  { label: 'Become a member',  href: '/membership' },
 ]
 
 const programs = [
-  { label: 'Managing Committee', href: '/members/managing-committee' },
+  { label: 'Managing Committee', href: '/committee#managing-community' },
   { label: 'About us',           href: '/about-us' },
   { label: 'Terms & Conditions', href: '/terms&conditions' },
 ]

@@ -3,14 +3,55 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaLock, FaEnvelope, FaEye, FaEyeSlash } from 'react-icons/fa'
 import authService from '../services/authService'
+import logo from '../../../../public/white-short-logo.png'
+
+// ── Field MUST be outside Login component ─────────────────────────────────────
+// Defining it inside causes re-mount on every keystroke → input loses focus
+function Field({ name, label, type, icon: Icon, placeholder, value, onChange, showPass, onTogglePass, error }) {
+  return (
+    <div className="flex flex-col gap-[5px]">
+      <label className="text-[12px] font-bold text-slate-600 uppercase tracking-[0.8px]">
+        {label}
+      </label>
+      <div className="relative">
+        <Icon className="absolute left-[13px] top-1/2 -translate-y-1/2 text-slate-400 text-[13px] pointer-events-none" />
+        <input
+          type={name === 'password' ? (showPass ? 'text' : 'password') : type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className={`
+            w-full h-[46px] pl-[38px] ${name === 'password' ? 'pr-[42px]' : 'pr-[14px]'} rounded-[12px]
+            border ${error ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'}
+            text-[13.5px] font-medium text-slate-700 placeholder:text-slate-300
+            focus:outline-none focus:border-[#F05A1A] focus:ring-2 focus:ring-[#F05A1A]/10
+            transition-all duration-200
+          `}
+        />
+        {name === 'password' && (
+          <button
+            type="button"
+            onClick={onTogglePass}
+            className="absolute right-[13px] top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+          >
+            {showPass ? <FaEyeSlash className="text-[13px]" /> : <FaEye className="text-[13px]" />}
+          </button>
+        )}
+      </div>
+      {error && <p className="text-[11.5px] text-red-500 font-medium">{error}</p>}
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function Login() {
   const navigate = useNavigate()
-  const [form, setForm]     = useState({ email: '', password: '' })
-  const [show, setShow]     = useState(false)
-  const [errors, setErrors] = useState({})
+  const [form,    setForm]    = useState({ email: '', password: '' })
+  const [show,    setShow]    = useState(false)
+  const [errors,  setErrors]  = useState({})
   const [loading, setLoading] = useState(false)
-  const [apiErr, setApiErr]  = useState('')
+  const [apiErr,  setApiErr]  = useState('')
 
   const validate = () => {
     const err = {}
@@ -31,36 +72,10 @@ export default function Login() {
       navigate('/admin/dashboard')
     } catch (err) {
       setApiErr(err?.response?.data?.message || 'Invalid credentials')
-    } finally { setLoading(false) }
+    } finally {
+      setLoading(false)
+    }
   }
-
-  const Field = ({ name, label, type = 'text', icon: Icon, placeholder }) => (
-    <div className="flex flex-col gap-[5px]">
-      <label className="text-[12px] font-bold text-slate-600 uppercase tracking-[0.8px]">{label}</label>
-      <div className="relative">
-        <Icon className="absolute left-[13px] top-1/2 -translate-y-1/2 text-slate-400 text-[13px] pointer-events-none" />
-        <input
-          type={name === 'password' ? (show ? 'text' : 'password') : type}
-          value={form[name]}
-          onChange={e => { setForm(f => ({ ...f, [name]: e.target.value })); setErrors(er => ({ ...er, [name]: '' })) }}
-          placeholder={placeholder}
-          className={`
-            w-full h-[46px] pl-[38px] ${name === 'password' ? 'pr-[42px]' : 'pr-[14px]'} rounded-[12px]
-            border ${errors[name] ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'}
-            text-[13.5px] font-medium text-slate-700 placeholder:text-slate-300
-            focus:outline-none focus:border-[#F05A1A] focus:ring-2 focus:ring-[#F05A1A]/10
-            transition-all duration-200
-          `}
-        />
-        {name === 'password' && (
-          <button type="button" onClick={() => setShow(s => !s)} className="absolute right-[13px] top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-            {show ? <FaEyeSlash className="text-[13px]" /> : <FaEye className="text-[13px]" />}
-          </button>
-        )}
-      </div>
-      {errors[name] && <p className="text-[11.5px] text-red-500 font-medium">{errors[name]}</p>}
-    </div>
-  )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#07142e] via-[#0B1E4B] to-[#0f2560] flex items-center justify-center p-[16px]">
@@ -72,11 +87,10 @@ export default function Login() {
       </div>
 
       <div className="relative w-full max-w-[420px]">
+
         {/* Logo */}
-        <div className="text-center mb-[32px]">
-          <div className="inline-flex w-[60px] h-[60px] rounded-[18px] bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] items-center justify-center shadow-[0_8px_28px_rgba(240,90,26,0.4)] mb-[14px]">
-            <span className="text-white font-extrabold text-[24px]">U</span>
-          </div>
+        <div className="text-center mb-[32px] flex justify-center flex-col items-center gap-[4px]">
+          <img src={logo} alt="logo" className="w-full max-w-[45px]" />
           <h1 className="text-white text-[26px] font-extrabold m-0 leading-tight">UDI Sports</h1>
           <p className="text-white/50 text-[13px] m-0 mt-[4px]">Admin Panel</p>
         </div>
@@ -97,8 +111,29 @@ export default function Login() {
             </div>
           )}
 
-          <Field name="email"    label="Email"    type="email" icon={FaEnvelope} placeholder="admin@udisports.org" />
-          <Field name="password" label="Password" type="password" icon={FaLock} placeholder="Enter your password" />
+          <Field
+            name="email"
+            label="Email"
+            type="email"
+            icon={FaEnvelope}
+            placeholder="admin@udisports.in"
+            value={form.email}
+            onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(er => ({ ...er, email: '' })) }}
+            error={errors.email}
+          />
+
+          <Field
+            name="password"
+            label="Password"
+            type="password"
+            icon={FaLock}
+            placeholder="Enter your password"
+            value={form.password}
+            onChange={e => { setForm(f => ({ ...f, password: e.target.value })); setErrors(er => ({ ...er, password: '' })) }}
+            showPass={show}
+            onTogglePass={() => setShow(s => !s)}
+            error={errors.password}
+          />
 
           <button
             type="submit"
