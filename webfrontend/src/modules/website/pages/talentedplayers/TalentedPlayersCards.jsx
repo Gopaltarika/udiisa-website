@@ -129,7 +129,7 @@ const PlayerCard = ({ player }) => {
         {/* Achievement */}
         <div className="flex items-start gap-[7px]">
           <FaTrophy className="text-[#F05A1A] text-[11px] flex-shrink-0 mt-[3px]" />
-          <p className="text-slate-500 text-[12px] leading-[1.55] font-medium !m-0">
+          <p className="text-slate-500 text-[12px] leading-[1.55] font-medium !m-0 line-clamp-2 cursor-pointer" title={player.achievement}>
             {player.achievement}
           </p>
         </div>
