@@ -11,12 +11,20 @@ const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:5173').repla
 
 const escapeRegex = (value = '') => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const generateOtp = () => String(Math.floor(100000 + Math.random() * 900000))
+const normalizeEmail = (value = '') => String(value).trim().toLowerCase()
+const findAdminByEmail = async (email = '') => {
+  const normalized = normalizeEmail(email)
+  if (!normalized) return null
+  return Admin.findOne({
+    email: { $regex: `^${escapeRegex(normalized)}$`, $options: 'i' },
+  })
+}
 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body
     if (!email || !password) return res.status(400).json({ message: 'Email and password required' })
-    const normalizedEmail = String(email).trim().toLowerCase()
+    const normalizedEmail = normalizeEmail(email)
     const rawPassword = String(password)
     const trimmedPassword = rawPassword.trim()
 
@@ -64,10 +72,28 @@ export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body
     if (!currentPassword || !newPassword) return res.status(400).json({ message: 'Current and new password required' })
+    if (String(newPassword).trim().length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters' })
+
     const admin = await Admin.findById(req.admin._id)
-    const match = await bcrypt.compare(currentPassword, admin.password)
+    if (!admin) return res.status(404).json({ message: 'Admin not found' })
+
+    const rawCurrent = String(currentPassword)
+    const trimmedCurrent = rawCurrent.trim()
+    const rawNew = String(newPassword)
+    const trimmedNew = rawNew.trim()
+
+    let match = false
+    if (typeof admin.password === 'string' && admin.password.startsWith('$2')) {
+      match = await bcrypt.compare(rawCurrent, admin.password)
+      if (!match && rawCurrent !== trimmedCurrent) {
+        match = await bcrypt.compare(trimmedCurrent, admin.password)
+      }
+    } else {
+      match = admin.password === rawCurrent || admin.password === trimmedCurrent
+    }
     if (!match) return res.status(401).json({ message: 'Current password is wrong' })
-    admin.password = await bcrypt.hash(newPassword, 10)
+
+    admin.password = await bcrypt.hash(trimmedNew, 10)
     await admin.save()
     return res.json({ message: 'Password updated' })
   } catch (e) {
@@ -82,10 +108,10 @@ export const logout = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body
-    const em = (email || '').trim().toLowerCase()
+    const em = normalizeEmail(email)
     if (!em) return res.status(400).json({ message: 'Email required' })
 
-    const admin = await Admin.findOne({ email: em })
+    const admin = await findAdminByEmail(em)
     if (!admin) {
       // Don't reveal if email exists
       return res.json({ message: 'If this email is registered, you will receive reset instructions.' })
@@ -105,10 +131,10 @@ export const forgotPassword = async (req, res) => {
 
 export const sendPasswordOtp = async (req, res) => {
   try {
-    const email = String(req.body?.email || '').trim().toLowerCase()
+    const email = normalizeEmail(req.body?.email)
     if (!email) return res.status(400).json({ message: 'Email required' })
 
-    const admin = await Admin.findOne({ email })
+    const admin = await findAdminByEmail(email)
     if (!admin) {
       // Don't reveal whether email exists.
       return res.json({ message: 'If this email is registered, an OTP will be sent.' })
@@ -125,11 +151,11 @@ export const sendPasswordOtp = async (req, res) => {
 
 export const verifyPasswordOtp = async (req, res) => {
   try {
-    const email = String(req.body?.email || '').trim().toLowerCase()
+    const email = normalizeEmail(req.body?.email)
     const otp = String(req.body?.otp || '').trim()
     if (!email || !otp) return res.status(400).json({ message: 'Email and OTP required' })
 
-    const admin = await Admin.findOne({ email })
+    const admin = await findAdminByEmail(email)
     if (!admin) return res.status(400).json({ message: 'Invalid or expired OTP' })
 
     const isValid = verifyResetOtp(email, otp)
@@ -162,11 +188,11 @@ export const resetPassword = async (req, res) => {
     }
 
     // Flow 2: OTP based reset
-    const normalizedEmail = String(email || '').trim().toLowerCase()
+    const normalizedEmail = normalizeEmail(email)
     const normalizedOtp = String(otp || '').trim()
     if (!normalizedEmail || !normalizedOtp) return res.status(400).json({ message: 'Email and OTP required' })
 
-    const admin = await Admin.findOne({ email: normalizedEmail })
+    const admin = await findAdminByEmail(normalizedEmail)
     if (!admin) return res.status(400).json({ message: 'Invalid or expired OTP' })
 
     const isValidOtp = verifyResetOtp(normalizedEmail, normalizedOtp)

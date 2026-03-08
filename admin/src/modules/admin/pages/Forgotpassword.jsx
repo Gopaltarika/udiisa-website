@@ -93,6 +93,7 @@ export default function ForgotPassword() {
     error:   (msg) => _toast?.error?.(msg),
   }
   const navigate = useNavigate()
+  const [notice, setNotice] = useState({ type: '', text: '' })
 
   // ── Step: 'email' | 'otp' | 'reset' | 'done' ──
   const [step, setStep] = useState('email')  // FIX: was 'otp' — must start at 'email'
@@ -131,14 +132,18 @@ export default function ForgotPassword() {
   const handleSendOtp = async () => {
     if (!email.trim()) { setEmailError('Enter your email address'); return }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEmailError('Enter a valid email address'); return }
+    setNotice({ type: '', text: '' })
     setEmailBusy(true)
     let success = false
     try {
       await authService.sendOtp(email.trim().toLowerCase())
       toast.success('OTP sent! Check your email.')
+      setNotice({ type: 'success', text: 'OTP sent successfully. Please check your inbox/spam folder.' })
       success = true
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'Failed to send OTP')
+      const message = err?.response?.data?.message || 'Failed to send OTP. Please ensure backend server is running.'
+      toast.error(message)
+      setNotice({ type: 'error', text: message })
     } finally {
       setEmailBusy(false)
       if (success) {
@@ -186,14 +191,18 @@ export default function ForgotPassword() {
   const handleVerifyOtp = async () => {
     const code = otp.join('')
     if (code.length < OTP_LENGTH) { setOtpError('Please enter all 6 digits'); return }
+    setNotice({ type: '', text: '' })
     setOtpBusy(true)
     let success = false
     try {
       await authService.verifyOtp(email.trim().toLowerCase(), code)
       toast.success('OTP verified!')
+      setNotice({ type: 'success', text: 'OTP verified. Set your new password.' })
       success = true
     } catch (err) {
-      setOtpError(err?.response?.data?.message || 'Invalid or expired OTP')
+      const message = err?.response?.data?.message || 'Invalid or expired OTP'
+      setOtpError(message)
+      setNotice({ type: 'error', text: message })
       setOtp(Array(OTP_LENGTH).fill(''))
       otpRefs.current[0]?.focus()
     } finally {
@@ -204,16 +213,20 @@ export default function ForgotPassword() {
 
   // ── Resend OTP ──
   const handleResend = async () => {
+    setNotice({ type: '', text: '' })
     setResendBusy(true)
     try {
       await authService.sendOtp(email.trim().toLowerCase())
       toast.success('New OTP sent!')
+      setNotice({ type: 'success', text: 'A new OTP has been sent to your email.' })
       setOtp(Array(OTP_LENGTH).fill(''))
       setOtpError('')
       setResendCool(60)
       setTimeout(() => otpRefs.current[0]?.focus(), 50)
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'Failed to resend OTP')
+      const message = err?.response?.data?.message || 'Failed to resend OTP'
+      toast.error(message)
+      setNotice({ type: 'error', text: message })
     } finally {
       setResendBusy(false)
     }
@@ -229,13 +242,17 @@ export default function ForgotPassword() {
     if (newPass !== confirmPass)       err.confirmPass = 'Passwords do not match'
     if (Object.keys(err).length) { setPassErrors(err); return }
 
+    setNotice({ type: '', text: '' })
     setResetBusy(true)
     let success = false
     try {
       await authService.resetPassword(email.trim().toLowerCase(), otp.join(''), newPass)
+      setNotice({ type: 'success', text: 'Password reset successful.' })
       success = true
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'Failed to reset password')
+      const message = err?.response?.data?.message || 'Failed to reset password'
+      toast.error(message)
+      setNotice({ type: 'error', text: message })
     } finally {
       setResetBusy(false)
       if (success) setStep('done')
@@ -311,6 +328,18 @@ export default function ForgotPassword() {
                     </div>
                   )
                 })}
+              </div>
+            )}
+
+            {notice.text && step !== 'done' && (
+              <div
+                className={`mb-[16px] rounded-[10px] px-[12px] py-[10px] text-[12.5px] font-semibold ${
+                  notice.type === 'success'
+                    ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                    : 'bg-red-50 border border-red-200 text-red-600'
+                }`}
+              >
+                {notice.text}
               </div>
             )}
 

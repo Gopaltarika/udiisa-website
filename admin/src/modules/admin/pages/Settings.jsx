@@ -74,8 +74,10 @@ export default function Settings() {
     if (!validate()) return
     setSaving(true)
     try {
-      // await authService.changePassword(form)
-      await new Promise(r => setTimeout(r, 800)) // mock
+      await authService.changePassword({
+        currentPassword: form.currentPassword,
+        newPassword: form.newPassword,
+      })
       toast.success('Password changed successfully!')
       setForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
     } catch (err) {
