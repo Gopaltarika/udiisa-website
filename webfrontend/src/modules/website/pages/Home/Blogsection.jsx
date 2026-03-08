@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay, Navigation } from 'swiper/modules'
 import 'swiper/css'
@@ -6,18 +6,39 @@ import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 import { FaArrowRight, FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-
-const blogs = [
-  { id: 1, category: 'Initiative',  title: 'Breaking Barriers: Girl Empowerment Initiative Launches', desc: 'A new chapter begins as we dedicate resources to female athletes facing systemic barriers...', date: 'Dec 5, 2024',  img: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=85&fit=crop' },
-  { id: 2, category: 'Partnership', title: 'Partnership with 10 Top Academies Opens New Doors',        desc: 'Major academies have agreed to provide subsidized training for SportForce athletes...',     date: 'Nov 28, 2024', img: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=85&fit=crop' },
-  { id: 3, category: 'Mentorship',  title: 'Olympians Join Our Mentorship Program',                    desc: 'Former Olympians and national champions join our mentorship program...',                    date: 'Nov 20, 2024', img: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=85&fit=crop' },
-  { id: 4, category: 'Achievement', title: 'Our Athletes Win 12 Medals at National Championship',      desc: 'A historic moment as SportForce athletes bring home medals from across disciplines...',     date: 'Nov 10, 2024', img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&q=85&fit=crop' },
-  { id: 5, category: 'Event',       title: 'Annual Sports Carnival 2024 Concludes Successfully',       desc: 'Thousands of young athletes participated in our biggest annual event to date...',           date: 'Oct 30, 2024', img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=600&q=85&fit=crop' },
-  { id: 6, category: 'Community',   title: 'Grassroots Scouting Drive Reaches 5 New States',           desc: 'Our talent identification drive now covers 28 states with fresh scouting in remote areas...', date: 'Oct 18, 2024', img: 'https://images.unsplash.com/photo-1526676037777-05a232554f77?w=600&q=85&fit=crop' },
-]
+import { getPublicBlogs } from '../../../../shared/services/publicApi'
 
 const BlogSection = () => {
   const navigate = useNavigate()
+  const [blogs, setBlogs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError('')
+
+    getPublicBlogs({ page: 1, limit: 8 })
+      .then((data) => {
+        if (cancelled) return
+        const list = Array.isArray(data?.blogs) ? data.blogs : []
+        setBlogs(list)
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err?.message || 'Failed to load blogs')
+          setBlogs([])
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <>
@@ -82,8 +103,8 @@ const BlogSection = () => {
               modules={[Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               navigation={{ prevEl: '.swiper-blog-prev', nextEl: '.swiper-blog-next' }}
-              autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-              loop={true}
+              autoplay={blogs.length > 1 ? { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true } : false}
+              loop={blogs.length > 1}
               breakpoints={{
                 0:    { slidesPerView: 1,   spaceBetween: 10 },
                 640:  { slidesPerView: 2,   spaceBetween: 16 },
@@ -92,9 +113,16 @@ const BlogSection = () => {
             >
               {blogs.map((blog) => (
                 <SwiperSlide key={blog.id}>
-                  <div className="blog-card !rounded-xl sm:!rounded-2xl !bg-white !overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(11,30,75,.07)', border: '1px solid #e8ecf4' }} onClick={() => navigate(`/blogs/${blog.id}`)}>
+                  <div className="blog-card !rounded-xl sm:!rounded-2xl !bg-white !overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(11,30,75,.07)', border: '1px solid #e8ecf4' }} onClick={() => navigate(`/blogs/${blog.slug || blog.id}`)}>
                     <div className="!relative !overflow-hidden" style={{ height: 175 }}>
-                      <img src={blog.img} alt={blog.title} className="blog-img !w-full !h-full !object-cover" />
+                      <img
+                        src={blog.image}
+                        alt={blog.title}
+                        className="blog-img !w-full !h-full !object-cover"
+                        onError={(e) => {
+                          e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category || 'Blog')}&background=0B1E4B&color=fff&size=600`
+                        }}
+                      />
                       <div className="blog-overlay !absolute !inset-0" style={{ background: 'rgba(11,30,75,.25)' }} />
                       <div className="!absolute !top-[9px] !left-[9px]" style={{ padding: '3px 10px', background: 'rgba(11,30,75,.7)', backdropFilter: 'blur(6px)', borderRadius: 999, fontSize: 9.5, fontWeight: 700, color: '#fff', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
                         {blog.category}
@@ -103,7 +131,7 @@ const BlogSection = () => {
                     <div className="!p-[12px] sm:!p-[16px]">
                       <div className="!mb-[4px]" style={{ fontSize: 10, fontWeight: 700, color: '#F05A1A', letterSpacing: '1.8px', textTransform: 'uppercase' }}>{blog.category}</div>
                       <h3 className="blog-title !mt-0 !mb-[5px] line-clamp-2" style={{ fontSize: 13, fontWeight: 800, color: '#0B1E4B', lineHeight: 1.4 }}>{blog.title}</h3>
-                      <p className="!mt-0 !mb-[10px] line-clamp-2" style={{ fontSize: 11.5, color: '#64748b', lineHeight: 1.65 }}>{blog.desc}</p>
+                      <p className="!mt-0 !mb-[10px] line-clamp-2" style={{ fontSize: 11.5, color: '#64748b', lineHeight: 1.65 }}>{blog.excerpt}</p>
                       <div className="!flex !items-center !justify-between">
                         <div className="!flex !items-center !gap-[5px]" style={{ fontSize: 11, color: '#94a3b8', fontWeight: 500 }}>
                           <FaCalendarAlt style={{ fontSize: 10, color: '#F05A1A' }} />
@@ -118,6 +146,22 @@ const BlogSection = () => {
                 </SwiperSlide>
               ))}
             </Swiper>
+
+            {loading && (
+              <div style={{ textAlign: 'center', color: '#64748b', fontSize: 14, marginTop: 12 }}>
+                Loading blogs...
+              </div>
+            )}
+            {!loading && error && (
+              <div style={{ textAlign: 'center', color: '#b91c1c', fontSize: 13, marginTop: 12 }}>
+                {error}
+              </div>
+            )}
+            {!loading && !error && blogs.length === 0 && (
+              <div style={{ textAlign: 'center', color: '#64748b', fontSize: 14, marginTop: 12 }}>
+                No blogs available.
+              </div>
+            )}
           </div>
 
           {/* View All */}

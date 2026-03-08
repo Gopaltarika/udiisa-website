@@ -1,20 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import { BsStarFill } from 'react-icons/bs'
-
-const committeeMembers = [
-  { id: 1, name: 'Sachin Thakur',   role: 'Cricket Expert',     img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=85&fit=crop&crop=face' },
-  { id: 2, name: 'Meena Krishnan',  role: 'Athletics Coach',    img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=85&fit=crop&crop=face' },
-  { id: 3, name: 'Arjun Bhatt',     role: 'Football Academy',   img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=85&fit=crop&crop=face' },
-  { id: 4, name: 'Divya Menon',     role: 'Badminton Trainer',  img: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&q=85&fit=crop&crop=face' },
-  { id: 5, name: 'Rohit Verma',     role: 'Swimming Coach',     img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=85&fit=crop&crop=face' },
-  { id: 6, name: 'Priya Nair',      role: 'Gymnastics Expert',  img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&q=85&fit=crop&crop=face' },
-]
+import { getPublicPlayers } from '../../../../shared/services/publicApi'
 
 const SportsCommittee = () => {
+  const [players, setPlayers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError('')
+
+    getPublicPlayers()
+      .then((data) => {
+        if (cancelled) return
+        const normalized = Array.isArray(data)
+          ? data.map((player, idx) => ({
+              id: player.id ?? `${idx}`,
+              name: player.name || 'Player',
+              role: player.role || `${player.sport || 'Sports'} Player`,
+              img:
+                player.photo ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name || 'Player')}&background=F05A1A&color=fff&size=200`,
+            }))
+          : []
+        setPlayers(normalized)
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err?.message || 'Failed to load players')
+          setPlayers([])
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   return (
     <>
       <style>{`
@@ -128,15 +159,15 @@ const SportsCommittee = () => {
             className="sc-swiper !pb-[34px] sm:!pb-[40px]"
             modules={[Pagination, Autoplay]}
             pagination={{ clickable: true }}
-            autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-            loop={true}
+            autoplay={players.length > 1 ? { delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true } : false}
+            loop={players.length > 1}
             breakpoints={{
               0:    { slidesPerView: 2, spaceBetween: 10 },
               768:  { slidesPerView: 3, spaceBetween: 16 },
               1024: { slidesPerView: 4, spaceBetween: 20 },
             }}
           >
-            {committeeMembers.map((member) => (
+            {players.map((member) => (
               <SwiperSlide key={member.id}>
                 <div
                   className="sc-card !flex !flex-col !items-center !text-center !rounded-[20px] !bg-white !py-[20px] sm:!py-[28px] lg:!py-[32px] !px-[10px] sm:!px-[16px] lg:!px-[20px]"
@@ -154,6 +185,9 @@ const SportsCommittee = () => {
                       src={member.img}
                       alt={member.name}
                       className="sc-photo !w-full !h-full !object-cover !object-top"
+                      onError={(e) => {
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=F05A1A&color=fff&size=200`
+                      }}
                     />
                   </div>
 
@@ -193,6 +227,22 @@ const SportsCommittee = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+
+          {loading && (
+            <div style={{ textAlign: 'center', color: '#64748b', fontSize: 14, marginTop: 6 }}>
+              Loading players...
+            </div>
+          )}
+          {!loading && error && (
+            <div style={{ textAlign: 'center', color: '#b91c1c', fontSize: 13, marginTop: 6 }}>
+              {error}
+            </div>
+          )}
+          {!loading && !error && players.length === 0 && (
+            <div style={{ textAlign: 'center', color: '#64748b', fontSize: 14, marginTop: 6 }}>
+              No players available.
+            </div>
+          )}
 
         </div>
       </section>

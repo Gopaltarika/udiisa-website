@@ -66,7 +66,27 @@ const EmptyState = ({ search, category }) => (
 /* ── Pagination ── */
 const Pagination = ({ page, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+  const pages = []
+  const add = (value) => {
+    if (!pages.includes(value)) pages.push(value)
+  }
+
+  add(1)
+  if (totalPages > 1) add(totalPages)
+  for (let p = page - 1; p <= page + 1; p += 1) {
+    if (p > 1 && p < totalPages) add(p)
+  }
+
+  pages.sort((a, b) => a - b)
+  const view = []
+  for (let i = 0; i < pages.length; i += 1) {
+    const current = pages[i]
+    const prev = pages[i - 1]
+    if (i > 0 && current - prev > 1) {
+      view.push('dots-left-' + i)
+    }
+    view.push(current)
+  }
 
   return (
     <div className="flex items-center justify-center !gap-[8px] !mt-[8px] flex-wrap">
@@ -84,23 +104,32 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
         <FaChevronLeft className="text-[11px]" />
       </button>
 
-      {pages.map(p => (
-        <button
-          key={p}
-          onClick={() => onPageChange(p)}
-          className={`
-            w-[36px] h-[36px] rounded-full flex items-center justify-center
-            text-[13px] font-extrabold border-[1.5px]
-            transition-all duration-200
-            ${p === page
-              ? 'bg-[#F05A1A] text-white border-[#F05A1A] shadow-[0_4px_12px_rgba(240,90,26,0.32)]'
-              : 'bg-white text-slate-500 border-slate-200 hover:border-[#F05A1A] hover:text-[#F05A1A]'
-            }
-          `}
-        >
-          {p}
-        </button>
-      ))}
+      {view.map((item) => {
+        if (typeof item === 'string') {
+          return (
+            <span key={item} className="w-[28px] text-center text-slate-300 font-extrabold select-none">
+              ...
+            </span>
+          )
+        }
+        return (
+          <button
+            key={item}
+            onClick={() => onPageChange(item)}
+            className={`
+              w-[36px] h-[36px] rounded-full flex items-center justify-center
+              text-[13px] font-extrabold border-[1.5px]
+              transition-all duration-200
+              ${item === page
+                ? 'bg-[#F05A1A] text-white border-[#F05A1A] shadow-[0_4px_12px_rgba(240,90,26,0.32)]'
+                : 'bg-white text-slate-500 border-slate-200 hover:border-[#F05A1A] hover:text-[#F05A1A]'
+              }
+            `}
+          >
+            {item}
+          </button>
+        )
+      })}
 
       <button
         onClick={() => onPageChange(page + 1)}
@@ -128,7 +157,8 @@ export default function BlogList () {
   /* Read from URL */
   const search   = searchParams.get('search')   || ''
   const category = searchParams.get('category') || 'All'
-  const page     = parseInt(searchParams.get('page') || '1', 10)
+  const parsedPage = parseInt(searchParams.get('page') || '1', 10)
+  const page = Number.isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage
 
   /* Local input (debounced → URL) */
   const [inputVal, setInputVal] = useState(search)
@@ -148,16 +178,29 @@ export default function BlogList () {
 
   /* Debounce input → URL */
   useEffect(() => {
+    if (inputVal === search) return
     const t = setTimeout(() => updateParams({ search: inputVal, page: '1' }), 400)
     return () => clearTimeout(t)
-  }, [inputVal])
+  }, [inputVal, search, updateParams])
 
   /* Fetch */
   const { blogs, total, loading, error } = useBlogs({ search, category, page, limit: LIMIT })
   const totalPages = Math.ceil(total / LIMIT)
 
+  useEffect(() => {
+    if (!loading && totalPages > 0 && page > totalPages) {
+      updateParams({ page: String(totalPages) })
+    }
+  }, [loading, page, totalPages, updateParams])
+
   const handleCategory = (cat) => updateParams({ category: cat, page: '1' })
-  const handlePage     = (p)   => { updateParams({ page: String(p) }); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+  const handlePage     = (p)   => {
+    if (totalPages <= 0) return
+    const nextPage = Math.min(Math.max(1, p), totalPages)
+    if (nextPage === page) return
+    updateParams({ page: String(nextPage) })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
   const clearAll       = ()    => { setInputVal(''); updateParams({ search: '', category: 'All', page: '1' }) }
 
   return (

@@ -9,6 +9,7 @@ import CommitteeGroup from '../models/CommitteeGroup.js'
 import SpecialMember from '../models/SpecialMember.js'
 import GeneralMember from '../models/GeneralMember.js'
 import Player from '../models/Player.js'
+import mongoose from 'mongoose'
 import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
 const CATEGORY_TO_PAGE = {
@@ -74,7 +75,8 @@ export const getPublicBlogs = async (req, res) => {
       const { display, iso } = formatDate(b.createdAt)
       return {
         id: b._id.toString(),
-        slug: b.pageName || b._id.toString(),
+        // Use unique id as slug so blog detail always opens the clicked post.
+        slug: b._id.toString(),
         title: b.heading,
         category: b.category || PAGE_TO_CATEGORY[b.pageName] || 'General',
         excerpt: b.shortContent,
@@ -97,12 +99,23 @@ export const getPublicBlogs = async (req, res) => {
 export const getPublicBlogBySlug = async (req, res) => {
   try {
     const slug = req.params.slug
-    const blog = await Blog.findOne({ pageName: slug }).lean()
+    let blog = null
+
+    // Primary: unique id-based routing (recommended by frontend).
+    if (mongoose.Types.ObjectId.isValid(slug)) {
+      blog = await Blog.findById(slug).lean()
+    }
+
+    // Backward compatibility for older links that used pageName.
+    if (!blog) {
+      blog = await Blog.findOne({ pageName: slug }).sort({ createdAt: -1 }).lean()
+    }
+
     if (!blog) return res.status(404).json({ message: 'Blog not found' })
     const { display, iso } = formatDate(blog.createdAt)
     const out = {
       id: blog._id.toString(),
-      slug: blog.pageName || blog._id.toString(),
+      slug: blog._id.toString(),
       title: blog.heading,
       category: blog.category || PAGE_TO_CATEGORY[blog.pageName] || 'General',
       excerpt: blog.shortContent,

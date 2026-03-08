@@ -1,28 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-
-const individualMembers = [
-  { id: 1, name: 'Ajay Kumar',     company: 'Individual' },
-  { id: 2, name: 'Bindu Sharma',   company: 'Sharma Textiles' },
-  { id: 3, name: 'Chetan Patel',   company: 'Patel Group' },
-  { id: 4, name: 'Disha Singh',    company: 'Individual' },
-  { id: 5, name: 'Elan Kumar',     company: 'EK Solutions' },
-  { id: 6, name: 'Fatima Bibi',    company: 'Individual' },
-  { id: 7, name: 'Gaurav Agarwal', company: 'Agarwal Builders' },
-  { id: 8, name: 'Himani Rawat',   company: 'Individual' },
-]
-
-const corporateMembers = [
-  { id: 1, name: 'Reliance Sports Foundation', company: 'Reliance Industries Ltd.' },
-  { id: 2, name: 'Tata Sports Council',        company: 'Tata Group' },
-  { id: 3, name: 'Infosys Athletics Trust',    company: 'Infosys Pvt. Ltd.' },
-  { id: 4, name: 'Mahindra Champions Fund',    company: 'Mahindra & Mahindra' },
-  { id: 5, name: 'HDFC Sports Initiative',     company: 'HDFC Bank' },
-  { id: 6, name: 'Wipro Youth Sports',         company: 'Wipro Technologies' },
-  { id: 7, name: 'Bajaj Sports Welfare',       company: 'Bajaj Auto Ltd.' },
-  { id: 8, name: 'Adani Sports Committee',     company: 'Adani Group' },
-]
+import { getPublicGeneralMembers } from '../../../../shared/services/publicApi'
 
 const tabs = [
   { key: 'individual', label: 'Individual' },
@@ -31,10 +10,43 @@ const tabs = [
 
 const GeneralMembers = () => {
   const [activeTab, setActiveTab] = useState('individual')
-  const [hoveredRow, setHoveredRow] = useState(null)
+  const [individualMembers, setIndividualMembers] = useState([])
+  const [corporateMembers, setCorporateMembers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
   const data = activeTab === 'individual' ? individualMembers : corporateMembers
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError('')
+
+    Promise.all([
+      getPublicGeneralMembers('individual'),
+      getPublicGeneralMembers('corporate'),
+    ])
+      .then(([individualData, corporateData]) => {
+        if (cancelled) return
+        setIndividualMembers(Array.isArray(individualData) ? individualData : [])
+        setCorporateMembers(Array.isArray(corporateData) ? corporateData : [])
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err?.message || 'Failed to load general members')
+          setIndividualMembers([])
+          setCorporateMembers([])
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <>
@@ -217,7 +229,25 @@ const GeneralMembers = () => {
             </div>
 
             {/* Table Rows */}
-            {data.map((member, index) => (
+            {loading && (
+              <div style={{ padding: '22px 20px', background: '#fff', color: '#64748b', fontSize: 13, textAlign: 'center' }}>
+                Loading members...
+              </div>
+            )}
+
+            {!loading && error && (
+              <div style={{ padding: '22px 20px', background: '#fff', color: '#b91c1c', fontSize: 13, textAlign: 'center' }}>
+                {error}
+              </div>
+            )}
+
+            {!loading && !error && data.length === 0 && (
+              <div style={{ padding: '22px 20px', background: '#fff', color: '#64748b', fontSize: 13, textAlign: 'center' }}>
+                No members available.
+              </div>
+            )}
+
+            {!loading && !error && data.map((member, index) => (
               <div
                 key={member.id}
                 className="gm-row gm-table-row !grid !items-center"
@@ -227,15 +257,13 @@ const GeneralMembers = () => {
                   background: index % 2 === 0 ? '#fff' : '#f8fafc',
                   borderBottom: index < data.length - 1 ? '1px solid #f1f5f9' : 'none',
                 }}
-                onMouseEnter={() => setHoveredRow(member.id)}
-                onMouseLeave={() => setHoveredRow(null)}
               >
                 {/* SR */}
                 <div
                   className="gm-row-sr"
                   style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', transition: 'color .15s ease' }}
                 >
-                  {member.id}
+                  {index + 1}
                 </div>
 
                 {/* Name + company sub (mobile only) */}

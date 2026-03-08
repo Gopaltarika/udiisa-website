@@ -4,65 +4,9 @@ import { FaChevronLeft, FaChevronRight, FaArrowRight, FaLinkedin } from "react-i
 import { MdVerified } from "react-icons/md";
 import { HiSparkles } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import { getPublicSpecialMembers } from "../../../../shared/services/publicApi";
 
-const MEMBERS = [
-  {
-    id: 1,
-    name: "Vikram Singh",
-    company: "Singh Motors Pvt. Ltd.",
-    role: "Chairman & Founder",
-    photo: "https://i.pravatar.cc/300?img=12",
-    tag: "Platinum Patron",
-  },
-  {
-    id: 2,
-    name: "Kavitha Nair",
-    company: "Nair Foundation",
-    role: "Managing Director",
-    photo: "https://i.pravatar.cc/300?img=25",
-    tag: "Gold Patron",
-  },
-  {
-    id: 3,
-    name: "Rajat Mehta",
-    company: "TechSports India",
-    role: "CEO & Co-Founder",
-    photo: "https://i.pravatar.cc/300?img=52",
-    tag: "Platinum Patron",
-  },
-  {
-    id: 4,
-    name: "Priya Anand",
-    company: "Anand Enterprises",
-    role: "Executive Director",
-    photo: "https://i.pravatar.cc/300?img=44",
-    tag: "Gold Patron",
-  },
-  {
-    id: 5,
-    name: "Arjun Kapoor",
-    company: "Kapoor Industries",
-    role: "President",
-    photo: "https://i.pravatar.cc/300?img=33",
-    tag: "Platinum Patron",
-  },
-  {
-    id: 6,
-    name: "Sunita Reddy",
-    company: "Reddy Corp.",
-    role: "Vice President",
-    photo: "https://i.pravatar.cc/300?img=47",
-    tag: "Gold Patron",
-  },
-  {
-    id: 7,
-    name: "Rohit Sharma",
-    company: "Sharma Holdings",
-    role: "Director",
-    photo: "https://i.pravatar.cc/300?img=60",
-    tag: "Silver Patron",
-  },
-];
+const FALLBACK_MEMBERS = [];
 
 const TAG_STYLES = {
   "Platinum Patron": { bg: "#f0f4ff", color: "#3b5bdb", dot: "#4c6ef5" },
@@ -217,15 +161,69 @@ function MemberCard({ member, isCenter }) {
 
 export default function SpecialMembersSection() {
   const navigate = useNavigate();
+  const [members, setMembers] = useState(FALLBACK_MEMBERS);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [current, setCurrent] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
   const autoRef = useRef(null);
-  const total = MEMBERS.length;
+  const total = members.length;
 
-  const prev = useCallback(() => setCurrent(c => (c - 1 + total) % total), [total]);
-  const next = useCallback(() => setCurrent(c => (c + 1) % total), [total]);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError("");
+
+    getPublicSpecialMembers()
+      .then((data) => {
+        if (cancelled) return;
+        const normalized = Array.isArray(data)
+          ? data.map((member, idx) => ({
+              id: member.id ?? `${idx}`,
+              name: member.name || "Special Member",
+              role: member.designation || member.role || "Special Member",
+              photo:
+                member.img ||
+                member.photo ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name || "Member")}&background=F05A1A&color=fff&size=200`,
+              tag: "Special Member",
+            }))
+          : [];
+        setMembers(normalized);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err?.message || "Failed to load special members");
+          setMembers([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (total === 0) {
+      setCurrent(0);
+      return;
+    }
+    setCurrent((prev) => (prev >= total ? 0 : prev));
+  }, [total]);
+
+  const prev = useCallback(() => {
+    if (total <= 1) return;
+    setCurrent((c) => (c - 1 + total) % total);
+  }, [total]);
+  const next = useCallback(() => {
+    if (total <= 1) return;
+    setCurrent((c) => (c + 1) % total);
+  }, [total]);
 
   // Auto-play
   useEffect(() => {
@@ -254,6 +252,7 @@ export default function SpecialMembersSection() {
 
   // Get visible cards: prev, center, next (and extras for smooth look)
   const getVisible = () => {
+    if (total === 0) return [];
     const indices = [];
     for (let i = -2; i <= 2; i++) {
       indices.push((current + i + total) % total);
@@ -462,7 +461,7 @@ export default function SpecialMembersSection() {
                     transition: "all 0.45s cubic-bezier(0.34,1.2,0.64,1)",
                   }}
                 >
-                  <MemberCard member={MEMBERS[memberIdx]} isCenter={isCenter} />
+                  <MemberCard member={members[memberIdx]} isCenter={isCenter} />
                 </div>
               );
             })}
@@ -473,13 +472,13 @@ export default function SpecialMembersSection() {
             display: "flex", alignItems: "center", justifyContent: "center",
             gap: 12, marginBottom: 28,
           }}>
-            <button className="sms-arrow prev" onClick={() => { prev(); pause(); setTimeout(resume, 3000); }}>
+            <button className="sms-arrow prev" disabled={total <= 1} onClick={() => { prev(); pause(); setTimeout(resume, 3000); }}>
               <FaChevronLeft style={{ fontSize: 14 }} />
             </button>
 
             {/* Dot indicators */}
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              {MEMBERS.map((_, i) => (
+              {members.map((_, i) => (
                 <button
                   key={i}
                   className={`sms-dot ${i === current ? "active" : "inactive"}`}
@@ -488,7 +487,7 @@ export default function SpecialMembersSection() {
               ))}
             </div>
 
-            <button className="sms-arrow next" onClick={() => { next(); pause(); setTimeout(resume, 3000); }}>
+            <button className="sms-arrow next" disabled={total <= 1} onClick={() => { next(); pause(); setTimeout(resume, 3000); }}>
               <FaChevronRight style={{ fontSize: 14 }} />
             </button>
           </div>
@@ -501,10 +500,26 @@ export default function SpecialMembersSection() {
             marginBottom: 36,
           }}>
             <span style={{ color: "#F05A1A", fontSize: 16, fontFamily: "'Bebas Neue', cursive", letterSpacing: 2 }}>
-              {String(current + 1).padStart(2, "0")}
+              {String(total === 0 ? 0 : current + 1).padStart(2, "0")}
             </span>
-            {" "}/ {String(MEMBERS.length).padStart(2, "0")}
+            {" "}/ {String(total).padStart(2, "0")}
           </div>
+
+          {loading && (
+            <div style={{ textAlign: "center", color: "#64748b", fontSize: 14, marginBottom: 24 }}>
+              Loading special members...
+            </div>
+          )}
+          {!loading && error && (
+            <div style={{ textAlign: "center", color: "#b91c1c", fontSize: 13, marginBottom: 24 }}>
+              {error}
+            </div>
+          )}
+          {!loading && !error && total === 0 && (
+            <div style={{ textAlign: "center", color: "#64748b", fontSize: 14, marginBottom: 24 }}>
+              No special members available.
+            </div>
+          )}
         </div>
 
         {/* ── VIEW ALL BUTTON ── */}
