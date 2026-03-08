@@ -5,7 +5,7 @@ import { HiMenu, HiX } from "react-icons/hi"
 import { FaTrophy, FaChevronDown, FaUsers } from "react-icons/fa"
 import { BsStarFill } from "react-icons/bs"
 import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md"
-import { committees } from "../pages/committee/committeeData"
+import { getPublicCommittees } from "../../../shared/services/publicApi"
 
 export default function Navbar() {
   const [menuOpen,            setMenuOpen]            = useState(false)
@@ -14,6 +14,7 @@ export default function Navbar() {
   const [committeeDrop,       setCommitteeDrop]       = useState(false)
   const [mobileMembersDrop,   setMobileMembersDrop]   = useState(false)
   const [mobileCommitteeDrop, setMobileCommitteeDrop] = useState(false)
+  const [committees,          setCommittees]          = useState([])
 
   const membersTimer   = useRef(null)
   const committeeTimer = useRef(null)
@@ -22,6 +23,21 @@ export default function Navbar() {
     document.body.style.overflow = menuOpen ? "hidden" : ""
     return () => { document.body.style.overflow = "" }
   }, [menuOpen])
+
+  useEffect(() => {
+    let activeReq = true
+    getPublicCommittees()
+      .then((list) => {
+        if (!activeReq) return
+        const items = Array.isArray(list) ? list : []
+        setCommittees(items)
+      })
+      .catch(() => {
+        if (!activeReq) return
+        setCommittees([])
+      })
+    return () => { activeReq = false }
+  }, [])
 
   const closeAll = (label) => {
     setActive(label)
@@ -163,7 +179,7 @@ export default function Navbar() {
                       onClick={() => closeAll("Committee")}
                     >
                       <span className="text-[17px] w-6 text-center">{c.icon}</span>
-                      {c.shortLabel}
+                      {c.shortLabel || c.label}
                     </a>
                   ))}
                 </div>
@@ -310,7 +326,7 @@ export default function Navbar() {
                       onClick={() => closeAll("Committee")}
                     >
                       <span className="text-[15px]">{c.icon}</span>
-                      {c.shortLabel}
+                      {c.shortLabel || c.label}
                     </a>
                   ))}
                 </div>

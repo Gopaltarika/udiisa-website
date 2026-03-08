@@ -198,6 +198,7 @@ export const getPublicGeneralMembers = async (req, res) => {
       return {
         id: m._id.toString(),
         name: m.name,
+        company: m.companyName || '-',
         city: m.email || '-',
         sport: m.phone || '-',
       }

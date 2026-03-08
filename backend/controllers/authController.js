@@ -20,7 +20,6 @@ export const login = async (req, res) => {
     const rawPassword = String(password)
     const trimmedPassword = rawPassword.trim()
 
-    // Case-insensitive lookup helps older records with mixed-case emails.
     const admin = await Admin.findOne({
       email: { $regex: `^${escapeRegex(normalizedEmail)}$`, $options: 'i' },
     })
@@ -38,12 +37,8 @@ export const login = async (req, res) => {
     }
     if (!match) return res.status(401).json({ message: 'Invalid email or password' })
 
-    // Keep data normalized and secure after successful login.
+    // Keep password secure after successful login.
     let shouldSaveAdmin = false
-    if (admin.email !== normalizedEmail) {
-      admin.email = normalizedEmail
-      shouldSaveAdmin = true
-    }
     if (!(typeof admin.password === 'string' && admin.password.startsWith('$2'))) {
       admin.password = await bcrypt.hash(trimmedPassword, 10)
       shouldSaveAdmin = true

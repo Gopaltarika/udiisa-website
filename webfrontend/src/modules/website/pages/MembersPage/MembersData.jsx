@@ -135,7 +135,7 @@ const IndividualTable = ({ data = [] }) => (
           <div className="sr-cell" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{i + 1}</div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: '#0B1E4B', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.name}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#64748b', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
-            {m.city}
+            {m.company || m.city || '-'}
           </div>
         </div>
       ))}

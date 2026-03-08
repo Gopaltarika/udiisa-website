@@ -11,17 +11,23 @@ export default function CommitteePage() {
   const [apiError, setApiError] = useState("")
 
   useEffect(() => {
-    const scrollToHash = () => {
+    const scrollToHash = (attempt = 0) => {
       const hash = window.location.hash.replace("#", "")
       if (!hash) return
-      setTimeout(() => {
-        const el = document.getElementById(hash)
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 90
-          window.scrollTo({ top, behavior: "smooth" })
-        }
-      }, 120)
+
+      const el = document.getElementById(hash)
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 90
+        window.scrollTo({ top, behavior: "smooth" })
+        return
+      }
+
+      // Sections are API-driven; retry briefly until DOM is rendered.
+      if (attempt < 8) {
+        setTimeout(() => scrollToHash(attempt + 1), 120)
+      }
     }
+
     scrollToHash()
     window.addEventListener("hashchange", scrollToHash)
     return () => window.removeEventListener("hashchange", scrollToHash)
@@ -44,6 +50,17 @@ export default function CommitteePage() {
     loadCommittees()
     return () => { active = false }
   }, [])
+
+  useEffect(() => {
+    if (!loading && committees.length > 0 && window.location.hash) {
+      const hash = window.location.hash.replace("#", "")
+      const el = document.getElementById(hash)
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 90
+        window.scrollTo({ top, behavior: "smooth" })
+      }
+    }
+  }, [loading, committees])
 
   const jumpTo = (slug) => { window.location.hash = slug }
 
