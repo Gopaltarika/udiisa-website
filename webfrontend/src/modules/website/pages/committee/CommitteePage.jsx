@@ -2,7 +2,7 @@
 // Route: /committee
 
 import { useEffect, useState } from "react"
-import CommitteeSection from "./CommitteeSection"
+import CommitteeSection from "./Committeesection"
 import { getPublicCommittees } from "@/shared/services/publicApi"
 
 export default function CommitteePage() {
