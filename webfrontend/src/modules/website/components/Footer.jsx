@@ -35,7 +35,7 @@ const developers = [
   {
     name: 'Gopal',
     role: 'Full Stack Developer',
-    linkedin: 'https://www.linkedin.com/in/gopal-tarika-b3a156326/',
+    linkedin: '#',
     initials: 'G',
     color: '#0A66C2',
   },
