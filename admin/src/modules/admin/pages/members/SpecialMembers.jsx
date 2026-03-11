@@ -13,7 +13,97 @@ import { useDebounce } from '../../hooks/useDebounce'
 import memberService from '../../services/memberService'
 import { validateRequired, buildFormData, API_IMG, formatDate } from '../../utils/helpers'
 
-const EMPTY = { name: '', companyName: '', photo: null }
+const EMPTY = { name: '', companyName: '', membershipCategory: 'Silver', photo: null }
+
+// ── Category Config ──────────────────────────────────────────────────────────
+const CATEGORIES = [
+  {
+    value: 'Diamond',
+    label: '💎 Diamond',
+    bg: '#eef6ff',
+    color: '#1a6bc4',
+    border: '#bfdbfe',
+    dot: '#3b82f6',
+  },
+  {
+    value: 'Gold',
+    label: '🥇 Gold',
+    bg: '#fffbeb',
+    color: '#b45309',
+    border: '#fde68a',
+    dot: '#f59e0b',
+  },
+  {
+    value: 'Silver',
+    label: '🥈 Silver',
+    bg: '#f8fafc',
+    color: '#475569',
+    border: '#e2e8f0',
+    dot: '#94a3b8',
+  },
+]
+
+const getCat = (val) => CATEGORIES.find(c => c.value === val) || CATEGORIES[2]
+
+// ── Category Badge ────────────────────────────────────────────────────────────
+function CategoryBadge({ value }) {
+  const cat = getCat(value)
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      padding: '3px 10px', borderRadius: 999,
+      background: cat.bg, color: cat.color,
+      border: `1px solid ${cat.border}`,
+      fontSize: 11, fontWeight: 700, letterSpacing: '0.3px',
+      whiteSpace: 'nowrap',
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: cat.dot, flexShrink: 0 }} />
+      {cat.value}
+    </span>
+  )
+}
+
+// ── Category Dropdown ─────────────────────────────────────────────────────────
+function CategorySelect({ value, onChange }) {
+  const selected = getCat(value)
+  return (
+    <div style={{ position: 'relative' }}>
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '10px 38px 10px 14px',
+          borderRadius: 10,
+          border: `1.5px solid ${selected.border}`,
+          background: selected.bg,
+          color: selected.color,
+          fontSize: 13,
+          fontWeight: 700,
+          cursor: 'pointer',
+          appearance: 'none',
+          outline: 'none',
+          transition: 'border-color 0.2s, box-shadow 0.2s',
+          fontFamily: 'inherit',
+          boxShadow: `0 1px 4px ${selected.border}`,
+        }}
+        onFocus={e => e.target.style.boxShadow = `0 0 0 3px ${selected.border}`}
+        onBlur={e => e.target.style.boxShadow = `0 1px 4px ${selected.border}`}
+      >
+        {CATEGORIES.map(cat => (
+          <option key={cat.value} value={cat.value}>{cat.label}</option>
+        ))}
+      </select>
+      {/* Custom chevron */}
+      <div style={{
+        position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+        pointerEvents: 'none', color: selected.color, fontSize: 10,
+      }}>
+        ▼
+      </div>
+    </div>
+  )
+}
 
 export default function SpecialMembers() {
   const toast = useAdminToast()
@@ -46,6 +136,7 @@ export default function SpecialMembers() {
             id: m._id,
             name: m.name || '',
             companyName: m.companyName || '',
+            membershipCategory: m.membershipCategory || 'Silver',
             photo: m.photo || null,
             createdAt: m.createdAt,
           }))
@@ -62,8 +153,26 @@ export default function SpecialMembers() {
     return () => { mounted = false }
   }, [dSearch, toast])
 
-  const openAdd = () => { setSelected(null); setForm(EMPTY); setPreview(null); setErrors({}); setFormOpen(true) }
-  const openEdit = (row) => { setSelected(row); setForm({ name: row.name, companyName: row.companyName, photo: null }); setPreview(row.photo ? API_IMG(row.photo) : null); setErrors({}); setFormOpen(true) }
+  const openAdd = () => {
+    setSelected(null)
+    setForm(EMPTY)
+    setPreview(null)
+    setErrors({})
+    setFormOpen(true)
+  }
+
+  const openEdit = (row) => {
+    setSelected(row)
+    setForm({
+      name: row.name,
+      companyName: row.companyName,
+      membershipCategory: row.membershipCategory || 'Silver',
+      photo: null,
+    })
+    setPreview(row.photo ? API_IMG(row.photo) : null)
+    setErrors({})
+    setFormOpen(true)
+  }
 
   const handlePhoto = (e) => {
     const file = e.target.files[0]
@@ -82,6 +191,7 @@ export default function SpecialMembers() {
       const payload = buildFormData({
         name: form.name?.trim(),
         companyName: form.companyName?.trim(),
+        membershipCategory: form.membershipCategory,
         photo: form.photo || undefined,
       })
 
@@ -92,6 +202,7 @@ export default function SpecialMembers() {
           id: m._id || selected.id,
           name: m.name || form.name,
           companyName: m.companyName || form.companyName || '',
+          membershipCategory: m.membershipCategory || form.membershipCategory || 'Silver',
           photo: m.photo || selected.photo || null,
           createdAt: m.createdAt || selected.createdAt,
         }
@@ -104,6 +215,7 @@ export default function SpecialMembers() {
           id: m._id,
           name: m.name || form.name,
           companyName: m.companyName || form.companyName || '',
+          membershipCategory: m.membershipCategory || form.membershipCategory || 'Silver',
           photo: m.photo || null,
           createdAt: m.createdAt || new Date().toISOString(),
         }
@@ -113,8 +225,9 @@ export default function SpecialMembers() {
       setFormOpen(false)
     } catch (e) {
       toast.error(e?.response?.data?.message || 'Failed to save')
+    } finally {
+      setSaving(false)
     }
-    finally { setSaving(false) }
   }
 
   const handleDelete = async () => {
@@ -126,8 +239,9 @@ export default function SpecialMembers() {
       setDelOpen(false)
     } catch (e) {
       toast.error(e?.response?.data?.message || 'Failed to delete')
+    } finally {
+      setDeleting(false)
     }
-    finally { setDeleting(false) }
   }
 
   const columns = [
@@ -145,10 +259,20 @@ export default function SpecialMembers() {
     },
     { key: 'name',        label: 'Name' },
     { key: 'companyName', label: 'Company' },
-    { key: 'createdAt',   label: 'Joined', render: (v) => formatDate(v) },
+    {
+      key: 'membershipCategory', label: 'Category',
+      render: (v) => <CategoryBadge value={v || 'Silver'} />,
+    },
+    { key: 'createdAt', label: 'Joined', render: (v) => formatDate(v) },
     {
       key: 'act', label: 'Actions',
-      render: (_, row) => <ActionButtons onView={() => { setSelected(row); setViewOpen(true) }} onEdit={() => openEdit(row)} onDelete={() => { setSelected(row); setDelOpen(true) }} />,
+      render: (_, row) => (
+        <ActionButtons
+          onView={() => { setSelected(row); setViewOpen(true) }}
+          onEdit={() => openEdit(row)}
+          onDelete={() => { setSelected(row); setDelOpen(true) }}
+        />
+      ),
     },
   ]
 
@@ -158,24 +282,51 @@ export default function SpecialMembers() {
         title="Special Members"
         subtitle="Manage special / honorary members"
         action={
-          <button onClick={openAdd} className="flex items-center gap-[8px] px-[16px] h-[40px] rounded-[10px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[13px] font-extrabold shadow-[0_4px_14px_rgba(240,90,26,0.3)] hover:-translate-y-[1px] transition-all">
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-[8px] px-[16px] h-[40px] rounded-[10px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[13px] font-extrabold shadow-[0_4px_14px_rgba(240,90,26,0.3)] hover:-translate-y-[1px] transition-all"
+          >
             <FaPlus className="text-[11px]" /> Add Member
           </button>
         }
       />
-      <div className="mb-[16px]"><SearchBar value={search} onChange={setSearch} placeholder="Search special members…" /></div>
+
+      <div className="mb-[16px]">
+        <SearchBar value={search} onChange={setSearch} placeholder="Search special members…" />
+      </div>
+
       <Table columns={columns} data={members} loading={loading} emptyText="No special members found" />
 
-      {/* Form */}
+      {/* ── Add / Edit Form ── */}
       <Modal isOpen={formOpen} onClose={() => setFormOpen(false)} title={`${selected ? 'Edit' : 'Add'} Special Member`} size="sm">
         <div className="flex flex-col gap-[14px]">
           <PhotoUpload preview={preview} onChange={handlePhoto} />
+
           <FormField label="Name" required error={errors.name}>
-            <Input placeholder="Full name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} error={errors.name} />
+            <Input
+              placeholder="Full name"
+              value={form.name}
+              onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+              error={errors.name}
+            />
           </FormField>
+
           <FormField label="Company Name">
-            <Input placeholder="Company / Organisation" value={form.companyName} onChange={e => setForm(f => ({ ...f, companyName: e.target.value }))} />
+            <Input
+              placeholder="Company / Organisation"
+              value={form.companyName}
+              onChange={e => setForm(f => ({ ...f, companyName: e.target.value }))}
+            />
           </FormField>
+
+          {/* Membership Category */}
+          <FormField label="Membership Category" required>
+            <CategorySelect
+              value={form.membershipCategory}
+              onChange={val => setForm(f => ({ ...f, membershipCategory: val }))}
+            />
+          </FormField>
+
           <div className="flex gap-[10px] justify-end pt-[6px]">
             <CancelBtn onClick={() => setFormOpen(false)} />
             <SubmitBtn loading={saving} onClick={handleSave}>{selected ? 'Update' : 'Add'}</SubmitBtn>
@@ -183,7 +334,7 @@ export default function SpecialMembers() {
         </div>
       </Modal>
 
-      {/* View */}
+      {/* ── View Details ── */}
       <Modal isOpen={viewOpen} onClose={() => setViewOpen(false)} title="Special Member Details" size="sm">
         {selected && (
           <div className="flex flex-col items-center gap-[16px] text-center">
@@ -195,6 +346,10 @@ export default function SpecialMembers() {
               <h3 className="text-[18px] font-extrabold text-[#0B1E4B] m-0">{selected.name}</h3>
               <p className="text-[14px] text-slate-500 m-0">{selected.companyName || '—'}</p>
             </div>
+
+            {/* Category badge in view modal */}
+            <CategoryBadge value={selected.membershipCategory || 'Silver'} />
+
             <div className="w-full bg-slate-50 rounded-[12px] p-[14px] text-left">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Joined</p>
               <p className="text-[13px] font-semibold text-slate-700 m-0 mt-[2px]">{formatDate(selected.createdAt)}</p>
@@ -203,7 +358,13 @@ export default function SpecialMembers() {
         )}
       </Modal>
 
-      <ConfirmDialog isOpen={delOpen} onClose={() => setDelOpen(false)} onConfirm={handleDelete} loading={deleting} message={`Delete "${selected?.name}"?`} />
+      <ConfirmDialog
+        isOpen={delOpen}
+        onClose={() => setDelOpen(false)}
+        onConfirm={handleDelete}
+        loading={deleting}
+        message={`Delete "${selected?.name}"?`}
+      />
     </div>
   )
 }

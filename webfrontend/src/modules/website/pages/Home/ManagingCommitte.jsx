@@ -138,7 +138,7 @@ const ManagingCommittee = () => {
 
           {/* ── Cards Grid ── */}
           {/* Mobile: 2-col | sm: 3-col | lg: 5-col */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 !gap-[10px] sm:!gap-[14px] lg:!gap-[20px] !mb-[24px] sm:!mb-[32px] lg:!mb-[40px] justify-items-center justify-center place-items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 !gap-[10px] sm:!gap-[14px] lg:!gap-[20px] !mb-[24px] sm:!mb-[32px] lg:!mb-[40px] justify-items-center justify-center place-items-center">
             {visibleMembers.map((m) => (
               <div
                 key={m.id}

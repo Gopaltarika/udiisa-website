@@ -76,9 +76,7 @@ export default function CommitteeSection({ committee }) {
         {/* Main heading — "Our [LABEL] Members" */}
         <h2 className="relative z-10 !m-0 font-[Plus_Jakarta_Sans] font-extrabold text-[#0B1E4B] leading-[1.1] tracking-[-0.5px]"
             style={{ fontSize: "clamp(22px, 5vw, 38px)" }}>
-          Our{" "}
           <span className={accentText}>{label}</span>
-          {" "}Members
         </h2>
 
         {/* Thin accent underline bar */}

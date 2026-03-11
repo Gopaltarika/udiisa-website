@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import TermsAndConditions from "../modules/website/pages/termscondition/TermsAndConditions";
 
 const Home = lazy(() => import("../modules/website/pages/Home/Home"));
 const Members = lazy(() => import("../modules/website/pages/MembersPage/Members"));
@@ -35,6 +36,7 @@ const AppRoutes = () => {
             <Route path="/blogs/*" element={<BlogRoutes />} />
             <Route path="/committee" element={<CommitteePage />} />
             <Route path="/donate-now" element={<DonateNow />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           </Route>
         </Routes>
       </Suspense>

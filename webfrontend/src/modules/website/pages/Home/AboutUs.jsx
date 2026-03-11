@@ -4,6 +4,10 @@ import aboutImage from "@/assets/images/about-img.jpeg"
 import { useNavigate } from 'react-router-dom'
 import { BsStarFill } from 'react-icons/bs'
 
+// ── Real sports images (Unsplash free-to-use links) ──────────────────────────
+const CRICKET_IMG  = "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600&q=80"
+const FOOTBALL_IMG = "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80"
+
 const features = [
   {
     icon: <FaSearch />,
@@ -23,111 +27,221 @@ const features = [
 ]
 
 const AboutUs = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate()
+
   return (
     <>
       <style>{`
-        /* image card hover */
-        .img-card { transition: transform .3s ease, box-shadow .3s ease; }
-        .img-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(11,30,75,.16); }
+        /* ── image card ── */
+        .img-card {
+          transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s ease;
+          position: relative; overflow: hidden;
+        }
+        .img-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 24px 56px rgba(11,30,75,.18) !important; }
+        .img-card img { transition: transform .5s ease; }
+        .img-card:hover img { transform: scale(1.06); }
 
-        /* feature card hover */
-        .feat-card { transition: all .25s ease; }
+        /* ── sport label chip on image ── */
+        .sport-chip {
+          position: absolute; bottom: 10px; left: 10px; z-index: 2;
+          display: inline-flex; align-items: center; gap: 5px;
+          padding: 4px 11px; border-radius: 999px;
+          background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+          font-size: 10px; font-weight: 800; letter-spacing: .8px;
+          color: #0B1E4B; text-transform: uppercase;
+          box-shadow: 0 2px 10px rgba(11,30,75,.15);
+        }
+        .sport-chip .chip-dot {
+          width: 7px; height: 7px; border-radius: 50%;
+          background: linear-gradient(135deg,#F05A1A,#FF7D42);
+        }
+
+        /* ── image overlay gradient ── */
+        .img-overlay {
+          position: absolute; inset: 0; pointer-events: none;
+          background: linear-gradient(180deg, transparent 55%, rgba(11,30,75,.28) 100%);
+        }
+
+        /* ── feature card ── */
+        .feat-card { transition: all .28s ease; }
         .feat-card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 12px 36px rgba(240,90,26,.12);
-          border-color: rgba(240,90,26,.3) !important;
+          transform: translateX(5px);
+          box-shadow: 0 8px 32px rgba(240,90,26,.13);
+          border-color: rgba(240,90,26,.25) !important;
         }
         .feat-card:hover .feat-icon-wrap {
           background: linear-gradient(135deg,#F05A1A,#FF7D42) !important;
         }
         .feat-card:hover .feat-icon-wrap svg { color: #fff !important; }
 
-        /* review badge float */
+        /* ── badge float ── */
         @keyframes badgePop {
           0%,100% { transform: translateY(0); }
-          50%      { transform: translateY(-6px); }
+          50%      { transform: translateY(-7px); }
         }
         .review-badge { animation: badgePop 3.5s ease-in-out infinite; }
 
-        /* underline accent */
+        /* ── stat badge ── */
+        @keyframes statFloat {
+          0%,100% { transform: translateY(0) rotate(-2deg); }
+          50%      { transform: translateY(-8px) rotate(-2deg); }
+        }
+        .stat-badge { animation: statFloat 4s ease-in-out infinite; }
+
+        /* ── accent line ── */
         .title-underline {
-          display: block;
-          width: 52px; height: 4px; border-radius: 2px;
+          display: block; width: 52px; height: 4px; border-radius: 2px;
           background: linear-gradient(90deg,#F05A1A,#FF7D42);
         }
 
-        /* aspect ratio fallback */
+        /* ── view-all button ── */
+        .sms-view-all {
+          display: inline-flex; align-items: center; gap: 10px;
+          padding: 13px 32px; border-radius: 14px;
+          font-size: 13px; font-weight: 800; letter-spacing: .5px;
+          color: #fff; cursor: pointer;
+          background: linear-gradient(135deg, #0B1E4B 0%, #1a3580 100%);
+          border: none;
+          box-shadow: 0 8px 24px rgba(11,30,75,.22);
+          transition: all .3s cubic-bezier(.34,1.56,.64,1);
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .sms-view-all:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 14px 36px rgba(11,30,75,.3);
+          background: linear-gradient(135deg,#F05A1A,#FF7D42);
+        }
+        .sms-view-all:hover .arrow-icon { transform: translateX(4px); }
+        .arrow-icon { transition: transform .25s; }
+
+        /* ── decorative corner dots ── */
+        .corner-dots {
+          position: absolute; width: 80px; height: 80px;
+          background-image: radial-gradient(circle, rgba(240,90,26,.35) 1.5px, transparent 1.5px);
+          background-size: 10px 10px;
+          pointer-events: none;
+        }
+
         .aspect-4-3 { aspect-ratio: 4/3; }
+        .aspect-tall { aspect-ratio: 3/4; }
       `}</style>
 
-      <section className="about-section bg-[#F7F9FD] !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-[16px] sm:!px-[24px] lg:!px-[32px] overflow-hidden">
-        <div className="w-full max-w-[1280px] !mx-auto">
+      <section
+        className="about-section overflow-hidden"
+        style={{
+          background: "linear-gradient(160deg, #f0f4ff 0%, #ffffff 45%, #fff8f4 100%)",
+          padding: "72px 16px",
+          position: "relative",
+        }}
+      >
 
-          <div className="flex flex-col lg:flex-row items-center !gap-[36px] sm:!gap-[48px] lg:!gap-[64px]">
+        <div className="w-full max-w-[1280px] !mx-auto" style={{ position: "relative" }}>
+          <div className="flex flex-col lg:flex-row items-center !gap-[48px] lg:!gap-[72px]">
 
             {/* ══ LEFT — Image Stack ══ */}
-            <div className="w-full sm:w-[80%] lg:w-[50%] !mx-auto lg:!mx-[0] grid grid-cols-2 !gap-[12px] sm:!gap-[16px] lg:!gap-[20px] items-center flex-shrink-0">
+            <div
+              className="w-full sm:w-[82%] lg:w-[48%] !mx-auto lg:!mx-0 flex-shrink-0"
+              style={{ position: "relative" }}
+            >
+              {/* Corner dots top-left */}
+              <div className="corner-dots" style={{ top: -16, left: -16 }} />
+              {/* Corner dots bottom-right */}
+              <div className="corner-dots" style={{ bottom: -16, right: -16 }} />
 
-              {/* LEFT COLUMN — 2 stacked images */}
-              <div className="flex flex-col !gap-[12px] sm:!gap-[16px] lg:!gap-[20px]">
+              <div className="grid grid-cols-2 !gap-[14px] sm:!gap-[18px]" style={{ alignItems: "center" }}>
 
-                <div className="img-card rounded-[14px] sm:rounded-[18px] overflow-hidden shadow-[0_8px_32px_rgba(11,30,75,.12)] aspect-4-3">
-                  <img
-                    src={aboutImage}
-                    alt="Team collaboration"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover"
-                  />
+                {/* LEFT COLUMN — cricket + football stacked */}
+                <div className="flex flex-col !gap-[14px] sm:!gap-[18px]">
+
+                  {/* Cricket */}
+                  <div
+                    className="img-card rounded-[16px] sm:rounded-[20px] shadow-[0_8px_32px_rgba(11,30,75,.12)] aspect-4-3"
+                    style={{ border: "2px solid rgba(255,255,255,0.9)" }}
+                  >
+                    <img
+                      src={CRICKET_IMG}
+                      alt="Cricket player"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="img-overlay" />
+                    <div className="sport-chip">
+                      <span className="chip-dot" />
+                      Cricket
+                    </div>
+                  </div>
+
+                  {/* Football */}
+                  <div
+                    className="img-card rounded-[16px] sm:rounded-[20px] shadow-[0_8px_32px_rgba(11,30,75,.12)] aspect-4-3"
+                    style={{ border: "2px solid rgba(255,255,255,0.9)" }}
+                  >
+                    <img
+                      src={FOOTBALL_IMG}
+                      alt="Football player"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="img-overlay" />
+                    <div className="sport-chip">
+                      <span className="chip-dot" />
+                      Football
+                    </div>
+                  </div>
                 </div>
 
-                <div className="img-card rounded-[14px] sm:rounded-[18px] overflow-hidden shadow-[0_8px_32px_rgba(11,30,75,.12)] aspect-4-3">
-                  <img
-                    src={aboutImage}
-                    alt="Planning session"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+                {/* RIGHT COLUMN — original about image tall + badges */}
+                <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 14 }}>
 
-              {/* RIGHT COLUMN — 1 tall centered image + badge */}
-              <div className="relative flex justify-center h-full items-center">
+                  <div
+                    className="img-card rounded-[16px] sm:rounded-[20px] shadow-[0_12px_40px_rgba(11,30,75,.15)] aspect-tall"
+                    style={{ border: "2px solid rgba(255,255,255,0.9)" }}
+                  >
+                    <img
+                      src={aboutImage}
+                      alt="UDIISA team"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover "
+                    />
+                    <div className="img-overlay" />
+                    <div className="sport-chip">
+                      <span className="chip-dot" />
+                      UDIISA
+                    </div>
 
-                <div className="img-card rounded-[14px] sm:rounded-[18px] overflow-hidden shadow-[0_8px_32px_rgba(11,30,75,.14)] w-[88%] aspect-4-3">
-                  <img
-                    src={aboutImage}
-                    alt="Team high five"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Review Badge */}
-                <div className="review-badge absolute bottom-[8%] -left-[8px] sm:-left-[12px] bg-white rounded-[14px] sm:rounded-[18px] shadow-[0_8px_32px_rgba(11,30,75,.14)] flex items-center !gap-[8px] sm:!gap-[10px] !px-[10px] sm:!px-[16px] lg:!px-[20px] !py-[8px] sm:!py-[11px] lg:!py-[14px] min-w-[120px] sm:min-w-[160px] lg:min-w-[180px]">
-
-                  {/* Heart icon box */}
-                  <div className="flex items-center justify-center rounded-[10px] sm:rounded-[12px] flex-shrink-0 w-[32px] h-[32px] sm:w-[38px] sm:h-[38px] lg:w-[44px] lg:h-[44px] bg-gradient-to-br from-[#F05A1A] to-[#FF7D42]">
-                    <svg
-                      width="16" height="16"
-                      className="sm:w-[18px] sm:h-[18px] lg:w-[22px] lg:h-[22px]"
-                      viewBox="0 0 24 24" fill="white"
+                  </div>
+                    {/* Review badge — floats over right image */}
+                    <div
+                      className="review-badge"
+                      style={{
+                        position: "absolute", bottom: "12%", left: -14,
+                        background: "#fff",
+                        borderRadius: 16,
+                        boxShadow: "0 8px 32px rgba(11,30,75,.16)",
+                        display: "flex", alignItems: "center", gap: 10,
+                        padding: "10px 16px",
+                        minWidth: 148,
+                        border: "1.5px solid rgba(240,90,26,.12)",
+                        zIndex: 3,
+                      }}
                     >
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                  </div>
-
-                  <div>
-                    <div className="text-slate-400 font-semibold text-[9px] sm:text-[10px] lg:text-[11px] leading-none !mb-[2px]">
-                      User Review
+                      <div style={{
+                        width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+                        background: "linear-gradient(135deg,#F05A1A,#FF7D42)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <div style={{ color: "#94a3b8", fontWeight: 700, fontSize: 10, letterSpacing: ".5px", marginBottom: 2 }}>User Review</div>
+                        <div style={{ color: "#0B1E4B", fontWeight: 900, fontSize: 22, lineHeight: 1, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>650+</div>
+                      </div>
                     </div>
-                    <div className="text-[#0B1E4B] font-extrabold text-[16px] sm:text-[19px] lg:text-[22px] leading-none">
-                      650+
-                    </div>
-                  </div>
                 </div>
 
               </div>
@@ -137,7 +251,16 @@ const AboutUs = () => {
             <div className="flex-1 w-full">
 
               {/* Badge */}
-              <div className="inline-flex items-center rounded-full border border-[rgba(240,90,26,.35)] bg-[rgba(240,90,26,.06)] text-[#F05A1A] !px-[14px] sm:!px-[16px] !py-[5px] sm:!py-[6px] text-[10px] sm:text-[11px] font-extrabold tracking-[2px] uppercase !mb-[14px] sm:!mb-[18px] lg:!mb-[20px]">
+              <div style={{
+                display: "inline-flex", alignItems: "center", gap: 7,
+                padding: "6px 16px", borderRadius: 999,
+                background: "rgba(240,90,26,.08)",
+                border: "1px solid rgba(240,90,26,.25)",
+                color: "#F05A1A",
+                fontSize: 11, fontWeight: 800, letterSpacing: "2px",
+                textTransform: "uppercase", marginBottom: 18,
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#F05A1A" }} />
                 About Us
               </div>
 
@@ -146,18 +269,28 @@ const AboutUs = () => {
                 className="text-[#0B1E4B] !m-0 leading-[1.05] tracking-[2px]"
                 style={{
                   fontFamily: "'Bebas Neue', cursive",
-                  fontSize: "clamp(30px, 5vw, 52px)",
+                  fontSize: "clamp(32px, 5vw, 54px)",
                 }}
               >
                 Where Talent Meets{' '}
-                <span className="text-[#F05A1A]">Opportunity</span>
+                <span style={{
+                  background: "linear-gradient(90deg,#F05A1A,#FF7D42)",
+                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                }}>
+                  Opportunity
+                </span>
               </h2>
 
-              {/* Underline accent */}
-              <span className="title-underline !mt-[10px] sm:!mt-[14px] !mb-[16px] sm:!mb-[22px]" />
+              {/* Underline */}
+              <span className="title-underline !mt-[12px] !mb-[20px]" style={{ display: "block" }} />
 
               {/* Description */}
-              <p className="text-[#475569] !m-0 !mb-[20px] sm:!mb-[28px] lg:!mb-[28px] max-w-[520px] leading-[1.65] text-[clamp(13px,1.6vw,15.5px)]">
+              <p style={{
+                color: "#475569", margin: "0 0 28px",
+                maxWidth: 520, lineHeight: 1.75,
+                fontSize: "clamp(13px,1.5vw,15px)",
+                fontWeight: 500,
+              }}>
                 UDIISA works at the grassroots level to discover hidden sporting
                 talent and provide structured support including coaching, mentorship,
                 financial assistance, and academy placements. Our mission is to
@@ -166,40 +299,68 @@ const AboutUs = () => {
               </p>
 
               {/* Feature Cards */}
-              <div className="flex flex-col !gap-[10px] sm:!gap-[12px] lg:!gap-[14px]">
-                {features.map((f) => (
+              <div className="flex flex-col !gap-[10px] sm:!gap-[12px]">
+                {features.map((f, i) => (
                   <div
                     key={f.title}
-                    className="feat-card flex items-center !gap-[12px] sm:!gap-[14px] lg:!gap-[16px] bg-white rounded-[14px] sm:rounded-[18px] border border-transparent cursor-default shadow-[0_2px_12px_rgba(11,30,75,.06)] !px-[14px] sm:!px-[18px] lg:!px-[20px] !py-[12px] sm:!py-[14px] lg:!py-[16px]"
+                    className="feat-card"
+                    style={{
+                      display: "flex", alignItems: "center", gap: 16,
+                      background: "#fff",
+                      borderRadius: 16,
+                      border: "1.5px solid #f0f4ff",
+                      padding: "14px 18px",
+                      cursor: "default",
+                      boxShadow: "0 2px 16px rgba(11,30,75,.06)",
+                      animationDelay: `${i * 0.08}s`,
+                    }}
                   >
                     {/* Icon */}
-                    <div className="feat-icon-wrap flex items-center justify-center flex-shrink-0 rounded-[10px] sm:rounded-[12px] transition-all duration-300 bg-[rgba(240,90,26,.10)] w-[36px] h-[36px] sm:w-[40px] sm:h-[40px] lg:w-[44px] lg:h-[44px]">
-                      <span className="text-[#F05A1A] text-[15px] sm:text-[17px] lg:text-[18px]">
-                        {f.icon}
-                      </span>
+                    <div
+                      className="feat-icon-wrap"
+                      style={{
+                        width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                        background: "rgba(240,90,26,.09)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "all .28s ease",
+                      }}
+                    >
+                      <span style={{ color: "#F05A1A", fontSize: 17 }}>{f.icon}</span>
                     </div>
 
                     {/* Text */}
-                    <div>
-                      <div className="text-[#0B1E4B] font-extrabold text-[13px] sm:text-[14px] !mb-[2px] sm:!mb-[3px]">
+                    <div style={{ flex: 1 }}>
+                      <div style={{ color: "#0B1E4B", fontWeight: 800, fontSize: 14, marginBottom: 3, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
                         {f.title}
                       </div>
-                      <div className="text-slate-500 text-[11.5px] sm:text-[12.5px] leading-[1.5]">
+                      <div style={{ color: "#64748b", fontSize: 12.5, lineHeight: 1.55 }}>
                         {f.desc}
                       </div>
+                    </div>
+
+                    {/* Right arrow indicator */}
+                    <div style={{
+                      width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+                      background: "rgba(240,90,26,.08)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      color: "#F05A1A", fontSize: 11,
+                    }}>
+                      →
                     </div>
                   </div>
                 ))}
               </div>
-{/* ── VIEW ALL BUTTON ── */}
-        <div className="mt-[18px] sm:mt-[28px] lg:mt-[30px]">
-          <button className="sms-view-all" onClick={() => navigate('/about-us')}>
-            <BsStarFill style={{ fontSize: 14 }} />
-            View More
-            <FaArrowRight className="arrow-icon" style={{ fontSize: 13 }} />
-          </button>
-        </div>
+
+              {/* View More Button */}
+              <div style={{ marginTop: 28 }}>
+                <button className="sms-view-all" onClick={() => navigate('/about-us')}>
+                  <BsStarFill style={{ fontSize: 13 }} />
+                  View More
+                  <FaArrowRight className="arrow-icon" style={{ fontSize: 12 }} />
+                </button>
+              </div>
             </div>
+
           </div>
         </div>
       </section>

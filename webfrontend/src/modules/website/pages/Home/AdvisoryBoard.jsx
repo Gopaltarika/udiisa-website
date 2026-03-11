@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FaArrowRight, FaTimes } from 'react-icons/fa'
 import suniljalan from "@/assets/images/satishkumarjain.jpeg"
 import sureshjindal from "@/assets/images/suresh-jindal.jpeg"
+import sanjaybhardwaj from "@/assets/images/sanjay-bhardwaj.jpeg"
 
 const chairmen = [
   {
@@ -24,6 +25,17 @@ const chairmen = [
     modalTitle: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
     modalContent: [
       'Shri Suresh Jindal Ji remained as prominent and proactive Industrialist. He started serving for talented and gifted players after handing over the business activities to his children. He is noble and kindhearted person in contributing his best for creating future champions. UDIISA is thankful for his support of mission.',
+    ],
+  },
+  {
+    name: 'Mr. Sanjay Bhardwaj',
+    role: 'Sports Member',
+    roleBadge: 'Member',
+    desc: 'Sports Member, UDIISA.',
+    img: sanjaybhardwaj,
+    modalTitle: 'Sports Member, UDIISA.',
+    modalContent: [
+      'Cricket has become a passion for both men and women, with many talented players starting their journey from the grassroots level and working hard to reach higher levels of the game. Dr. Sanjay Bhardwaj is a respected cricket mentor who dedicated his life to developing young talent. He earned a Ph.D. in Physical Education from the National Institute of Sports (NIS) and the highest coaching certification, Level 3 (Level C), from BCCI. He began coaching in Delhi schools and later established LB Shastri Cricket Academy in Bhopal. Many players, including Gautam Gambhir and Nitish Rana, have benefited from his mentorship.',
     ],
   },
 ]
@@ -74,7 +86,7 @@ const AdvisoryBoard = () => {
 
       {/* ══ SECTION ══ */}
       <section className="advisory-section bg-white !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-[16px] sm:!px-[24px] lg:!px-[32px]">
-        <div className="w-full max-w-[1000px] !mx-auto">
+        <div className="w-full max-w-[1280px] !mx-auto">
 
           {/* ── Header ── */}
           <div className="text-center !mb-[36px] sm:!mb-[48px] lg:!mb-[56px]">
@@ -106,7 +118,7 @@ const AdvisoryBoard = () => {
           </div>
 
           {/* ── Cards Grid ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 !gap-[16px] sm:!gap-[20px] lg:!gap-[28px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 !gap-[16px] sm:!gap-[20px] lg:!gap-[28px]">
             {chairmen.map((c) => (
               <div
                 key={c.name}
