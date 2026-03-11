@@ -5,7 +5,6 @@ import {
   FaBars, FaTimes, FaUserCircle,
   FaSignOutAlt, FaCog, FaChevronDown,
 } from 'react-icons/fa'
-import { MdNotifications } from 'react-icons/md'
 
 export default function Topbar({ collapsed, mobileOpen, setMobileOpen, pageTitle }) {
   const [dropOpen, setDropOpen] = useState(false)
@@ -53,12 +52,6 @@ export default function Topbar({ collapsed, mobileOpen, setMobileOpen, pageTitle
 
       {/* Right: actions */}
       <div className="flex items-center gap-[10px]">
-        {/* Notification bell */}
-        <button className="relative w-[36px] h-[36px] rounded-[10px] bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A] transition-all duration-200">
-          <MdNotifications className="text-[18px]" />
-          <span className="absolute top-[7px] right-[7px] w-[7px] h-[7px] rounded-full bg-[#F05A1A]" />
-        </button>
-
         {/* Settings + Account dropdown */}
         <div className="relative" ref={dropRef}>
           <button

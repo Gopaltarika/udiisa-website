@@ -22,12 +22,26 @@ const normalizeCommitteeMember = (member = {}) => ({
   image: member.image || null,
 })
 
+const normalizeSpecialMembershipCategory = (raw) => {
+  const value = String(raw || '').trim().toLowerCase()
+  if (value === 'diamond') return 'Diamond'
+  if (value === 'gold') return 'Gold'
+  return 'Silver'
+}
+
+const ALLOWED_GENERAL_TYPES = new Set(['individual', 'body-corporate'])
+const normalizeGeneralType = (raw) => {
+  const value = String(raw || '').trim().toLowerCase()
+  if (value === 'corporate') return 'body-corporate'
+  return ALLOWED_GENERAL_TYPES.has(value) ? value : 'individual'
+}
+
 // ─── General Members ─────────────────────────────
 export const getGeneralMembers = async (req, res) => {
   try {
     const { search, type } = req.query
     const filter = {}
-    if (type) filter.type = type
+    if (type) filter.type = normalizeGeneralType(type)
     if (search && search.trim()) {
       filter.$or = [
         { name: new RegExp(search, 'i') },
@@ -48,7 +62,7 @@ export const addGeneralMember = async (req, res) => {
   try {
     const { type, name, email, phone, companyName, contactPerson } = req.body
     const doc = await GeneralMember.create({
-      type: type || 'individual',
+      type: normalizeGeneralType(type),
       name: name || '',
       email: email || '',
       phone: phone || '',
@@ -63,9 +77,11 @@ export const addGeneralMember = async (req, res) => {
 
 export const updateGeneralMember = async (req, res) => {
   try {
+    const payload = { ...req.body }
+    if (payload.type !== undefined) payload.type = normalizeGeneralType(payload.type)
     const doc = await GeneralMember.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      payload,
       { new: true, runValidators: true }
     )
     if (!doc) return res.status(404).json({ message: 'Not found' })
@@ -106,11 +122,16 @@ export const getSpecialMembers = async (req, res) => {
 
 export const addSpecialMember = async (req, res) => {
   try {
-    const { name, companyName } = req.body
+    const { name, companyName, membershipCategory } = req.body
     const photo = req.file
       ? (await uploadImageFromFile(req.file, 'udiisa/special-members')) || `/uploads/image/${req.file.filename}`
       : null
-    const doc = await SpecialMember.create({ name: name || '', companyName: companyName || '', photo })
+    const doc = await SpecialMember.create({
+      name: name || '',
+      companyName: companyName || '',
+      membershipCategory: normalizeSpecialMembershipCategory(membershipCategory),
+      photo,
+    })
     return res.status(201).json(withImage(doc, req))
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to add' })
@@ -123,6 +144,9 @@ export const updateSpecialMember = async (req, res) => {
     if (!doc) return res.status(404).json({ message: 'Not found' })
     if (req.body.name !== undefined) doc.name = req.body.name
     if (req.body.companyName !== undefined) doc.companyName = req.body.companyName
+    if (req.body.membershipCategory !== undefined) {
+      doc.membershipCategory = normalizeSpecialMembershipCategory(req.body.membershipCategory)
+    }
     if (req.file) {
       doc.photo =
         (await uploadImageFromFile(req.file, 'udiisa/special-members')) || `/uploads/image/${req.file.filename}`

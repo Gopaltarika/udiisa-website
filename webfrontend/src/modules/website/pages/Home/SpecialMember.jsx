@@ -1,30 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { BsStarFill } from "react-icons/bs";
 import { FaArrowRight } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import { getPublicSpecialMembers } from "../../../../shared/services/publicApi";
 
-// ─── Static Data ──────────────────────────────────────────────────────────────
-const STATIC_MEMBERS = {
-  diamond: [
-    { id: 1, name: "Rajiv Sharma", role: "Chairman", company: "Sharma Industries Ltd.", photo: "https://ui-avatars.com/api/?name=Rajiv+Sharma&background=dbeafe&color=1e40af&size=200&bold=true" },
-    { id: 2, name: "Priya Malhotra", role: "Director", company: "Malhotra Group", photo: "https://ui-avatars.com/api/?name=Priya+Malhotra&background=dbeafe&color=1e40af&size=200&bold=true" },
-    { id: 3, name: "Arjun Mehta", role: "CEO", company: "Mehta Enterprises", photo: "https://ui-avatars.com/api/?name=Arjun+Mehta&background=dbeafe&color=1e40af&size=200&bold=true" },
-    { id: 4, name: "Sunita Kapoor", role: "President", company: "Kapoor Holdings", photo: "https://ui-avatars.com/api/?name=Sunita+Kapoor&background=dbeafe&color=1e40af&size=200&bold=true" },
-    { id: 5, name: "Vikram Nair", role: "MD", company: "Nair Sports Ventures", photo: "https://ui-avatars.com/api/?name=Vikram+Nair&background=dbeafe&color=1e40af&size=200&bold=true" },
-  ],
-  gold: [
-    { id: 6, name: "Aarav Gupta", role: "VP Operations", company: "Gupta Corp", photo: "https://ui-avatars.com/api/?name=Aarav+Gupta&background=fef3c7&color=92400e&size=200&bold=true" },
-    { id: 7, name: "Deepika Rao", role: "COO", company: "Rao Infra", photo: "https://ui-avatars.com/api/?name=Deepika+Rao&background=fef3c7&color=92400e&size=200&bold=true" },
-    { id: 8, name: "Kiran Joshi", role: "Founder", company: "Joshi Sports", photo: "https://ui-avatars.com/api/?name=Kiran+Joshi&background=fef3c7&color=92400e&size=200&bold=true" },
-    { id: 9, name: "Manish Verma", role: "Director", company: "Verma Group", photo: "https://ui-avatars.com/api/?name=Manish+Verma&background=fef3c7&color=92400e&size=200&bold=true" },
-  ],
-  silver: [
-    { id: 10, name: "Neha Singh", role: "Manager", company: "Singh Associates", photo: "https://ui-avatars.com/api/?name=Neha+Singh&background=f1f5f9&color=475569&size=200&bold=true" },
-    { id: 11, name: "Rohit Bhatia", role: "Executive", company: "Bhatia Sports", photo: "https://ui-avatars.com/api/?name=Rohit+Bhatia&background=f1f5f9&color=475569&size=200&bold=true" },
-    { id: 12, name: "Anjali Desai", role: "Coordinator", company: "Desai Foundation", photo: "https://ui-avatars.com/api/?name=Anjali+Desai&background=f1f5f9&color=475569&size=200&bold=true" },
-  ],
-};
+const EMPTY_GROUPS = { diamond: [], gold: [], silver: [] };
 
 // ─── Themes ───────────────────────────────────────────────────────────────────
 const TABS = [
@@ -32,7 +13,6 @@ const TABS = [
     key: "diamond",
     label: "Diamond",
     emoji: "💎",
-    count: STATIC_MEMBERS.diamond.length,
     tabActiveBg: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
     tabActiveBorder: "#3b82f6",
     tabActiveText: "#fff",
@@ -56,7 +36,6 @@ const TABS = [
     key: "gold",
     label: "Gold",
     emoji: "🥇",
-    count: STATIC_MEMBERS.gold.length,
     tabActiveBg: "linear-gradient(135deg, #92400e 0%, #d97706 100%)",
     tabActiveBorder: "#f59e0b",
     tabActiveText: "#fff",
@@ -80,7 +59,6 @@ const TABS = [
     key: "silver",
     label: "Silver",
     emoji: "🥈",
-    count: STATIC_MEMBERS.silver.length,
     tabActiveBg: "linear-gradient(135deg, #334155 0%, #64748b 100%)",
     tabActiveBorder: "#94a3b8",
     tabActiveText: "#fff",
@@ -319,10 +297,64 @@ export default function SpecialMembersSection() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
   const [animKey, setAnimKey] = useState(0);
+  const [memberGroups, setMemberGroups] = useState(EMPTY_GROUPS);
+  const [loading, setLoading] = useState(true);
 
-  const theme = TABS.find(t => t.key === activeTab);
-  const members = STATIC_MEMBERS[activeTab] || [];
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    getPublicSpecialMembers()
+      .then((list) => {
+        if (cancelled) return;
+        const groups = { diamond: [], gold: [], silver: [] };
+        const items = Array.isArray(list) ? list : [];
+        items.forEach((item) => {
+          const categoryRaw = String(item.membershipCategory || item.membershipType || "").toLowerCase();
+          const key = categoryRaw.includes("diamond")
+            ? "diamond"
+            : categoryRaw.includes("gold")
+              ? "gold"
+              : "silver";
+          groups[key].push({
+            id: item.id || `${key}-${Math.random()}`,
+            name: item.name || "Member",
+            company: item.companyName || "",
+            role: item.designation || "Special Member",
+            photo:
+              item.img ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name || "Member")}&background=f1f5f9&color=475569&size=200&bold=true`,
+          });
+        });
+        setMemberGroups(groups);
+      })
+      .catch(() => {
+        if (!cancelled) setMemberGroups(EMPTY_GROUPS);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const tabConfig = useMemo(
+    () => TABS.map((tab) => ({ ...tab, count: memberGroups[tab.key]?.length || 0 })),
+    [memberGroups]
+  );
+  const theme = tabConfig.find((t) => t.key === activeTab) || tabConfig[0];
+  const members = memberGroups[activeTab] || [];
   const total = members.length;
+
+  useEffect(() => {
+    if (loading) return;
+    if (total > 0) return;
+    const fallback = tabConfig.find((tab) => (memberGroups[tab.key] || []).length > 0);
+    if (fallback && fallback.key !== activeTab) {
+      setActiveTab(fallback.key);
+      setCurrent(0);
+    }
+  }, [activeTab, loading, memberGroups, tabConfig, total]);
 
   const switchTab = (key) => {
     setActiveTab(key);
@@ -480,7 +512,7 @@ export default function SpecialMembersSection() {
           flexWrap: "wrap", marginBottom: 44,
           animation: "headReveal 0.7s 0.1s ease both",
         }}>
-          {TABS.map(tab => (
+          {tabConfig.map(tab => (
             <TabButton
               key={tab.key}
               tab={tab}

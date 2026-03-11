@@ -1,6 +1,7 @@
 // Navbar.jsx — full Tailwind, no inline style
 
 import { useState, useEffect, useRef } from "react"
+import { useLocation } from "react-router-dom"
 import { HiMenu, HiX } from "react-icons/hi"
 import { FaTrophy, FaChevronDown, FaUsers } from "react-icons/fa"
 import { BsStarFill } from "react-icons/bs"
@@ -9,13 +10,13 @@ import { getPublicCommittees } from "../../../shared/services/publicApi"
 
 export default function Navbar() {
   const [menuOpen,            setMenuOpen]            = useState(false)
-  const [active,              setActive]              = useState("Home")
   const [membersDrop,         setMembersDrop]         = useState(false)
   const [committeeDrop,       setCommitteeDrop]       = useState(false)
   const [mobileMembersDrop,   setMobileMembersDrop]   = useState(false)
   const [mobileCommitteeDrop, setMobileCommitteeDrop] = useState(false)
   const [committees,          setCommittees]          = useState([])
   const [committeesLoaded,    setCommitteesLoaded]    = useState(false)
+  const location = useLocation()
 
   const membersTimer   = useRef(null)
   const committeeTimer = useRef(null)
@@ -38,14 +39,24 @@ export default function Navbar() {
       })
   }
 
-  const closeAll = (label) => {
-    setActive(label)
+  const closeAll = () => {
     setMenuOpen(false)
     setMobileMembersDrop(false)
     setMobileCommitteeDrop(false)
     setMembersDrop(false)
     setCommitteeDrop(false)
   }
+
+  const getActiveKey = (pathname) => {
+    if (pathname === "/") return "Home"
+    if (pathname.startsWith("/about-us")) return "About Us"
+    if (pathname.startsWith("/members/")) return "Members"
+    if (pathname.startsWith("/committee")) return "Committee"
+    if (pathname.startsWith("/blogs")) return "Blogs"
+    if (pathname.startsWith("/talented-players")) return "Talented Players"
+    return ""
+  }
+  const activeKey = getActiveKey(location.pathname)
 
   const onMEnter = () => { clearTimeout(membersTimer.current);   setMembersDrop(true) }
   const onMLeave = () => { membersTimer.current   = setTimeout(() => setMembersDrop(false),   130) }
@@ -59,7 +70,7 @@ export default function Navbar() {
 
   // Active link colour helper
   const linkCls = (label) =>
-    `nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 !px-[15px] !py-2 text-[14px] font-semibold font-[Plus_Jakarta_Sans] whitespace-nowrap hover:bg-[rgba(240,90,26,.06)] ${active === label ? "on text-[#F05A1A]" : "text-slate-800"}`
+    `nl relative flex items-center gap-1.5 rounded-xl no-underline cursor-pointer border-0 bg-transparent transition-all duration-200 !px-[15px] !py-2 text-[14px] font-semibold font-[Plus_Jakarta_Sans] whitespace-nowrap hover:bg-[rgba(240,90,26,.06)] ${activeKey === label ? "on text-[#F05A1A]" : "text-slate-800"}`
 
   return (
     <>
@@ -94,7 +105,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between max-w-[1280px] !mx-auto !px-7 h-[70px]">
 
           {/* LOGO */}
-          <a href="/" className="no-underline" onClick={() => closeAll("Home")}>
+          <a href="/" className="no-underline" onClick={closeAll}>
             <img
               src="/Logo.png"
               alt="UDIISA logo"
@@ -107,7 +118,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-0.5">
 
             {/* Home */}
-            <a href="/" className={linkCls("Home")} onClick={() => closeAll("Home")}>
+            <a href="/" className={linkCls("Home")} onClick={closeAll}>
               Home
             </a>
 
@@ -130,7 +141,7 @@ export default function Navbar() {
                     <a
                       key={item.label} href={item.href}
                       className="flex items-center gap-3 !px-3 !py-[11px] rounded-xl no-underline text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
-                      onClick={() => closeAll("Members")}
+                      onClick={closeAll}
                     >
                       <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[#FFF3EC] text-[#F05A1A] text-[15px]">
                         {item.icon}
@@ -163,7 +174,7 @@ export default function Navbar() {
                   <a
                     href="/committee"
                     className="flex items-center gap-3 !px-3 !py-2.5 rounded-xl no-underline text-[#0B1E4B] transition-all duration-150 hover:bg-[#EFF6FF] !mb-1 border-b border-slate-100"
-                    onClick={() => closeAll("Committee")}
+                    onClick={closeAll}
                   >
                     <div className="w-8 h-8 rounded-[9px] flex items-center justify-center flex-shrink-0 bg-[#EFF6FF] text-[#0B1E4B]">
                       <MdGroups className="text-[17px]" />
@@ -180,7 +191,7 @@ export default function Navbar() {
                       key={c.slug}
                       href={`/committee#${c.slug}`}
                       className="flex items-center gap-2.5 !px-3 !py-2 rounded-[10px] no-underline text-slate-600 text-[12px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
-                      onClick={() => closeAll("Committee")}
+                      onClick={closeAll}
                     >
                       <span className="text-[17px] w-6 text-center">{c.icon}</span>
                       {c.shortLabel || c.label}
@@ -191,13 +202,18 @@ export default function Navbar() {
             </div>
 
             {/* Blogs */}
-            <a href="/blogs/" className={linkCls("Blogs")} onClick={() => closeAll("Blogs")}>
+            <a href="/blogs/" className={linkCls("Blogs")} onClick={closeAll}>
               Blogs
             </a>
 
             {/* Talented Players */}
-            <a href="/talented-players" className={linkCls("Talented Players")} onClick={() => closeAll("Talented Players")}>
+            <a href="/talented-players" className={linkCls("Talented Players")} onClick={closeAll}>
               Talented Players
+            </a>
+
+            {/* About */}
+            <a href="/about-us" className={linkCls("About Us")} onClick={closeAll}>
+              About Us
             </a>
           </div>
 
@@ -206,7 +222,7 @@ export default function Navbar() {
             <a
               href="/membership/individual-patron"
               className="flex items-center gap-1.5 !px-[18px] !py-[9px] rounded-[10px] no-underline text-[13px] font-bold font-[Plus_Jakarta_Sans] whitespace-nowrap text-[#0B1E4B] bg-transparent border-0 transition-all duration-200 hover:bg-[#0B1E4B] hover:text-white"
-              onClick={() => closeAll("Become a Member")}
+              onClick={closeAll}
             >
               <MdVolunteerActivism className="text-[16px]" />
               Become a Member
@@ -215,7 +231,7 @@ export default function Navbar() {
             <a
               href="/contact-us"
               className="flex items-center gap-1.5 !px-5 !py-2.5 rounded-[10px] no-underline text-[13px] font-bold font-[Plus_Jakarta_Sans] whitespace-nowrap text-white bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] shadow-[0_4px_18px_rgba(240,90,26,.36)] transition-all duration-200 hover:shadow-[0_10px_28px_rgba(240,90,26,.50)] hover:-translate-y-0.5"
-              onClick={() => closeAll("Contact")}
+              onClick={closeAll}
             >
               <MdContactMail className="text-[16px]" />
               Contact Us
@@ -273,8 +289,8 @@ export default function Navbar() {
             {/* Home */}
             <a
               href="/"
-              className={`flex items-center gap-2.5 !px-[15px] !py-[13px] rounded-xl no-underline text-[14px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 ${active === "Home" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
-              onClick={() => closeAll("Home")}
+              className={`flex items-center gap-2.5 !px-[15px] !py-[13px] rounded-xl no-underline text-[14px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 ${activeKey === "Home" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+              onClick={closeAll}
             >
               Home
             </a>
@@ -282,7 +298,7 @@ export default function Navbar() {
             {/* Members accordion */}
             <div>
               <button
-                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${active === "Members" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "Members" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
                 onClick={() => setMobileMembersDrop(p => !p)}
               >
                 <span>Members</span>
@@ -294,7 +310,7 @@ export default function Navbar() {
                     <a
                       key={item.label} href={item.href}
                       className="flex items-center gap-2.5 !px-3 !py-3 rounded-[10px] no-underline text-[13px] font-semibold font-[Plus_Jakarta_Sans] text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
-                      onClick={() => closeAll("Members")}
+                      onClick={closeAll}
                     >
                       <span className="text-[#F05A1A] text-[14px]">{item.icon}</span>
                       {item.label}
@@ -307,7 +323,7 @@ export default function Navbar() {
             {/* Committee accordion */}
             <div>
               <button
-                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${active === "Committee" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "Committee" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
                 onClick={() => { loadCommittees(); setMobileCommitteeDrop(p => !p) }}
               >
                 <span>Committee</span>
@@ -318,7 +334,7 @@ export default function Navbar() {
                   <a
                     href="/committee"
                     className="flex items-center gap-2.5 !px-3 !py-2.5 rounded-[10px] no-underline text-[12px] font-bold text-[#0B1E4B] border-b border-slate-100 !mb-1 transition-all duration-150 hover:bg-[#EFF6FF]"
-                    onClick={() => closeAll("Committee")}
+                    onClick={closeAll}
                   >
                     <MdGroups className="text-[16px]" /> All Committees
                   </a>
@@ -327,7 +343,7 @@ export default function Navbar() {
                       key={c.slug}
                       href={`/committee#${c.slug}`}
                       className="flex items-center gap-2.5 !px-3 !py-2.5 rounded-[10px] no-underline text-[12px] font-semibold font-[Plus_Jakarta_Sans] text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
-                      onClick={() => closeAll("Committee")}
+                      onClick={closeAll}
                     >
                       <span className="text-[15px]">{c.icon}</span>
                       {c.shortLabel || c.label}
@@ -338,11 +354,11 @@ export default function Navbar() {
             </div>
 
             {/* Blogs & Talented Players */}
-            {[{ label: "Blogs", href: "/blogs/" }, { label: "Talented Players", href: "/talented-players" }].map(item => (
+            {[{ label: "Blogs", href: "/blogs/" }, { label: "Talented Players", href: "/talented-players" }, { label: "About Us", href: "/about-us" }].map(item => (
               <a
                 key={item.label} href={item.href}
-                className={`flex items-center gap-2.5 !px-[15px] !py-[13px] rounded-xl no-underline text-[14px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 ${active === item.label ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
-                onClick={() => closeAll(item.label)}
+                className={`flex items-center gap-2.5 !px-[15px] !py-[13px] rounded-xl no-underline text-[14px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 ${activeKey === item.label ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                onClick={closeAll}
               >
                 {item.label}
               </a>
@@ -354,14 +370,14 @@ export default function Navbar() {
             <a
               href="/membership/individual-patron"
               className="flex items-center justify-center gap-2 !p-[13px] rounded-xl no-underline text-[14px] font-bold font-[Plus_Jakarta_Sans] text-[#0B1E4B] border-2 border-[#0B1E4B] transition-all duration-200 hover:bg-[#0B1E4B] hover:text-white"
-              onClick={() => closeAll("Become a Member")}
+              onClick={closeAll}
             >
               <MdVolunteerActivism className="text-[18px]" /> Become a Member
             </a>
             <a
               href="/contact-us"
               className="flex items-center justify-center gap-2 !p-[13px] rounded-xl no-underline text-[14px] font-bold font-[Plus_Jakarta_Sans] text-white bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] shadow-[0_4px_16px_rgba(240,90,26,.35)]"
-              onClick={() => closeAll("Contact")}
+              onClick={closeAll}
             >
               <MdContactMail className="text-[18px]" /> Contact Us
             </a>

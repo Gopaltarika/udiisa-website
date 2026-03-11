@@ -185,7 +185,10 @@ export const getPublicSpecialMembers = async (req, res) => {
     const members = list.map((m) => ({
       id: m._id.toString(),
       name: m.name,
+      companyName: m.companyName || '',
       designation: m.companyName || 'Special Member',
+      membershipType: m.membershipCategory || 'Silver',
+      membershipCategory: m.membershipCategory || 'Silver',
       img: toPublicMediaUrl(req, m.photo) || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=200`,
     }))
     return res.json(members)
@@ -197,7 +200,13 @@ export const getPublicSpecialMembers = async (req, res) => {
 export const getPublicGeneralMembers = async (req, res) => {
   try {
     const { type } = req.query
-    const filter = type ? { type: type === 'corporate' ? 'body-corporate' : 'individual' } : {}
+    const normalizedType = String(type || '').trim().toLowerCase()
+    const typeMap = {
+      corporate: 'body-corporate',
+      'body-corporate': 'body-corporate',
+      individual: 'individual',
+    }
+    const filter = normalizedType ? { type: typeMap[normalizedType] || 'individual' } : {}
     const list = await GeneralMember.find(filter).sort({ createdAt: -1 }).lean()
     const members = list.map((m) => {
       if (m.type === 'body-corporate') {

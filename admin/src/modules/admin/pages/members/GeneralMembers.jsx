@@ -16,8 +16,10 @@ import { validateRequired, formatDate } from '../../utils/helpers'
 const TABS = ['Individual', 'Body Corporate']
 const TYPE_BY_TAB = { Individual: 'individual', 'Body Corporate': 'body-corporate' }
 
-const EMPTY_IND  = { name: '', companyName: '' }
-const EMPTY_CORP = { name: '', companyName: '' }
+const TAB_BY_TYPE = Object.fromEntries(
+  Object.entries(TYPE_BY_TAB).map(([tab, type]) => [type, tab])
+)
+const makeEmptyForm = (tab) => ({ type: TYPE_BY_TAB[tab], name: '', companyName: '' })
 
 // ── Serial number cell ─────────────────────────────────────────────────────────
 const Serial = (_, __, i) => (
@@ -40,11 +42,11 @@ export default function GeneralMembers() {
   const [formOpen, setFormOpen] = useState(false)
   const [delOpen,  setDelOpen]  = useState(false)
   const [selected, setSelected] = useState(null)
-  const [form,     setForm]     = useState(EMPTY_IND)
+  const [form,     setForm]     = useState(makeEmptyForm('Individual'))
   const [errors,   setErrors]   = useState({})
 
   const currentData = data[activeTab] || []
-  const emptyForm   = activeTab === 'Individual' ? EMPTY_IND : EMPTY_CORP
+  const emptyForm   = makeEmptyForm(activeTab)
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -89,18 +91,18 @@ export default function GeneralMembers() {
 
   const openEdit = (row) => {
     setSelected(row)
-    setForm(
-      activeTab === 'Individual'
-        ? { name: row.name || '', companyName: row.companyName || '' }
-        : { name: row.name || '', companyName: row.companyName || '' }
-    )
+    setForm({
+      type: row.type || TYPE_BY_TAB[activeTab],
+      name: row.name || '',
+      companyName: row.companyName || '',
+    })
     setErrors({})
     setFormOpen(true)
   }
 
   // ── Validate ───────────────────────────────────────────────────────────────
   const validate = () => {
-    const required = ['name', 'companyName']
+    const required = ['type', 'name', 'companyName']
     const err = validateRequired(required, form)
     setErrors(err)
     return Object.keys(err).length === 0
@@ -112,7 +114,7 @@ export default function GeneralMembers() {
     setSaving(true)
     try {
       const payload = {
-        type:        TYPE_BY_TAB[activeTab],
+        type:        form.type || TYPE_BY_TAB[activeTab],
         name:        form.name?.trim(),
         companyName: (form.companyName || '').trim(),
       }
@@ -120,26 +122,44 @@ export default function GeneralMembers() {
       if (selected) {
         const res = await memberService.updateGeneralMember(selected.id, payload)
         const m   = res?.data || {}
+        const targetType = m.type || payload.type
+        const targetTab = TAB_BY_TYPE[targetType] || activeTab
         const updated = {
           id:          m._id          || selected.id,
           name:        m.name         || payload.name,
           companyName: m.companyName  || payload.companyName,
           createdAt:   m.createdAt    || selected.createdAt,
-          type:        m.type         || payload.type,
+          type:        targetType,
         }
-        setData(d => ({ ...d, [activeTab]: d[activeTab].map(item => item.id === selected.id ? updated : item) }))
+        setData((d) => {
+          const next = Object.fromEntries(
+            TABS.map((tab) => [tab, (d[tab] || []).filter((item) => item.id !== selected.id)])
+          )
+          next[targetTab] = [updated, ...(next[targetTab] || [])]
+          return next
+        })
+        if (targetTab !== activeTab) {
+          setActiveTab(targetTab)
+          setSearch('')
+        }
         toast.success('Member updated!')
       } else {
         const res = await memberService.addGeneralMember(payload)
         const m   = res?.data || {}
+        const targetType = m.type || payload.type
+        const targetTab = TAB_BY_TYPE[targetType] || activeTab
         const created = {
           id:          m._id,
           name:        m.name         || payload.name,
           companyName: m.companyName  || payload.companyName,
           createdAt:   m.createdAt    || new Date().toISOString(),
-          type:        m.type         || payload.type,
+          type:        targetType,
         }
-        setData(d => ({ ...d, [activeTab]: [created, ...d[activeTab]] }))
+        setData(d => ({ ...d, [targetTab]: [created, ...(d[targetTab] || [])] }))
+        if (targetTab !== activeTab) {
+          setActiveTab(targetTab)
+          setSearch('')
+        }
         toast.success('Member added!')
       }
       setFormOpen(false)
@@ -236,6 +256,21 @@ export default function GeneralMembers() {
         size="sm"
       >
         <div className="flex flex-col gap-[14px]">
+          <FormField label="Category" required error={errors.type}>
+            <select
+              value={form.type || TYPE_BY_TAB[activeTab]}
+              onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
+              className={`h-[38px] w-full rounded-[10px] border px-[12px] text-[13px] font-semibold text-slate-700 outline-none transition-all ${
+                errors.type ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-[#F05A1A]'
+              }`}
+            >
+              {TABS.map((tab) => (
+                <option key={tab} value={TYPE_BY_TAB[tab]}>
+                  {tab}
+                </option>
+              ))}
+            </select>
+          </FormField>
 
           {/* Name — both tabs */}
           <FormField label="Name" required error={errors.name}>
