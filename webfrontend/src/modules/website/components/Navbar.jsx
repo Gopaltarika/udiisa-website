@@ -15,6 +15,7 @@ export default function Navbar() {
   const [mobileMembersDrop,   setMobileMembersDrop]   = useState(false)
   const [mobileCommitteeDrop, setMobileCommitteeDrop] = useState(false)
   const [committees,          setCommittees]          = useState([])
+  const [committeesLoaded,    setCommitteesLoaded]    = useState(false)
 
   const membersTimer   = useRef(null)
   const committeeTimer = useRef(null)
@@ -24,20 +25,18 @@ export default function Navbar() {
     return () => { document.body.style.overflow = "" }
   }, [menuOpen])
 
-  useEffect(() => {
-    let activeReq = true
+  const loadCommittees = () => {
+    if (committeesLoaded) return
+    setCommitteesLoaded(true)
     getPublicCommittees()
       .then((list) => {
-        if (!activeReq) return
         const items = Array.isArray(list) ? list : []
         setCommittees(items)
       })
       .catch(() => {
-        if (!activeReq) return
         setCommittees([])
       })
-    return () => { activeReq = false }
-  }, [])
+  }
 
   const closeAll = (label) => {
     setActive(label)
@@ -50,7 +49,7 @@ export default function Navbar() {
 
   const onMEnter = () => { clearTimeout(membersTimer.current);   setMembersDrop(true) }
   const onMLeave = () => { membersTimer.current   = setTimeout(() => setMembersDrop(false),   130) }
-  const onCEnter = () => { clearTimeout(committeeTimer.current); setCommitteeDrop(true) }
+  const onCEnter = () => { clearTimeout(committeeTimer.current); loadCommittees(); setCommitteeDrop(true) }
   const onCLeave = () => { committeeTimer.current = setTimeout(() => setCommitteeDrop(false),  130) }
 
   const memberItems = [
@@ -96,7 +95,12 @@ export default function Navbar() {
 
           {/* LOGO */}
           <a href="/" className="no-underline" onClick={() => closeAll("Home")}>
-            <img src="/Logo.png" alt="logo" className="max-h-12 w-auto" />
+            <img
+              src="/Logo.png"
+              alt="UDIISA logo"
+              className="max-h-12 w-auto"
+              decoding="async"
+            />
           </a>
 
           {/* ── DESKTOP LINKS ── */}
@@ -304,7 +308,7 @@ export default function Navbar() {
             <div>
               <button
                 className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${active === "Committee" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
-                onClick={() => setMobileCommitteeDrop(p => !p)}
+                onClick={() => { loadCommittees(); setMobileCommitteeDrop(p => !p) }}
               >
                 <span>Committee</span>
                 <FaChevronDown className={`text-[11px] transition-transform duration-200 ${mobileCommitteeDrop ? "rotate-180 text-[#F05A1A]" : "text-slate-400"}`} />

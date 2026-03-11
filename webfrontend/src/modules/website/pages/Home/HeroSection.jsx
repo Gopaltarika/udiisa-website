@@ -14,6 +14,8 @@ const HeroSection = () => {
         className="absolute inset-0 w-full h-full object-cover object-top"
         src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1920&q=85&fit=crop"
         alt="Sports"
+        fetchPriority="high"
+        decoding="async"
       />
 
       {/* Overlay */}
@@ -65,7 +67,7 @@ const HeroSection = () => {
             lineHeight: 1.75,
           }}
         >
-      An Unleasing Dream Industry' where talented players in
+      An unleashing dream ecosystem where talented players in
           sports will achieve their goal at the level of National &amp;
           International.
         </p>

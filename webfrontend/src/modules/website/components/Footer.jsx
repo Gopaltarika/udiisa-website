@@ -182,7 +182,13 @@ const Footer = () => {
             {/* Col 1 — Brand */}
             <div className="sm:col-span-2 lg:!col-span-1">
               <a href="/" className="flex items-center gap-3 no-underline" style={{ textDecoration: 'none' }}>
-                <img src="/white-logo.png" alt="logo" className="w-full max-w-[180px] sm:max-w-[200px]" />
+                <img
+                  src="/white-logo.png"
+                  alt="UDIISA logo"
+                  className="w-full max-w-[180px] sm:max-w-[200px]"
+                  loading="lazy"
+                  decoding="async"
+                />
               </a>
               <p className="!mt-[12px] !mb-[16px]" style={{ fontSize: 12.5, color: 'rgba(255,255,255,.55)', lineHeight: 1.75, maxWidth: 280 }}>
                 A non-profit organization dedicated to identifying, nurturing and empowering talented athletes across India. Building champions, changing lives.

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://udisports.in/sitemap.xml

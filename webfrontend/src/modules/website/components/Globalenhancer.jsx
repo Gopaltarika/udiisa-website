@@ -211,7 +211,7 @@ function Preloader({ onDone }) {
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
         >
-          <img src="/short-logo.png" alt="logo" />
+          <img src="/short-logo.png" alt="UDIISA short logo" decoding="async" />
         </div>
       </div>
 
@@ -433,21 +433,15 @@ export default function GlobalEnhancer({
   const audioRef      = useRef(null);
   const scrollListRef = useRef(null);
 
-  // ── AUDIO SETUP ──
+  // ── AUDIO CLEANUP ──
   useEffect(() => {
-    // Create audio element programmatically (avoids DOM issues)
-    const audio = new Audio(musicSrc);
-    audio.loop   = true;
-    audio.volume = 0.4;
-    audioRef.current = audio;
-
-    // Cleanup: pause + remove src on unmount
     return () => {
-      audio.pause();
-      audio.src = "";
+      if (!audioRef.current) return;
+      audioRef.current.pause();
+      audioRef.current.src = "";
       audioRef.current = null;
     };
-  }, [musicSrc]);
+  }, []);
 
   // ── SCROLL LISTENER (Back To Top visibility) ──
   useEffect(() => {
@@ -466,6 +460,12 @@ export default function GlobalEnhancer({
 
   // ── MUSIC TOGGLE ──
   const handleMusicToggle = useCallback(() => {
+    if (!audioRef.current) {
+      const audio = new Audio(musicSrc);
+      audio.loop = true;
+      audio.volume = 0.4;
+      audioRef.current = audio;
+    }
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -481,7 +481,7 @@ export default function GlobalEnhancer({
         console.warn("Audio play failed:", err);
       });
     }
-  }, [isPlaying]);
+  }, [isPlaying, musicSrc]);
 
   // ── PRELOADER DONE ──
   const handlePreloaderDone = useCallback(() => {
