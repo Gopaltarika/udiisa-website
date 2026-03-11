@@ -67,7 +67,6 @@ export default function CommitteePage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         @keyframes heroFadeUp {
           from { opacity:0; transform:translateY(28px); }
           to   { opacity:1; transform:translateY(0); }

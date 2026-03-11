@@ -427,7 +427,6 @@ const ContactForm = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         .cf-input:focus { border-color:#F05A1A !important; box-shadow:0 0 0 3px rgba(240,90,26,.1) !important; }
         .cf-select:focus { border-color:#F05A1A !important; box-shadow:0 0 0 3px rgba(240,90,26,.1) !important; }
         .cf-textarea:focus { border-color:#F05A1A !important; box-shadow:0 0 0 3px rgba(240,90,26,.1) !important; }

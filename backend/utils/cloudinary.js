@@ -26,6 +26,8 @@ export async function uploadImageFromFile(file, folder = 'udiisa') {
   const result = await cloudinary.uploader.upload(file.path, {
     folder,
     resource_type: 'image',
+    // When same asset key is reused in future, force CDN invalidation.
+    invalidate: true,
   })
 
   await fs.unlink(file.path).catch(() => {})
