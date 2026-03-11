@@ -10,6 +10,7 @@ import AboutUs from "../modules/website/pages/about/aboutus";
 import WebsiteLayout from "../shared/layouts/WebsiteLayout";
 import CommitteePage from "../modules/website/pages/committee/CommitteePage";
 import DonateNow from "../modules/website/pages/donatenow/DonateNow";
+import TermsAndConditions from "../modules/website/pages/termscondition/TermsAndConditions";
 const AppRoutes = () => {
   function RequireAuth({ children }) {
   const token = localStorage.getItem('adminToken')
@@ -30,9 +31,10 @@ const AppRoutes = () => {
           <Route path="/membership/lifetime-corporate" element={<Main />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about-us" element={<AboutUs />} />
-       <Route path="/blogs/*" element={<BlogRoutes />} />
-<Route path="/committee" element={<CommitteePage />} />
-<Route path="/donate-now" element={<DonateNow />} />
+          <Route path="/blogs/*" element={<BlogRoutes />} />
+          <Route path="/committee" element={<CommitteePage />} />
+          <Route path="/donate-now" element={<DonateNow />} />
+          <Route path="/terms-conditions" element={<TermsAndConditions />} />
         </Route>
       </Routes>
     </BrowserRouter>

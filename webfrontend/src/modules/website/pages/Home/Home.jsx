@@ -22,8 +22,8 @@ const Home = () => {
      <AdvisoryBoard />
      <WhatWeDo />
      <ManagingCommittee />
-     <Promoters />
      <SpecialMembersSection />
+     <Promoters />
      <BecomeAMember />
      <GeneralMembers />
      <SportsCommittee />
