@@ -104,7 +104,6 @@ const PageHero = ({
 
       {/* ── Shimmer keyframe (injected once) ── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         @keyframes shimmer {
           0%   { background-position: 0% 50%; }
           100% { background-position: 200% 50%; }

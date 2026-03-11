@@ -1,8 +1,6 @@
 import React from 'react'
 import { FaSearch, FaHandHoldingHeart, FaGraduationCap, FaArrowRight } from 'react-icons/fa'
-import about1 from "@/assets/images/about1.png"
-import about2 from "@/assets/images/about2.png"
-import about3 from "@/assets/images/about3.png"
+import aboutImage from "@/assets/images/about-img.jpeg"
 import { useNavigate } from 'react-router-dom'
 import { BsStarFill } from 'react-icons/bs'
 
@@ -76,16 +74,20 @@ const AboutUs = () => {
 
                 <div className="img-card rounded-[14px] sm:rounded-[18px] overflow-hidden shadow-[0_8px_32px_rgba(11,30,75,.12)] aspect-4-3">
                   <img
-                    src={about1}
+                    src={aboutImage}
                     alt="Team collaboration"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </div>
 
                 <div className="img-card rounded-[14px] sm:rounded-[18px] overflow-hidden shadow-[0_8px_32px_rgba(11,30,75,.12)] aspect-4-3">
                   <img
-                    src={about2}
+                    src={aboutImage}
                     alt="Planning session"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -96,8 +98,10 @@ const AboutUs = () => {
 
                 <div className="img-card rounded-[14px] sm:rounded-[18px] overflow-hidden shadow-[0_8px_32px_rgba(11,30,75,.14)] w-[88%] aspect-4-3">
                   <img
-                    src={about3}
+                    src={aboutImage}
                     alt="Team high five"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </div>

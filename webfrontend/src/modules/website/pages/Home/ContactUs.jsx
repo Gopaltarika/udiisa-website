@@ -47,8 +47,6 @@ export default function ContactUs() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
         .hc-input, .hc-textarea {
           outline: none;
           font-family: 'Plus Jakarta Sans', sans-serif;
