@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { FaArrowRight, FaTimes } from 'react-icons/fa'
-import suniljalan from "@/assets/images/satishkumarjain.jpeg"
-import sureshjindal from "@/assets/images/suresh-jindal.jpeg"
-import sanjaybhardwaj from "@/assets/images/sanjay-bhardwaj.jpeg"
+import suniljalan from "@/assets/images/satishkumarjain.webp"
+import sureshjindal from "@/assets/images/suresh-jindal.webp"
+import sanjaybhardwaj from "@/assets/images/sanjay-bhardwaj.webp"
 
 const chairmen = [
   {
@@ -31,9 +31,9 @@ const chairmen = [
     name: 'Mr. Sanjay Bhardwaj',
     role: 'Sports Member',
     roleBadge: 'Member',
-    desc: 'Sports Member, UDIISA.',
+    desc: 'Sports Development, Program Coordination, and Grassroots Sports Initiatives',
     img: sanjaybhardwaj,
-    modalTitle: 'Sports Member, UDIISA.',
+    modalTitle: 'Sports Development, Program Coordination, and Grassroots Sports Initiatives',
     modalContent: [
       'Cricket has become a passion for both men and women, with many talented players starting their journey from the grassroots level and working hard to reach higher levels of the game. Dr. Sanjay Bhardwaj is a respected cricket mentor who dedicated his life to developing young talent. He earned a Ph.D. in Physical Education from the National Institute of Sports (NIS) and the highest coaching certification, Level 3 (Level C), from BCCI. He began coaching in Delhi schools and later established LB Shastri Cricket Academy in Bhopal. Many players, including Gautam Gambhir and Nitish Rana, have benefited from his mentorship.',
     ],
@@ -85,7 +85,7 @@ const AdvisoryBoard = () => {
       `}</style>
 
       {/* ══ SECTION ══ */}
-      <section className="advisory-section bg-white !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-[16px] sm:!px-[24px] lg:!px-[32px]">
+      <section className="advisory-section bg-white !py-[48px] sm:!py-[54px] lg:!py-[60px] !px-[16px] sm:!px-[24px] lg:!px-[32px]">
         <div className="w-full max-w-[1280px] !mx-auto">
 
           {/* ── Header ── */}

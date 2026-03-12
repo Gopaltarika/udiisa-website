@@ -75,7 +75,7 @@ const BlogSection = () => {
         }
       `}</style>
 
-      <section className="blog-section !bg-[#F4F6FB] !py-[32px] sm:!py-[56px] lg:!py-[80px] !px-[12px] sm:!px-[24px] lg:!px-[32px]">
+      <section className="blog-section !bg-[#F4F6FB] !py-[32px] sm:!py-[46px] lg:!py-[60px] !px-[12px] sm:!px-[24px] lg:!px-[32px]">
         <div className="!max-w-[1200px] !mx-auto">
 
           {/* Header */}

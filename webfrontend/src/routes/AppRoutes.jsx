@@ -20,7 +20,7 @@ const AppRoutes = () => {
 }
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="p-4 text-center text-slate-500">Loading...</div>}>
+      <Suspense fallback={<div className=""></div>}>
         <Routes>
           {/* WEBSITE */}
           <Route element={<WebsiteLayout />}>

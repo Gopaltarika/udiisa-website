@@ -211,7 +211,7 @@ function Preloader({ onDone }) {
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
         >
-          <img src="/short-logo.png" alt="UDIISA short logo" decoding="async" />
+          <img src="/short-logo.webp" alt="UDIISA short logo" decoding="async" />
         </div>
       </div>
 

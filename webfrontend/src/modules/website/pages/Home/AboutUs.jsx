@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaSearch, FaHandHoldingHeart, FaGraduationCap, FaArrowRight } from 'react-icons/fa'
-import aboutImage from "@/assets/images/about-img.jpeg"
+import aboutImage from "@/assets/images/about-img.webp"
 import { useNavigate } from 'react-router-dom'
 import { BsStarFill } from 'react-icons/bs'
 

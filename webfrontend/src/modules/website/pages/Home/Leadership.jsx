@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaStar, FaUserCircle } from 'react-icons/fa'
 import { FaQuoteLeft } from 'react-icons/fa6'
-import suniljalan from "@/assets/images/sunil-jalan.jpeg"
+import suniljalan from "@/assets/images/sunil-jalan.webp"
 
 const Leadership = () => {
   return (
@@ -29,7 +29,7 @@ const Leadership = () => {
         .corner-br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
       `}</style>
 
-      <section className="leadership-section !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-[16px] sm:!px-[24px] lg:!px-[32px] bg-gradient-to-br from-[#0B1E4B] via-[#0f2560] to-[#0B1E4B]">
+      <section className="leadership-section !py-[48px] sm:!py-[54px] lg:!py-[60px] !px-[16px] sm:!px-[24px] lg:!px-[32px] bg-gradient-to-br from-[#0B1E4B] via-[#0f2560] to-[#0B1E4B]">
         <div className="w-full max-w-[1280px] !mx-auto">
 
           <div className="flex flex-col lg:flex-row items-center !gap-[36px] sm:!gap-[48px] lg:!gap-[64px]">

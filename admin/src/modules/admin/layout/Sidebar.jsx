@@ -1,6 +1,6 @@
 // admin/layout/Sidebar.jsx
 import { NavLink } from 'react-router-dom'
-import logo from '../../../../public/white-short-logo.png'
+import logo from '../../../../public/white-short-logo.webp'
 import {
   MdDashboard, MdPeople, MdStar, MdEmail,
   MdArticle, MdSettings, MdSportsCricket,

@@ -13,7 +13,7 @@ import { HiSparkles, HiLightningBolt } from 'react-icons/hi'
 import { BsShieldFillCheck, BsStarFill } from 'react-icons/bs'
 import { GiLaurelCrown, GiTargetArrows } from 'react-icons/gi'
 import PageHero from '../../../../shared/components/PageHero'
-import aboutimg from '@/assets/images/about-img.jpeg'
+import aboutimg from '@/assets/images/about-img.webp'
 /* ═══════════════════════════════════════════════════════
    DATA MAPS — edit here to update all sections
 ═══════════════════════════════════════════════════════ */

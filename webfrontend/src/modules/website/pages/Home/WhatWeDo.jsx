@@ -126,7 +126,7 @@ const WhatWeDo = () => {
         .svc-scroll-wrap::-webkit-scrollbar { display: none; }
       `}</style>
 
-      <section className="wwd-section !py-[48px] sm:!py-[64px] lg:!py-[80px] !px-0 sm:!px-[24px] lg:!px-[32px] bg-gradient-to-br from-[#0B1E4B] via-[#0d2258] to-[#0B1E4B] overflow-hidden">
+      <section className="wwd-section !py-[48px] sm:!py-[64px] lg:!py-[60px] !px-0 sm:!px-[24px] lg:!px-[32px] bg-gradient-to-br from-[#0B1E4B] via-[#0d2258] to-[#0B1E4B] overflow-hidden">
         <div className="max-w-[1240px] !mx-auto">
 
           {/* ── Header ── */}

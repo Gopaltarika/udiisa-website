@@ -115,7 +115,7 @@ const SportsCommittee = () => {
       `}</style>
 
       <section
-        className="sc-section !py-[32px] sm:!py-[56px] lg:!py-[80px] !px-[12px] sm:!px-[24px] lg:!px-[32px]"
+        className="sc-section !py-[32px] sm:!py-[56px] lg:!py-[60px] !px-[12px] sm:!px-[24px] lg:!px-[32px]"
         style={{ background: 'linear-gradient(160deg,#EEF2FF 0%,#F4F6FB 50%,#EEF2FF 100%)' }}
       >
         <div className="!max-w-[1200px] !mx-auto">

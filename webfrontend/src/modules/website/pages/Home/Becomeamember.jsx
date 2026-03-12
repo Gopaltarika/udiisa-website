@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { FaChevronDown, FaAngleDoubleRight } from 'react-icons/fa'
-import becomeMemberImg from "@/assets/images/member-card-img.png";
+import becomeMemberImg from "@/assets/images/member-card-img.webp";
 import becomeMemberImgMobile from "@/assets/images/become-a-member-small-screen-img.webp";
-import becomeMemberBg from "@/assets/images/bg-become_A_Member.png";
+import becomeMemberBg from "@/assets/images/bg-become_A_Member.webp";
 import { useNavigate } from 'react-router-dom';
 
 const MEMBERSHIP_OPTIONS = [

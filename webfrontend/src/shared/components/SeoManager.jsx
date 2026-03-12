@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const SITE_URL = "https://udisports.in";
-const DEFAULT_IMAGE = `${SITE_URL}/short-logo.png`;
+const DEFAULT_IMAGE = `${SITE_URL}/short-logo.webp`;
 
 const SEO_BY_PATH = [
   {

@@ -1,8 +1,8 @@
 import React from 'react'
 import { BsStarFill } from 'react-icons/bs'
-import chanderkanta from "@/assets/images/chander-kanta.jpeg"
-import lakshaya     from "@/assets/images/lakshaya.jpeg"
-import udita        from "@/assets/images/udita.jpeg"
+import chanderkanta from "@/assets/images/chander-kanta.webp"
+import lakshaya     from "@/assets/images/lakshaya.webp"
+import udita        from "@/assets/images/udita.webp"
 
 const promoters = [
   { id: 1, name: 'Smt. Chander Kanta', role: 'Senior  Promoter', img: chanderkanta },
@@ -70,7 +70,7 @@ const Promoters = () => {
         }
       `}</style>
 
-      <section className="promoters-section bg-white !py-[24px] sm:!py-[64px] lg:!py-[80px] !px-[10px] sm:!px-[24px] lg:!px-[32px]">
+      <section className="promoters-section bg-white !py-[24px] sm:!py-[54px] lg:!py-[60px] !px-[10px] sm:!px-[24px] lg:!px-[32px]">
         <div className="max-w-[1100px] !mx-auto">
 
           {/* ── Header ── */}

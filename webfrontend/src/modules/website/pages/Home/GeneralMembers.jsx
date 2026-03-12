@@ -137,7 +137,7 @@ const GeneralMembers = () => {
         }
       `}</style>
 
-      <section className="gm-section !bg-[#F4F6FB] !py-[36px] sm:!py-[56px] lg:!py-[80px] !px-[12px] sm:!px-[24px] lg:!px-[32px]">
+      <section className="gm-section !bg-[#F4F6FB] !py-[36px] sm:!py-[46px] lg:!py-[60px] !px-[12px] sm:!px-[24px] lg:!px-[32px]">
         <div className="!max-w-[1100px] !mx-auto">
 
           {/* ── Header ── */}

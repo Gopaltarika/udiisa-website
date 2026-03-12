@@ -1,8 +1,8 @@
-import deepakgarg   from "@/assets/images/deepak-garg.jpeg"
-import manishgupta  from "@/assets/images/manish-gupta.jpeg"
-import shyamsunder  from "@/assets/images/shyam-sunder.jpeg"
-import ankurjain     from "@/assets/images/ankur-jain.jpeg"
-import sahiljindal   from "@/assets/images/sahil-jindal.jpeg"
+import deepakgarg   from "@/assets/images/deepak-garg.webp"
+import manishgupta  from "@/assets/images/manish-gupta.webp"
+import shyamsunder  from "@/assets/images/shyam-sunder.webp"
+import ankurjain     from "@/assets/images/ankur-jain.webp"
+import sahiljindal   from "@/assets/images/sahil-jindal.webp"
 
 
 
