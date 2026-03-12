@@ -7,7 +7,7 @@ const sections = [
     title: "Introduction",
     content: `United Dynamic India International Sports Association (UDIISA) is a non-government, non-profitable, non-political and charitable organization. Talented and gifted players can get all requisite assistance including financial, physical and educational training camps, sponsorship for tournaments, and other timely support based on performance evaluation.
 
-A special coordination and development committee consisting of experts with practical and theoretical experience is constituted to identify talented players for future champions. UDIISA provides lifetime membership on nominal subscription including extra benefits for BPL category players.
+A special coordination and development committee consisting of experts with practical and theoretical experience is constituted to identify talented players for future champions. UDIISA provides lifetime membership on nominal subscription including extra benefits for EWS category players.
 
 Apply via: info@udisports.in | accounts@udisports.in | udisports.in`,
   },

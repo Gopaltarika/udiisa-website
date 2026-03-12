@@ -13,8 +13,8 @@ import { useDebounce } from '../../hooks/useDebounce'
 import memberService from '../../services/memberService'
 import { validateRequired, formatDate } from '../../utils/helpers'
 
-const TABS = ['Individual', 'Body Corporate']
-const TYPE_BY_TAB = { Individual: 'individual', 'Body Corporate': 'body-corporate' }
+const TABS = ['Individual', 'Players']
+const TYPE_BY_TAB = { Individual: 'individual', Players: 'players' }
 
 const TAB_BY_TYPE = Object.fromEntries(
   Object.entries(TYPE_BY_TAB).map(([tab, type]) => [type, tab])
@@ -32,7 +32,7 @@ export default function GeneralMembers() {
   const toast = useAdminToast()
 
   const [activeTab, setActiveTab] = useState('Individual')
-  const [data,      setData]      = useState({ Individual: [], 'Body Corporate': [] })
+  const [data,      setData]      = useState({ Individual: [], Players: [] })
   const [loading,   setLoading]   = useState(false)
   const [saving,    setSaving]    = useState(false)
   const [deleting,  setDeleting]  = useState(false)
@@ -186,6 +186,8 @@ export default function GeneralMembers() {
   }
 
   // ── Table columns ──────────────────────────────────────────────────────────
+  // Individual: Name + Company Name
+  // Players:    Name + Organization
   const indCols = [
     { key: '__serial',   label: '#',            render: Serial },
     { key: 'name',       label: 'Name' },
@@ -194,28 +196,28 @@ export default function GeneralMembers() {
     { key: 'act',        label: 'Actions',      render: (_, row) => <ActionButtons onEdit={() => openEdit(row)} onDelete={() => { setSelected(row); setDelOpen(true) }} /> },
   ]
 
-  const corpCols = [
+  const playerCols = [
     { key: '__serial',   label: '#',            render: Serial },
-    { key: 'name',       label: 'Name' },
-    { key: 'companyName',label: 'Company Name' },
+    { key: 'name',       label: 'Player Name' },
+    { key: 'companyName',label: 'Organization' },
     { key: 'createdAt',  label: 'Joined',       render: (v) => formatDate(v) },
     { key: 'act',        label: 'Actions',      render: (_, row) => <ActionButtons onEdit={() => openEdit(row)} onDelete={() => { setSelected(row); setDelOpen(true) }} /> },
   ]
 
-  const columns = activeTab === 'Individual' ? indCols : corpCols
+  const columns = activeTab === 'Individual' ? indCols : playerCols
 
   // ── JSX ────────────────────────────────────────────────────────────────────
   return (
     <div>
       <PageHeader
         title="General Members"
-        subtitle="Manage Individual and Body Corporate members"
+        subtitle="Manage Individual members and Players"
         action={
           <button
             onClick={openAdd}
             className="flex items-center gap-[8px] px-[16px] h-[40px] rounded-[10px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[13px] font-extrabold shadow-[0_4px_14px_rgba(240,90,26,0.3)] hover:-translate-y-[1px] transition-all duration-200"
           >
-            <FaPlus className="text-[11px]" /> Add Member
+            <FaPlus className="text-[11px]" /> Add {activeTab === 'Players' ? 'Player' : 'Member'}
           </button>
         }
       />
@@ -242,7 +244,11 @@ export default function GeneralMembers() {
 
       {/* Search */}
       <div className="mb-[16px]">
-        <SearchBar value={search} onChange={setSearch} placeholder={`Search ${activeTab.toLowerCase()} members…`} />
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder={activeTab === 'Players' ? 'Search players…' : 'Search individual members…'}
+        />
       </div>
 
       {/* Table */}
@@ -252,10 +258,12 @@ export default function GeneralMembers() {
       <Modal
         isOpen={formOpen}
         onClose={() => setFormOpen(false)}
-        title={`${selected ? 'Edit' : 'Add'} ${activeTab} Member`}
+        title={`${selected ? 'Edit' : 'Add'} ${activeTab === 'Players' ? 'Player' : 'Member'}`}
         size="sm"
       >
         <div className="flex flex-col gap-[14px]">
+
+          {/* Category */}
           <FormField label="Category" required error={errors.type}>
             <select
               value={form.type || TYPE_BY_TAB[activeTab]}
@@ -272,20 +280,28 @@ export default function GeneralMembers() {
             </select>
           </FormField>
 
-          {/* Name — both tabs */}
-          <FormField label="Name" required error={errors.name}>
+          {/* Name */}
+          <FormField
+            label={form.type === 'players' ? 'Player Name' : 'Name'}
+            required
+            error={errors.name}
+          >
             <Input
-              placeholder="Full name"
+              placeholder={form.type === 'players' ? "Player's full name" : 'Full name'}
               value={form.name || ''}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               error={errors.name}
             />
           </FormField>
 
-          {/* Company Name — both tabs */}
-          <FormField label="Company Name" required error={errors.companyName}>
+          {/* Company / Organization */}
+          <FormField
+            label={form.type === 'players' ? 'Organization' : 'Company Name'}
+            required
+            error={errors.companyName}
+          >
             <Input
-              placeholder="Enter company name"
+              placeholder={form.type === 'players' ? 'Club / Academy / Organization' : 'Enter company name'}
               value={form.companyName || ''}
               onChange={e => setForm(f => ({ ...f, companyName: e.target.value }))}
               error={errors.companyName}
@@ -295,7 +311,7 @@ export default function GeneralMembers() {
           <div className="flex gap-[10px] justify-end pt-[6px]">
             <CancelBtn onClick={() => setFormOpen(false)} />
             <SubmitBtn loading={saving} onClick={handleSave}>
-              {selected ? 'Update' : 'Add Member'}
+              {selected ? 'Update' : (form.type === 'players' ? 'Add Player' : 'Add Member')}
             </SubmitBtn>
           </div>
         </div>

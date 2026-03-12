@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-import { getPublicGeneralMembers } from '../../../../shared/services/publicApi'
+import { getPublicGeneralMembers, getPublicPlayers } from '../../../../shared/services/publicApi'
 
 const tabs = [
   { key: 'individual', label: 'Individual' },
-  { key: 'corporate',  label: 'Body Corporate' },
+  { key: 'players',    label: 'Players' },
 ]
 
 const GeneralMembers = () => {
   const [activeTab, setActiveTab] = useState('individual')
   const [individualMembers, setIndividualMembers] = useState([])
-  const [corporateMembers, setCorporateMembers] = useState([])
+  const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const data = activeTab === 'individual' ? individualMembers : corporateMembers
+  const data = activeTab === 'individual' ? individualMembers : players
 
   useEffect(() => {
     let cancelled = false
@@ -25,33 +25,30 @@ const GeneralMembers = () => {
 
     Promise.all([
       getPublicGeneralMembers('individual'),
-      getPublicGeneralMembers('corporate'),
+      getPublicPlayers(),                       // ← Players API
     ])
-      .then(([individualData, corporateData]) => {
+      .then(([individualData, playersData]) => {
         if (cancelled) return
         setIndividualMembers(Array.isArray(individualData) ? individualData : [])
-        setCorporateMembers(Array.isArray(corporateData) ? corporateData : [])
+        setPlayers(Array.isArray(playersData) ? playersData : [])
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(err?.message || 'Failed to load general members')
+          setError(err?.message || 'Failed to load members')
           setIndividualMembers([])
-          setCorporateMembers([])
+          setPlayers([])
         }
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
 
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [])
 
   return (
     <>
       <style>{`
-        /* Tab */
         .gm-tab {
           transition: all .22s ease;
           cursor: pointer;
@@ -70,7 +67,6 @@ const GeneralMembers = () => {
         .gm-tab.active::after  { transform: scaleX(1); }
         .gm-tab:hover::after   { transform: scaleX(1); }
 
-        /* Table row hover */
         .gm-row {
           transition: background .15s ease;
           cursor: default;
@@ -79,7 +75,6 @@ const GeneralMembers = () => {
         .gm-row:hover .gm-row-name { color: #F05A1A !important; }
         .gm-row:hover .gm-row-sr   { color: #F05A1A !important; font-weight: 700 !important; }
 
-        /* View All button */
         .view-btn {
           position: relative; overflow: hidden;
           transition: transform .25s ease, box-shadow .25s ease;
@@ -99,35 +94,27 @@ const GeneralMembers = () => {
         .view-btn:hover .btn-arrow { transform: translateX(4px); }
         .btn-arrow { transition: transform .25s ease; }
 
-        /* Tab content fade */
         @keyframes tabFade {
           from { opacity:0; transform: translateY(6px); }
           to   { opacity:1; transform: translateY(0); }
         }
         .tab-content { animation: tabFade .25s ease both; }
 
-        /* ── Mobile styles ── */
         @media (max-width: 639px) {
-
-          /* Table: hide company column, show as sub-text under name */
           .gm-col-company { display: none !important; }
-
           .gm-table-header {
             grid-template-columns: 40px 1fr !important;
             padding: 10px 12px !important;
           }
-
           .gm-table-row {
             grid-template-columns: 40px 1fr !important;
             padding: 10px 12px !important;
           }
-
           .gm-row-name-wrap {
             display: flex !important;
             flex-direction: column !important;
             gap: 2px !important;
           }
-
           .gm-row-company-sub {
             display: block !important;
             font-size: 11px !important;
@@ -142,8 +129,6 @@ const GeneralMembers = () => {
 
           {/* ── Header ── */}
           <div className="!text-center !mb-[20px] sm:!mb-[32px] lg:!mb-[40px]">
-
-            {/* Badge */}
             <div
               className="inline-flex items-center !rounded-full !mb-[8px] sm:!mb-[14px]"
               style={{
@@ -224,11 +209,11 @@ const GeneralMembers = () => {
                 NAME
               </div>
               <div className="gm-col-company" style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,.7)', letterSpacing: '1.8px', textTransform: 'uppercase' }}>
-                COMPANY / ORGANIZATION
+                {activeTab === 'players' ? 'SPORT / CATEGORY' : 'COMPANY / ORGANIZATION'}
               </div>
             </div>
 
-            {/* Table Rows */}
+            {/* States */}
             {loading && (
               <div style={{ padding: '22px 20px', background: '#fff', color: '#64748b', fontSize: 13, textAlign: 'center' }}>
                 Loading members...
@@ -258,7 +243,6 @@ const GeneralMembers = () => {
                   borderBottom: index < data.length - 1 ? '1px solid #f1f5f9' : 'none',
                 }}
               >
-                {/* SR */}
                 <div
                   className="gm-row-sr"
                   style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', transition: 'color .15s ease' }}
@@ -266,7 +250,6 @@ const GeneralMembers = () => {
                   {index + 1}
                 </div>
 
-                {/* Name + company sub (mobile only) */}
                 <div className="gm-row-name-wrap" style={{ display: 'flex', flexDirection: 'column' }}>
                   <div
                     className="gm-row-name"
@@ -274,18 +257,16 @@ const GeneralMembers = () => {
                   >
                     {member.name}
                   </div>
-                  {/* Shown only on mobile via CSS */}
                   <span className="gm-row-company-sub" style={{ display: 'none' }}>
-                    {member.company}
+                    {activeTab === 'players' ? member.sport || member.category : member.company}
                   </span>
                 </div>
 
-                {/* Company — hidden on mobile */}
                 <div
                   className="gm-col-company"
                   style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}
                 >
-                  {member.company}
+                  {activeTab === 'players' ? member.sport || member.category : member.company}
                 </div>
               </div>
             ))}
@@ -305,9 +286,9 @@ const GeneralMembers = () => {
                 boxShadow: '0 6px 20px rgba(11,30,75,.25)',
                 letterSpacing: '0.3px',
               }}
-              onClick={() => navigate('/members/general-members')}
+              onClick={() => navigate(activeTab === 'players' ? '/members/players' : '/members/general-members')}
             >
-              <span className='text-white'>View All Members</span>
+              <span className='text-white'>View All {activeTab === 'players' ? 'Players' : 'Members'}</span>
               <FaArrowRight className="btn-arrow text-white" style={{ fontSize: 12 }} />
             </button>
           </div>

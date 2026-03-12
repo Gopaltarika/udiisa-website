@@ -41,7 +41,7 @@ const MEMBERSHIP_DATA = {
       'Brief letter of intent (100–200 words)',
     ],
     feeTable: [
-      { subType: 'BPL',     amount: '₹1,200',  amountNum: 1200,  benefits: ['Membership Certificate', 'Membership ID Card'], badgeCls: 'bg-emerald-600 text-white', rowBg: '' },
+      { subType: 'EWS',     amount: '₹1,200',  amountNum: 1200,  benefits: ['Membership Certificate', 'Membership ID Card'], badgeCls: 'bg-emerald-600 text-white', rowBg: '' },
       { subType: 'General', amount: '₹2,500',  amountNum: 2500,  benefits: ['Membership Certificate', 'Membership ID Card'], badgeCls: 'bg-[#0B1E4B] text-white',   rowBg: 'bg-blue-50/40' },
     ],
     notes: [
@@ -59,7 +59,7 @@ const MEMBERSHIP_DATA = {
       { icon: HiSparkles,    text: 'Monthly sports newsletter & knowledge bulletins' },
       { icon: FaShieldAlt,   text: 'Grievance redressal & member support helpline' },
     ],
-    membershipOpts: ['— Select Sub-Type —', 'BPL (₹1,200)', 'General (₹2,500)'],
+    membershipOpts: ['— Select Sub-Type —', 'EWS (₹1,200)', 'General (₹2,500)'],
   },
 
   player: {
@@ -85,7 +85,7 @@ const MEMBERSHIP_DATA = {
       'PAN Card copy',
     ],
     feeTable: [
-      { subType: 'BPL',      amount: '₹5,000',    amountNum: 5000,   benefits: ['Membership Certificate', 'ID Card'],                                      badgeCls: 'bg-emerald-600 text-white', rowBg: '' },
+      { subType: 'EWS',      amount: '₹5,000',    amountNum: 5000,   benefits: ['Membership Certificate', 'ID Card'],                                      badgeCls: 'bg-emerald-600 text-white', rowBg: '' },
       { subType: 'Ex Sports', amount: '₹12,500',  amountNum: 12500,  benefits: ['Membership Certificate', 'ID Card'],                                      badgeCls: 'bg-slate-600 text-white',   rowBg: 'bg-slate-50/60' },
       { subType: 'General',  amount: '₹25,000',   amountNum: 25000,  benefits: ['Certificate', 'ID Card', 'Speaker Opportunity'],                          badgeCls: 'bg-[#F05A1A] text-white',   rowBg: 'bg-orange-50/40' },
       { subType: 'Silver',   amount: '₹50,000',   amountNum: 50000,  benefits: ['Certificate', 'ID', 'Speaker Opp.', 'Advisory Panel Access'],             badgeCls: 'bg-slate-400 text-white',   rowBg: 'bg-slate-50' },
@@ -110,7 +110,7 @@ const MEMBERSHIP_DATA = {
     ],
     membershipOpts: [
       '— Select Sub-Type —',
-      'BPL (₹5,000)',
+      'EWS (₹5,000)',
       'Ex Sports (₹12,500)',
       'General (₹25,000)',
       'Silver (₹50,000)',

@@ -4,45 +4,45 @@ import { FaSearch, FaBullseye, FaMoneyBillWave, FaBrain, FaSchool, FaFemale, FaB
 const services = [
   {
     icon: <FaSearch />,
-    title: 'Talent Identification',
-    desc: 'Nationwide grassroots scouting to discover exceptional athletic talent across all disciplines.',
+    title: "Talent Identification",
+    desc: "Our team visits schools, colleges, sports academies, and local grounds across the country to identify exceptional sports talent and gifted players.",
   },
   {
     icon: <FaBullseye />,
-    title: 'Player Selection',
-    desc: 'Rigorous evaluation process ensuring only the most deserving athletes receive our support.',
+    title: "Player Selection",
+    desc: "Players are carefully selected based on their skill level, dedication, discipline, and future potential in sports.",
   },
   {
     icon: <FaMoneyBillWave />,
-    title: 'Financial Assistance',
-    desc: 'Comprehensive financial support covering training, equipment, travel, and participation fees.',
+    title: "Financial Support",
+    desc: "We provide financial assistance to help players continue their training, access better resources, and participate in competitions.",
   },
   {
     icon: <FaBrain />,
-    title: 'Mentorship & Guidance',
-    desc: 'One-on-one mentoring from former national athletes and industry professionals.',
+    title: "Guidance & Mentorship",
+    desc: "Selected players receive continuous guidance, mentorship, and long-term support from experienced sports professionals.",
   },
   {
     icon: <FaSchool />,
-    title: 'Academy Placement',
-    desc: 'Direct placement in top-tier sports academies and training centers across India.',
+    title: "Academy & Coaching Support",
+    desc: "Talented players are connected with top sports academies, qualified trainers, and professional coaches for advanced training.",
   },
   {
     icon: <FaFemale />,
-    title: 'Girl Player Empowerment',
-    desc: 'Dedicated programs to support and empower female athletes in breaking barriers.',
+    title: "Girl Player Support",
+    desc: "Special initiatives are taken to support and encourage girl players, helping them participate and grow confidently in sports.",
   },
   {
     icon: <FaBullhorn />,
-    title: 'Social Media Promotion',
-    desc: "Amplifying athletes' stories and achievements across digital platforms for maximum exposure.",
+    title: "Social Media Promotion",
+    desc: "We promote talented players and their achievements through digital and social media platforms to increase visibility and recognition.",
   },
   {
     icon: <FaTrophy />,
-    title: 'Organizing Sports Events',
-    desc: 'Annual tournaments and championship events that provide competitive exposure to our athletes.',
+    title: "Sports Events & Tournaments",
+    desc: "We organize sports events, tournaments, and competitions to provide players with opportunities for exposure and competitive experience.",
   },
-]
+];
 
 const WhatWeDo = () => {
   return (

@@ -21,89 +21,62 @@ import aboutimg from '@/assets/images/about-img.webp'
 const PILLARS = [
   {
     icon: <GiTargetArrows className="text-[28px]" />,
-    label: 'Our Mission',
-    color: 'from-[#0B1E4B] to-[#152B6B]',
-    accent: 'bg-white/20',
-    text: 'To identify, nurture and elevate grassroots sports talent across India — regardless of geography, gender or economic background — through mentorship, infrastructure and opportunity.',
+    label: "Our Mission",
+    color: "from-[#0B1E4B] to-[#152B6B]",
+    accent: "bg-white/20",
+    text: "Our mission is to identify talented and gifted players from schools, colleges, and sports academies who are unable to pursue their dreams due to financial limitations. We aim to support them with resources, guidance, and opportunities so they can focus entirely on their development and excellence in sports.",
   },
   {
     icon: <HiLightningBolt className="text-[28px]" />,
-    label: 'Our Vision',
-    color: 'from-[#F05A1A] to-[#FF7D42]',
-    accent: 'bg-white/20',
-    text: 'A India where every talented athlete gets a fair shot at glory. We envision a nation where rural talent becomes national pride, and sport becomes a vehicle for social transformation.',
+    label: "Our Vision",
+    color: "from-[#F05A1A] to-[#FF7D42]",
+    accent: "bg-white/20",
+    text: "To create a future where no talented player is held back due to lack of resources. We aspire to nurture sporting talent, support their training and education, and help them grow into confident individuals and future champions who represent discipline, integrity, and excellence.",
   },
   {
     icon: <BsShieldFillCheck className="text-[28px]" />,
-    label: 'Our Values',
-    color: 'from-[#1565C0] to-[#1976D2]',
-    accent: 'bg-white/20',
-    text: 'Integrity, Inclusivity, Excellence, and Compassion. We believe in fair play both on and off the field — in our governance, our programs, and our relationship with every athlete we serve.',
+    label: "Our Purpose",
+    color: "from-[#1565C0] to-[#1976D2]",
+    accent: "bg-white/20",
+    text: "Our commitment goes beyond discovering talent. We invest in dreams by removing financial barriers and supporting players so they can train with confidence, compete with pride, and grow with dignity.",
   },
 ]
 
 const ROADMAP = [
   {
-    year: '2013',
-    title: 'Foundation',
-    desc: 'UDI Sports NGO was founded in sonipat with a mission to bridge the gap between rural talent and national sporting opportunity.',
+    year: "2026",
+    title: "Foundation of UDI International Sports Association",
+    desc: "UDI International Sports Association was established as a non-profit organization dedicated to identifying and supporting talented players across India.",
     icon: <FaRocket className="text-[16px]" />,
-    side: 'left',
+    side: "left",
   },
   {
-    year: '2015',
-    title: 'First Talent Hunt',
-    desc: 'Launched our inaugural Annual Sports Talent Hunt, identifying 200+ athletes across 8 states in disciplines including Cricket, Athletics and Boxing.',
+    year: "2026",
+    title: "Talent Identification Initiative",
+    desc: "The organization began visiting schools, colleges, and sports academies to identify talented players who need support to continue their sports journey.",
     icon: <MdEmojiEvents className="text-[16px]" />,
-
-    side: 'right',
+    side: "right",
   },
   {
-    year: '2017',
-    title: 'Mentorship Program',
-    desc: 'Launched the flagship Mentorship Program, pairing 100 promising athletes with elite national-level coaches for structured development.',
-    icon: <MdSchool className="text-[16px]" />,
-
-    side: 'left',
-  },
-  {
-    year: '2019',
-    title: 'Girl Empowerment Initiative',
-    desc: 'Dedicated ₹1.2 Cr to exclusively support female athletes — providing scholarships, safe infrastructure and women-only coaching networks.',
-    icon: <MdVolunteerActivism className="text-[16px]" />,
-
-    side: 'right',
-  },
-  {
-    year: '2021',
-    title: 'National Partnerships',
-    desc: 'Signed MoUs with 10 top sports academies across India, opening subsidised training slots for our athletes in cricket, badminton and athletics.',
+    year: "2026",
+    title: "Financial Support Program",
+    desc: "Financial assistance programs were introduced to help players cover training, equipment, and competition expenses.",
     icon: <FaHandshake className="text-[16px]" />,
-
-    side: 'left',
+    side: "left",
   },
   {
-    year: '2023',
-    title: 'Record Talent Hunt',
-    desc: '5,000+ athletes from 28 states participated in our biggest ever talent identification event. ₹50 Lakh in scholarships announced.',
-    icon: <BsStarFill className="text-[16px]" />,
-
-    side: 'right',
+    year: "2026",
+    title: "Mentorship & Development",
+    desc: "Players began receiving mentorship, guidance, and long-term support to improve their performance and confidence in sports.",
+    icon: <MdSchool className="text-[16px]" />,
+    side: "right",
   },
   {
-    year: '2024',
-    title: 'Infrastructure Drive',
-    desc: 'Launched a ₹2 Cr rural infrastructure initiative to build 15 playgrounds and mini-stadiums in underserved districts across India.',
-    icon: <MdAutoGraph className="text-[16px]" />,
-
-    side: 'left',
-  },
-  {
-    year: '2025',
-    title: 'Next Chapter',
-    desc: 'Expanding to all 36 states and UTs, launching digital scouting platform, and targeting 10,000+ athlete registrations for the 2025 cohort.',
+    year: "Future",
+    title: "National Expansion",
+    desc: "UDI International Sports Association aims to expand nationwide, supporting more talented players and building stronger sports development programs.",
     icon: <GiLaurelCrown className="text-[16px]" />,
-    side: 'right',
+    side: "left",
     isUpcoming: true,
   },
 ]
@@ -150,7 +123,7 @@ export default function AboutUs() {
       `}</style>
 {/* 1. Hero banner */}
  <PageHero
-      badge="UDIISA Foundation"
+      badge="UDI International Sports Association"
       heading="About"
       highlight="Us"
       description="For over a decade, UDI Sports has been India's most dedicated grassroots sports NGO —
@@ -160,8 +133,8 @@ export default function AboutUs() {
       {/* ══════════════════════════════════
           2. WHO WE ARE — Split Layout
       ══════════════════════════════════ */}
-      <section className="!py-[80px] !px-[16px] sm:!px-[24px] bg-white">
-        <div className="max-w-[1100px] !mx-auto">
+      <section className="!py-[60px] !px-[16px] sm:!px-[24px] bg-white">
+        <div className="max-w-[1280px] !mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[48px] items-center">
 
             {/* Left: Image composition */}
@@ -186,22 +159,32 @@ export default function AboutUs() {
                 <span className="text-[#F05A1A]">Grassroots Sports</span> NGO
               </h2>
               <p className="text-slate-600 text-[15px] leading-[1.8] !m-0 !mb-[16px]">
-                UDI Sports NGO was born from a simple belief: <strong className="text-[#0B1E4B]">talent has no postcode.</strong> Founded in 2013, we set out to ensure that a child in rural Jharkhand has the same access to sports excellence as one in urban Mumbai.
-              </p>
-              <p className="text-slate-500 text-[14.5px] leading-[1.8] !m-0 !mb-[28px]">
-                Over a decade later, we have identified and supported 5,000+ athletes across 28 states, built sports infrastructure in 15 rural districts, launched India's largest annual talent hunt, and backed our athletes to win 200+ medals at state and national level.
-              </p>
+Welcome to <strong className="text-[#0B1E4B]">UDI International Sports Association</strong>,
+a Non-Government, Non-Political and Charitable Organization.  
+We believe that true talent should never be limited by financial boundaries.
+Across schools, colleges and sports academies there are many gifted players
+with extraordinary potential who are unable to pursue their dreams due to
+lack of resources.
+</p>
+
+<p className="text-slate-500 text-[14.5px] leading-[1.8] !m-0 !mb-[28px]">
+Our mission is to identify such talent, support them with guidance,
+training opportunities and financial assistance, and walk beside them on
+their journey towards excellence. By creating equal opportunities,
+we aim to help players achieve their dreams while contributing to the
+growth and pride of the nation.
+</p>
 
               {/* Feature checkmarks */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px] !mb-[28px]">
                 {[
-                  'Grassroots talent scouting',
-                  'Mentorship by elite coaches',
-                  'Scholarship & financial aid',
-                  'Women-focused programs',
-                  'Rural infrastructure build',
-                  'Partnership with academies',
-                ].map((item, i) => (
+  'Talent identification from schools & academies',
+  'Selection of deserving players',
+  'Financial support for training',
+  'Mentorship & guidance programs',
+  'Placement in top sports academies',
+  'Support for girl players in sports',
+].map((item, i) => (
                   <div key={i} className="flex items-center gap-[8px]">
                     <FaCheckCircle className="text-[#F05A1A] text-[13px] flex-shrink-0" />
                     <span className="text-[13.5px] text-slate-700 font-medium">{item}</span>

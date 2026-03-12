@@ -14,7 +14,7 @@ import React from 'react'
  */
 
 const PageHero = ({
-  badge       = 'OUR COMMUNITY',
+  badge       = 'OUR Committee',
   heading     = 'MEMBER',
   highlight   = 'DIRECTORY',
   description = 'Meet the people who make SportForce possible',

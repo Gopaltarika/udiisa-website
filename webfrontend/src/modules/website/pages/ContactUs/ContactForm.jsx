@@ -9,7 +9,7 @@ import { HiSparkles } from 'react-icons/hi'
 import { submitContact, sendOtp, verifyOtp } from '../../../../shared/services/publicApi'
 
 const ORG_INFO = {
-  address: '5091, 6th Floor, Tower 5, Parker Residency, Tehsil Rai, District Sonepat, Haryana',
+  address: '5091, 9th Floor, Tower 5, Parker Residency, Tehsil Rai, District Sonipat, Haryana',
   whatsapp: '+91 83075 98050',
   email: 'info@udisports.in',
 }

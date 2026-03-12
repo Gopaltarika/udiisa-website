@@ -23,9 +23,9 @@ const toBoolean = (value) =>
   value === 'yes' ||
   value === 'on'
 const MEMBERSHIP_FEE_MAP = {
-  'bpl (₹1,200)': '₹1,200',
+  'EWS (₹1,200)': '₹1,200',
   'general (₹2,500)': '₹2,500',
-  'bpl (₹5,000)': '₹5,000',
+  'EWS (₹5,000)': '₹5,000',
   'ex sports (₹12,500)': '₹12,500',
   'general (₹25,000)': '₹25,000',
   'silver (₹50,000)': '₹50,000',

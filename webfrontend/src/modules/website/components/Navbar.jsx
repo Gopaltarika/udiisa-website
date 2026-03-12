@@ -4,21 +4,25 @@ import { useState, useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom"
 import { HiMenu, HiX } from "react-icons/hi"
 import { FaTrophy, FaChevronDown, FaUsers } from "react-icons/fa"
-import { BsStarFill } from "react-icons/bs"
+import { BsStarFill, BsDiamondFill, BsPersonFill, BsBuildingsFill } from "react-icons/bs"
+import { GiLaurelsTrophy } from "react-icons/gi"
 import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md"
 import { getPublicCommittees } from "../../../shared/services/publicApi"
 
 export default function Navbar() {
   const [menuOpen,            setMenuOpen]            = useState(false)
   const [membersDrop,         setMembersDrop]         = useState(false)
+  const [specialDrop,         setSpecialDrop]         = useState(false)
   const [committeeDrop,       setCommitteeDrop]       = useState(false)
   const [mobileMembersDrop,   setMobileMembersDrop]   = useState(false)
+  const [mobileSpecialDrop,   setMobileSpecialDrop]   = useState(false)
   const [mobileCommitteeDrop, setMobileCommitteeDrop] = useState(false)
   const [committees,          setCommittees]          = useState([])
   const [committeesLoaded,    setCommitteesLoaded]    = useState(false)
   const location = useLocation()
 
   const membersTimer   = useRef(null)
+  const specialTimer   = useRef(null)
   const committeeTimer = useRef(null)
 
   useEffect(() => {
@@ -42,8 +46,10 @@ export default function Navbar() {
   const closeAll = () => {
     setMenuOpen(false)
     setMobileMembersDrop(false)
+    setMobileSpecialDrop(false)
     setMobileCommitteeDrop(false)
     setMembersDrop(false)
+    setSpecialDrop(false)
     setCommitteeDrop(false)
   }
 
@@ -51,6 +57,7 @@ export default function Navbar() {
     if (pathname === "/") return "Home"
     if (pathname.startsWith("/about-us")) return "About Us"
     if (pathname.startsWith("/members/")) return "Members"
+    if (pathname.startsWith("/special-members/")) return "Special Member"
     if (pathname.startsWith("/committee")) return "Committee"
     if (pathname.startsWith("/blogs")) return "Blogs"
     if (pathname.startsWith("/talented-players")) return "Talented Players"
@@ -60,13 +67,25 @@ export default function Navbar() {
 
   const onMEnter = () => { clearTimeout(membersTimer.current);   setMembersDrop(true) }
   const onMLeave = () => { membersTimer.current   = setTimeout(() => setMembersDrop(false),   130) }
+  const onSEnter = () => { clearTimeout(specialTimer.current);   setSpecialDrop(true) }
+  const onSLeave = () => { specialTimer.current   = setTimeout(() => setSpecialDrop(false),   130) }
   const onCEnter = () => { clearTimeout(committeeTimer.current); loadCommittees(); setCommitteeDrop(true) }
   const onCLeave = () => { committeeTimer.current = setTimeout(() => setCommitteeDrop(false),  130) }
 
+  // Members dropdown: General Member + Talented Players
   const memberItems = [
-    { label: "General Member", href: "/members/general-members", icon: <FaUsers />,    desc: "Open for everyone"   },
-    { label: "Special Member", href: "/members/special-members", icon: <BsStarFill />, desc: "By invitation only" },
+    { label: "General Member",   href: "/members/general-members",   icon: <FaUsers />,    desc: "Open for everyone"      },
+    { label: "Talented Players", href: "/talented-players",          icon: <GiLaurelsTrophy />, desc: "Our star performers" },
   ]
+
+  // Special Member dropdown: Diamond, Gold, Silver
+const specialItems = [
+  { label: "Diamond Member",  href: "/members/special-members/diamond",     icon: <BsDiamondFill />, desc: "Premium elite tier",      color: "#a0d8ef" },
+  { label: "Gold Member",     href: "/members/special-members/gold",        icon: <BsStarFill />,    desc: "Top-tier membership",     color: "#FFD700" },
+  { label: "Silver Member",   href: "/members/special-members/silver",      icon: <BsStarFill />,    desc: "Distinguished level",     color: "#C0C0C0" },
+  { label: "Dignitaries",     href: "/members/special-members/dignitaries", icon: <BsPersonFill />,  desc: "Eminent personalities",   color: "#d8b4fe" },
+  { label: "Body Corporate",  href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members", color: "#6ee7b7" },
+]
 
   // Active link colour helper
   const linkCls = (label) =>
@@ -122,7 +141,7 @@ export default function Navbar() {
               Home
             </a>
 
-            {/* Members dropdown */}
+            {/* Members dropdown — General Member + Talented Players */}
             <div className="relative" onMouseEnter={onMEnter} onMouseLeave={onMLeave}>
               <button className={linkCls("Members")}>
                 Members
@@ -144,6 +163,43 @@ export default function Navbar() {
                       onClick={closeAll}
                     >
                       <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[#FFF3EC] text-[#F05A1A] text-[15px]">
+                        {item.icon}
+                      </div>
+                      <div>
+                        <div className="text-[13px] font-bold">{item.label}</div>
+                        <div className="text-[11px] text-slate-400 !mt-0.5">{item.desc}</div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Special Member dropdown — Diamond, Gold, Silver */}
+            <div className="relative" onMouseEnter={onSEnter} onMouseLeave={onSLeave}>
+              <button className={linkCls("Special Member")}>
+                Special Member
+                <FaChevronDown className={`text-[10px] transition-transform duration-200 ${specialDrop ? "rotate-180 text-[#F05A1A]" : "rotate-0"}`} />
+              </button>
+
+              {specialDrop && (
+                <div
+                  className="drop-anim absolute z-[200] bg-white rounded-[18px] !p-2 min-w-[240px] shadow-[0_24px_60px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-[150%] -translate-x-1/2"
+                  onMouseEnter={onSEnter} onMouseLeave={onSLeave}
+                >
+                  {/* Arrow */}
+                  <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rotate-45 w-3 h-3 bg-white border-l border-t border-[#eef2f8]" />
+
+                  {specialItems.map(item => (
+                    <a
+                      key={item.label} href={item.href}
+                      className="flex items-center gap-3 !px-3 !py-[11px] rounded-xl no-underline text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
+                      onClick={closeAll}
+                    >
+                      <div
+                        className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 text-[15px]"
+                        style={{ background: `${item.color}22`, color: item.color }}
+                      >
                         {item.icon}
                       </div>
                       <div>
@@ -204,11 +260,6 @@ export default function Navbar() {
             {/* Blogs */}
             <a href="/blogs/" className={linkCls("Blogs")} onClick={closeAll}>
               Blogs
-            </a>
-
-            {/* Talented Players */}
-            <a href="/talented-players" className={linkCls("Talented Players")} onClick={closeAll}>
-              Talented Players
             </a>
 
             {/* About */}
@@ -295,7 +346,7 @@ export default function Navbar() {
               Home
             </a>
 
-            {/* Members accordion */}
+            {/* Members accordion — General Member + Talented Players */}
             <div>
               <button
                 className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "Members" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
@@ -313,6 +364,31 @@ export default function Navbar() {
                       onClick={closeAll}
                     >
                       <span className="text-[#F05A1A] text-[14px]">{item.icon}</span>
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Special Member accordion — Diamond, Gold, Silver */}
+            <div>
+              <button
+                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "Special Member" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                onClick={() => setMobileSpecialDrop(p => !p)}
+              >
+                <span>Special Member</span>
+                <FaChevronDown className={`text-[11px] transition-transform duration-200 ${mobileSpecialDrop ? "rotate-180 text-[#F05A1A]" : "text-slate-400"}`} />
+              </button>
+              <div className={`acc ${mobileSpecialDrop ? "open" : ""}`}>
+                <div className="!pl-2.5">
+                  {specialItems.map(item => (
+                    <a
+                      key={item.label} href={item.href}
+                      className="flex items-center gap-2.5 !px-3 !py-3 rounded-[10px] no-underline text-[13px] font-semibold font-[Plus_Jakarta_Sans] text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
+                      onClick={closeAll}
+                    >
+                      <span className="text-[14px]" style={{ color: item.color }}>{item.icon}</span>
                       {item.label}
                     </a>
                   ))}
@@ -353,8 +429,8 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Blogs & Talented Players */}
-            {[{ label: "Blogs", href: "/blogs/" }, { label: "Talented Players", href: "/talented-players" }, { label: "About Us", href: "/about-us" }].map(item => (
+            {/* Blogs & About Us */}
+            {[{ label: "Blogs", href: "/blogs/" }, { label: "About Us", href: "/about-us" }].map(item => (
               <a
                 key={item.label} href={item.href}
                 className={`flex items-center gap-2.5 !px-[15px] !py-[13px] rounded-xl no-underline text-[14px] font-semibold font-[Plus_Jakarta_Sans] transition-all duration-150 ${activeKey === item.label ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}

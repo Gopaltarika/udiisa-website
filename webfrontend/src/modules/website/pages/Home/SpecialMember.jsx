@@ -485,7 +485,7 @@ export default function SpecialMembersSection() {
 
           <h2 style={{
             fontFamily: "'Bebas Neue', cursive",
-            fontSize: "clamp(40px, 6.5vw, 64px)",
+            fontSize: "clamp(40px, 6.5vw, 58px)",
             letterSpacing: 3, lineHeight: 1,
             color: "#0B1E4B", margin: "0 0 14px",
           }}>
@@ -493,8 +493,7 @@ export default function SpecialMembersSection() {
             <span style={{
               background: "linear-gradient(90deg, #F05A1A, #FF9D42)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            }}>
-              MEMBERS
+            }}> {theme.label}              MEMBERS
             </span>{" "}OF UDIISA
           </h2>
 

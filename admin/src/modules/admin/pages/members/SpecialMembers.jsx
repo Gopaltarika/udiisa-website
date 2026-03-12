@@ -41,6 +41,22 @@ const CATEGORIES = [
     border: '#e2e8f0',
     dot: '#94a3b8',
   },
+  {
+    value: 'Dignitaries',
+    label: '👑 Dignitaries',
+    bg: '#fdf4ff',
+    color: '#7e22ce',
+    border: '#e9d5ff',
+    dot: '#a855f7',
+  },
+  {
+    value: 'Body Corporate',
+    label: '🏢 Body Corporate',
+    bg: '#ecfdf5',
+    color: '#065f46',
+    border: '#a7f3d0',
+    dot: '#10b981',
+  },
 ]
 
 const getCat = (val) => CATEGORIES.find(c => c.value === val) || CATEGORIES[2]
@@ -94,7 +110,6 @@ function CategorySelect({ value, onChange }) {
           <option key={cat.value} value={cat.value}>{cat.label}</option>
         ))}
       </select>
-      {/* Custom chevron */}
       <div style={{
         position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
         pointerEvents: 'none', color: selected.color, fontSize: 10,
@@ -121,24 +136,26 @@ export default function SpecialMembers() {
   const [preview,  setPreview]  = useState(null)
   const [errors,   setErrors]   = useState({})
 
+  // Active filter tab
+  const [activeFilter, setActiveFilter] = useState('All')
+  const FILTER_TABS = ['All', ...CATEGORIES.map(c => c.value)]
+
   useEffect(() => {
     let mounted = true
-
-    const loadSpecialMembers = async () => {
+    const load = async () => {
       setLoading(true)
       try {
-        const res = await memberService.getSpecialMembers(dSearch ? { search: dSearch } : {})
+        const res  = await memberService.getSpecialMembers(dSearch ? { search: dSearch } : {})
         const list = Array.isArray(res?.data) ? res.data : []
         if (!mounted) return
-
         setMembers(
-          list.map((m) => ({
-            id: m._id,
-            name: m.name || '',
-            companyName: m.companyName || '',
+          list.map(m => ({
+            id:                 m._id,
+            name:               m.name               || '',
+            companyName:        m.companyName        || '',
             membershipCategory: m.membershipCategory || 'Silver',
-            photo: m.photo || null,
-            createdAt: m.createdAt,
+            photo:              m.photo              || null,
+            createdAt:          m.createdAt,
           }))
         )
       } catch (e) {
@@ -148,8 +165,7 @@ export default function SpecialMembers() {
         if (mounted) setLoading(false)
       }
     }
-
-    loadSpecialMembers()
+    load()
     return () => { mounted = false }
   }, [dSearch, toast])
 
@@ -164,10 +180,10 @@ export default function SpecialMembers() {
   const openEdit = (row) => {
     setSelected(row)
     setForm({
-      name: row.name,
-      companyName: row.companyName,
+      name:               row.name,
+      companyName:        row.companyName,
       membershipCategory: row.membershipCategory || 'Silver',
-      photo: null,
+      photo:              null,
     })
     setPreview(row.photo ? API_IMG(row.photo) : null)
     setErrors({})
@@ -189,35 +205,35 @@ export default function SpecialMembers() {
     setSaving(true)
     try {
       const payload = buildFormData({
-        name: form.name?.trim(),
-        companyName: form.companyName?.trim(),
+        name:               form.name?.trim(),
+        companyName:        form.companyName?.trim(),
         membershipCategory: form.membershipCategory,
-        photo: form.photo || undefined,
+        photo:              form.photo || undefined,
       })
 
       if (selected) {
         const res = await memberService.updateSpecialMember(selected.id, payload)
-        const m = res?.data || {}
+        const m   = res?.data || {}
         const updated = {
-          id: m._id || selected.id,
-          name: m.name || form.name,
-          companyName: m.companyName || form.companyName || '',
+          id:                 m._id                || selected.id,
+          name:               m.name               || form.name,
+          companyName:        m.companyName        || form.companyName        || '',
           membershipCategory: m.membershipCategory || form.membershipCategory || 'Silver',
-          photo: m.photo || selected.photo || null,
-          createdAt: m.createdAt || selected.createdAt,
+          photo:              m.photo              || selected.photo          || null,
+          createdAt:          m.createdAt          || selected.createdAt,
         }
         setMembers(prev => prev.map(item => item.id === selected.id ? updated : item))
         toast.success('Special member updated!')
       } else {
         const res = await memberService.addSpecialMember(payload)
-        const m = res?.data || {}
+        const m   = res?.data || {}
         const created = {
-          id: m._id,
-          name: m.name || form.name,
-          companyName: m.companyName || form.companyName || '',
+          id:                 m._id,
+          name:               m.name               || form.name,
+          companyName:        m.companyName        || form.companyName        || '',
           membershipCategory: m.membershipCategory || form.membershipCategory || 'Silver',
-          photo: m.photo || null,
-          createdAt: m.createdAt || new Date().toISOString(),
+          photo:              m.photo              || null,
+          createdAt:          m.createdAt          || new Date().toISOString(),
         }
         setMembers(prev => [created, ...prev])
         toast.success('Special member added!')
@@ -244,6 +260,11 @@ export default function SpecialMembers() {
     }
   }
 
+  // Filtered list based on active filter tab
+  const filteredMembers = activeFilter === 'All'
+    ? members
+    : members.filter(m => m.membershipCategory === activeFilter)
+
   const columns = [
     {
       key: 'photo', label: '#',
@@ -258,7 +279,7 @@ export default function SpecialMembers() {
       ),
     },
     { key: 'name',        label: 'Name' },
-    { key: 'companyName', label: 'Company' },
+    { key: 'companyName', label: 'Company / Organization' },
     {
       key: 'membershipCategory', label: 'Category',
       render: (v) => <CategoryBadge value={v || 'Silver'} />,
@@ -280,7 +301,7 @@ export default function SpecialMembers() {
     <div>
       <PageHeader
         title="Special Members"
-        subtitle="Manage special / honorary members"
+        subtitle="Manage Diamond, Gold, Silver, Dignitaries and Body Corporate members"
         action={
           <button
             onClick={openAdd}
@@ -291,14 +312,69 @@ export default function SpecialMembers() {
         }
       />
 
+      {/* ── Category Filter Tabs ── */}
+      <div className="flex flex-wrap gap-[6px] mb-[20px]">
+        {FILTER_TABS.map(tab => {
+          const cat = tab === 'All' ? null : getCat(tab)
+          const isActive = activeFilter === tab
+          return (
+            <button
+              key={tab}
+              onClick={() => setActiveFilter(tab)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '6px 16px', borderRadius: 10,
+                fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                fontFamily: 'inherit', transition: 'all .2s ease',
+                background: isActive
+                  ? (cat ? cat.bg : 'linear-gradient(135deg,#0B1E4B,#1e3a8a)')
+                  : '#fff',
+                color: isActive
+                  ? (cat ? cat.color : '#fff')
+                  : '#64748b',
+                border: `1.5px solid ${isActive ? (cat ? cat.border : '#0B1E4B') : '#e2e8f0'}`,
+                boxShadow: isActive
+                  ? `0 4px 14px ${cat ? cat.border : 'rgba(11,30,75,0.2)'}`
+                  : '0 1px 4px rgba(0,0,0,0.04)',
+              }}
+            >
+              {tab !== 'All' && (
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: cat.dot, flexShrink: 0 }} />
+              )}
+              {tab}
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                minWidth: 18, height: 18, borderRadius: 999, padding: '0 5px',
+                background: isActive
+                  ? (cat ? `${cat.dot}22` : 'rgba(255,255,255,0.2)')
+                  : '#f1f5f9',
+                color: isActive ? (cat ? cat.color : '#fff') : '#94a3b8',
+                fontSize: 10, fontWeight: 800,
+              }}>
+                {tab === 'All'
+                  ? members.length
+                  : members.filter(m => m.membershipCategory === tab).length}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Search */}
       <div className="mb-[16px]">
         <SearchBar value={search} onChange={setSearch} placeholder="Search special members…" />
       </div>
 
-      <Table columns={columns} data={members} loading={loading} emptyText="No special members found" />
+      {/* Table */}
+      <Table columns={columns} data={filteredMembers} loading={loading} emptyText="No special members found" />
 
-      {/* ── Add / Edit Form ── */}
-      <Modal isOpen={formOpen} onClose={() => setFormOpen(false)} title={`${selected ? 'Edit' : 'Add'} Special Member`} size="sm">
+      {/* ── Add / Edit Modal ── */}
+      <Modal
+        isOpen={formOpen}
+        onClose={() => setFormOpen(false)}
+        title={`${selected ? 'Edit' : 'Add'} Special Member`}
+        size="sm"
+      >
         <div className="flex flex-col gap-[14px]">
           <PhotoUpload preview={preview} onChange={handlePhoto} />
 
@@ -311,15 +387,14 @@ export default function SpecialMembers() {
             />
           </FormField>
 
-          <FormField label="Company Name">
+          <FormField label="Company / Organization">
             <Input
-              placeholder="Company / Organisation"
+              placeholder="Company or Organisation name"
               value={form.companyName}
               onChange={e => setForm(f => ({ ...f, companyName: e.target.value }))}
             />
           </FormField>
 
-          {/* Membership Category */}
           <FormField label="Membership Category" required>
             <CategorySelect
               value={form.membershipCategory}
@@ -329,13 +404,20 @@ export default function SpecialMembers() {
 
           <div className="flex gap-[10px] justify-end pt-[6px]">
             <CancelBtn onClick={() => setFormOpen(false)} />
-            <SubmitBtn loading={saving} onClick={handleSave}>{selected ? 'Update' : 'Add'}</SubmitBtn>
+            <SubmitBtn loading={saving} onClick={handleSave}>
+              {selected ? 'Update' : 'Add Member'}
+            </SubmitBtn>
           </div>
         </div>
       </Modal>
 
-      {/* ── View Details ── */}
-      <Modal isOpen={viewOpen} onClose={() => setViewOpen(false)} title="Special Member Details" size="sm">
+      {/* ── View Details Modal ── */}
+      <Modal
+        isOpen={viewOpen}
+        onClose={() => setViewOpen(false)}
+        title="Special Member Details"
+        size="sm"
+      >
         {selected && (
           <div className="flex flex-col items-center gap-[16px] text-center">
             {selected.photo
@@ -347,7 +429,6 @@ export default function SpecialMembers() {
               <p className="text-[14px] text-slate-500 m-0">{selected.companyName || '—'}</p>
             </div>
 
-            {/* Category badge in view modal */}
             <CategoryBadge value={selected.membershipCategory || 'Silver'} />
 
             <div className="w-full bg-slate-50 rounded-[12px] p-[14px] text-left">
@@ -358,12 +439,13 @@ export default function SpecialMembers() {
         )}
       </Modal>
 
+      {/* ── Delete Confirm ── */}
       <ConfirmDialog
         isOpen={delOpen}
         onClose={() => setDelOpen(false)}
         onConfirm={handleDelete}
         loading={deleting}
-        message={`Delete "${selected?.name}"?`}
+        message={`Delete "${selected?.name}"? This action cannot be undone.`}
       />
     </div>
   )

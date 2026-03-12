@@ -1,12 +1,12 @@
 import React from 'react'
 import { FaSearch, FaHandHoldingHeart, FaGraduationCap, FaArrowRight } from 'react-icons/fa'
-import aboutImage from "@/assets/images/about-img.webp"
+import aboutImage from "@/assets/images/about2.jpeg"
 import { useNavigate } from 'react-router-dom'
 import { BsStarFill } from 'react-icons/bs'
 
 // ── Real sports images (Unsplash free-to-use links) ──────────────────────────
-const CRICKET_IMG  = "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600&q=80"
-const FOOTBALL_IMG = "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80"
+const CRICKET_IMG  = "https://i.ibb.co/mm2xkBk/139f2add-a331-4745-ada6-d8b2b2177d93.jpg"
+const FOOTBALL_IMG = "https://i.ibb.co/FbthLdKg/67abc23f-e125-4439-aad4-fb2575fcc7c4.jpg"
 
 const features = [
   {
@@ -204,7 +204,7 @@ const AboutUs = () => {
                       alt="UDIISA team"
                       loading="lazy"
                       decoding="async"
-                      className="w-full h-full object-cover "
+                      className="w-full h-full object-cover  object-top"
                     />
                     <div className="img-overlay" />
                     <div className="sport-chip">

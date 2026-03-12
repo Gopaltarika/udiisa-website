@@ -37,7 +37,7 @@ const SEO_BY_PATH = [
   },
   {
     match: /^\/donate-now\/?$/,
-    title: "Donate to UDIISA | Support Athletes",
+    title: "donate to UDIISA | Support Athletes",
     description:
       "Support UDIISA initiatives by donating to help talented athletes with opportunities, mentorship, and resources.",
   },

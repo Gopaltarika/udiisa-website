@@ -6,7 +6,7 @@ const contactInfo = [
   {
     icon: <FaMapMarkerAlt />,
     label: 'Our Office',
-    value: '5091, 6th Floor, Tower 5, Parker Residency, Tehsil Rai, District Sonepat, Haryana',
+    value: '5091, 9th Floor, Tower 5, Parker Residency, Tehsil Rai, District Sonipat, Haryana',
     color: '#F05A1A',
     bg: 'rgba(240,90,26,.08)',
   },

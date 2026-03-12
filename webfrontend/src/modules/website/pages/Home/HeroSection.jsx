@@ -122,7 +122,7 @@ const HeroSection = () => {
           </a>
 
           <a
-            href="/donate-now"
+            href="/Contribute-now"
             className="btn-shine btn-secondary flex items-center no-underline transition-all duration-[250ms] !gap-[8px] sm:!gap-[9px] !px-[22px] sm:!px-[34px] !py-[12px] sm:!py-[15px] rounded-[12px] sm:rounded-[14px] text-[13px] sm:text-[15px] font-bold text-white border-[2px] border-[rgba(255,255,255,.32)] bg-[rgba(255,255,255,.06)] backdrop-blur-[8px]"
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -131,7 +131,7 @@ const HeroSection = () => {
           >
             
             <MdVolunteerActivism className="text-[18px] sm:text-[20px] flex-shrink-0" />
-            Donate Now
+            Contribute Now
           </a>
         </div>
 

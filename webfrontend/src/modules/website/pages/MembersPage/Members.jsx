@@ -6,10 +6,10 @@ const Members = () => {
   return (
     <div>
     <PageHero
-      badge="OUR COMMUNITY"
+      badge="OUR Members"
       heading="MEMBER"
       highlight="DIRECTORY"
-      description="Meet the people who make SportForce possible"
+      description="Distinguished patrons, ambassadors, dignitaries, and corporate bodies who champion India's grassroots sports revolution."
       bgImage="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1920&q=85&fit=crop"
       />
       <MembersData />

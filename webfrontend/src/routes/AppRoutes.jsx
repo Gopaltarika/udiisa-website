@@ -25,8 +25,9 @@ const AppRoutes = () => {
           {/* WEBSITE */}
           <Route element={<WebsiteLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/members/special-members" element={<Members />} />
-            <Route path="/members/general-members" element={<Members />} />
+         <Route path="/members/special-members"           element={<Members />} />
+         <Route path="/members/general-members"           element={<Members />} />
+<Route path="/members/special-members/:tab"      element={<Members />} />
             <Route path="/talented-players" element={<TalentedPlayers />} />
             <Route path="/membership/individual-patron" element={<Main />} />
             <Route path="/membership/individual-player" element={<Main />} />
@@ -35,7 +36,7 @@ const AppRoutes = () => {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/blogs/*" element={<BlogRoutes />} />
             <Route path="/committee" element={<CommitteePage />} />
-            <Route path="/donate-now" element={<DonateNow />} />
+            <Route path="/Contribute-now" element={<DonateNow />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           </Route>
         </Routes>

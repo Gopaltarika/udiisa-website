@@ -18,7 +18,7 @@ const programs = [
 ]
 
 const contactInfo = [
-  { icon: <FaMapMarkerAlt />, value: '5091, 6th Floor, Tower 5, Parker Residency, Tehsil Rai, District Sonepat, Haryana' },
+  { icon: <FaMapMarkerAlt />, value: '5091, 9th Floor, Tower 5, Parker Residency, Tehsil Rai, District Sonipat, Haryana' },
   { icon: <FaPhone />,        value: '+91 83075 98050' },
   { icon: <FaEnvelope />,     value: 'info@udisports.in' },
 ]
@@ -96,7 +96,7 @@ const Footer = () => {
                 />
               </a>
               <p className="!mt-[12px] !mb-[16px]" style={{ fontSize: 12.5, color: 'rgba(255,255,255,.55)', lineHeight: 1.75, maxWidth: 280 }}>
-                A non-profit organization dedicated to identifying, nurturing and empowering talented athletes across India. Building champions, changing lives.
+               A non-profit organization dedicated to identifying, nurturing, and empowering talented sportspeople across India.
               </p>
               <div className="!flex !items-center !gap-[8px] !flex-wrap">
                 {socials.map((s, i) => (

@@ -59,11 +59,11 @@ const Home = () => {
         <DeferredSection minHeight={460}>
           <ManagingCommittee />
         </DeferredSection>
-        <DeferredSection minHeight={460}>
-          <Promoters />
-        </DeferredSection>
         <DeferredSection minHeight={500}>
           <SpecialMembersSection />
+        </DeferredSection>
+        <DeferredSection minHeight={460}>
+          <Promoters />
         </DeferredSection>
         <DeferredSection minHeight={420}>
           <BecomeAMember />
