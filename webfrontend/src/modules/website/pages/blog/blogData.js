@@ -62,7 +62,7 @@ export const MOCK_BLOGS = [
   {
     id: 2,
     slug: 'annual-sports-talent-hunt-2024',
-    title: 'Annual Sports Talent Hunt 2024: Record 5,000 Athletes',
+    title: 'Annual Sports Talent Hunt 2024: Record 5,000 Players',
     category: 'Event',
     excerpt: 'Our biggest talent identification event saw participation from 28 states across India — scouting the next generation of champions.',
     image: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80&fit=crop',
@@ -74,9 +74,9 @@ export const MOCK_BLOGS = [
     tags: ['Event', 'Talent', 'Cricket', 'Athletics'],
     content: `
       <h2>India's Biggest Sports Scouting Event</h2>
-      <p>The Annual Sports Talent Hunt 2024 witnessed an unprecedented turnout. Over 5,000 athletes aged 10–22 participated across 12 sports disciplines.</p>
+      <p>The Annual Sports Talent Hunt 2024 witnessed an unprecedented turnout. Over 5,000 Players aged 10–22 participated across 12 sports disciplines.</p>
       <h2>Key Highlights</h2>
-      <ul><li>28 states participated — highest ever</li><li>12 disciplines including Cricket, Athletics, Boxing, and Badminton</li><li>250 athletes shortlisted for the National Development Camp</li><li>₹50 lakh in scholarships announced</li></ul>
+      <ul><li>28 states participated — highest ever</li><li>12 disciplines including Cricket, Athletics, Boxing, and Badminton</li><li>250 Players shortlisted for the National Development Camp</li><li>₹50 lakh in scholarships announced</li></ul>
       <h2>Venue & Organisation</h2>
       <p>The event was held across 14 venues simultaneously, managed by 300+ volunteers and 50 certified sports evaluators. Live streaming reached over 2 lakh viewers online.</p>
     `,
@@ -86,7 +86,7 @@ export const MOCK_BLOGS = [
     slug: 'girl-empowerment-initiative-launch',
     title: 'Breaking Barriers: Girl Empowerment Initiative Launches',
     category: 'Initiative',
-    excerpt: 'A new chapter begins as we dedicate resources to female athletes facing systemic barriers in rural and semi-urban India.',
+    excerpt: 'A new chapter begins as we dedicate resources to female Players facing systemic barriers in rural and semi-urban India.',
     image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80&fit=crop',
     author: 'Sunita Mehta',
     authorImg: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80&fit=crop&crop=face',
@@ -96,10 +96,10 @@ export const MOCK_BLOGS = [
     tags: ['Initiative', 'Women', 'Empowerment', 'Grassroots'],
     content: `
       <h2>Why Girl Empowerment?</h2>
-      <p>Female athletes in India face disproportionate barriers — societal pressure, lack of infrastructure, limited funding, and inadequate safety measures.</p>
+      <p>Female Players in India face disproportionate barriers — societal pressure, lack of infrastructure, limited funding, and inadequate safety measures.</p>
       <h2>Programme Components</h2>
       <ul><li><strong>Scholarship Fund:</strong> 100 full scholarships for girls aged 12–20</li><li><strong>Safe Infrastructure:</strong> Dedicated training facilities in 5 cities</li><li><strong>Mentor Network:</strong> 40 female sports mentors</li><li><strong>Community Engagement:</strong> Family programs in 50 villages</li></ul>
-      <blockquote>"We don't just train athletes. We challenge the systems that keep girls from becoming athletes." — Sunita Mehta</blockquote>
+      <blockquote>"We don't just train Players. We challenge the systems that keep girls from becoming Players." — Sunita Mehta</blockquote>
     `,
   },
   {
@@ -107,7 +107,7 @@ export const MOCK_BLOGS = [
     slug: 'partnership-10-academies',
     title: 'Partnership with 10 Top Academies Opens New Doors',
     category: 'Partnership',
-    excerpt: 'Major academies have agreed to provide subsidised training for UDI Sports athletes across cricket, badminton, and athletics.',
+    excerpt: 'Major academies have agreed to provide subsidised training for UDI Sports Players across cricket, badminton, and athletics.',
     image: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80&fit=crop',
     author: 'Vikram Singh',
     authorImg: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80&fit=crop&crop=face',
@@ -117,10 +117,10 @@ export const MOCK_BLOGS = [
     tags: ['Partnership', 'Academy', 'Training', 'Cricket'],
     content: `
       <h2>A Landmark Agreement</h2>
-      <p>UDI Sports NGO has signed MoUs with 10 of India's top sports academies, providing subsidised training access to over 500 athletes.</p>
+      <p>UDI Sports NGO has signed MoUs with 10 of India's top sports academies, providing subsidised training access to over 500 Players.</p>
       <h2>Partner Academies</h2>
       <ul><li>Delhi Cricket Academy</li><li>Mumbai Athletic Centre</li><li>Bangalore Badminton School</li><li>Hyderabad Football Institute</li><li>Pune Boxing Club and 5 more</li></ul>
-      <blockquote>"Together we build the infrastructure India's young athletes deserve." — Partnership Director, UDI Sports</blockquote>
+      <blockquote>"Together we build the infrastructure India's young Players deserve." — Partnership Director, UDI Sports</blockquote>
     `,
   },
   {
@@ -128,7 +128,7 @@ export const MOCK_BLOGS = [
     slug: 'mentorship-program-2025-open',
     title: 'Mentorship Program 2025: Applications Now Open',
     category: 'Mentorship',
-    excerpt: 'Over 200 slots available for young athletes to be mentored by national and international sports coaches through our flagship program.',
+    excerpt: 'Over 200 slots available for young Players to be mentored by national and international sports coaches through our flagship program.',
     image: 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=80&fit=crop',
     author: 'Rohit Joshi',
     authorImg: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&q=80&fit=crop&crop=face',
@@ -138,19 +138,19 @@ export const MOCK_BLOGS = [
     tags: ['Mentorship', 'Coaching', 'Youth', '2025'],
     content: `
       <h2>Applications Open for 2025 Cohort</h2>
-      <p>UDI Sports opens applications for the 2025 Mentorship Program — our flagship initiative pairing elite coaches with promising young athletes.</p>
+      <p>UDI Sports opens applications for the 2025 Mentorship Program — our flagship initiative pairing elite coaches with promising young Players.</p>
       <h2>Program Details</h2>
       <ul><li>200 slots across 10 sports disciplines</li><li>6-month intensive mentorship (Jan–June 2025)</li><li>Monthly workshops and 1-on-1 coaching sessions</li><li>Performance tracking and career guidance</li></ul>
       <h2>Who Can Apply?</h2>
-      <p>Athletes aged 14–24 from any sport who are registered UDI Sports members. Selection is based on demonstrated talent and commitment.</p>
+      <p>Players aged 14–24 from any sport who are registered UDI Sports members. Selection is based on demonstrated talent and commitment.</p>
     `,
   },
   {
     id: 6,
     slug: 'state-games-2024-47-medals',
-    title: 'State Games 2024: UDI Athletes Win 47 Medals',
+    title: 'State Games 2024: UDI Players Win 47 Medals',
     category: 'Success Story',
-    excerpt: 'Athletes enrolled in UDI Sports programs dominated the State Games, winning 47 medals including 18 gold — a new record.',
+    excerpt: 'Players enrolled in UDI Sports programs dominated the State Games, winning 47 medals including 18 gold — a new record.',
     image: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&q=80&fit=crop',
     author: 'Priya Sharma',
     authorImg: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80&fit=crop&crop=face',
@@ -183,7 +183,7 @@ export const MOCK_BLOGS = [
       <h2>Building Grounds Where There Are None</h2>
       <p>UDI Sports is addressing lack of rural sports infrastructure with a ₹2 crore initiative across 15 districts.</p>
       <h2>What Will Be Built</h2>
-      <ul><li>10 multi-sport playgrounds</li><li>3 mini-stadiums with seating for 500</li><li>2 indoor courts for Badminton and Table Tennis</li><li>All facilities accessible to women and differently-abled athletes</li></ul>
+      <ul><li>10 multi-sport playgrounds</li><li>3 mini-stadiums with seating for 500</li><li>2 indoor courts for Badminton and Table Tennis</li><li>All facilities accessible to women and differently-abled Players</li></ul>
       <h2>Timeline</h2>
       <p>Construction begins January 2025, with first 5 facilities ready by April 2025. All work done in partnership with local Panchayats.</p>
     `,

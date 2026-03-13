@@ -1,490 +1,195 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { FaBuilding, FaMapMarkerAlt } from 'react-icons/fa'
+import { FaBuilding } from 'react-icons/fa'
 import { MdVerified } from 'react-icons/md'
-import { HiSparkles } from 'react-icons/hi'
+
 /* ═══════════════════════════════════════════
    STATIC DATA
 ═══════════════════════════════════════════ */
-const STATIC_DATA = {
+const ALL_STATIC_DATA = {
   diamond: [
-    { id: 1, name: 'Rajesh Kumar Singh',               company: 'RK Industries Ltd'        },
-    { id: 2, name: 'Priya Sharma',                             company: 'Sharma Enterprises'},
-    { id: 3, name: 'Anil Mehta',         company: 'Mehta Group',              city: 'Pune' },
-    { id: 4, name: 'Sunita Verma',       company: 'Verma Foundation',         city: 'Jaipur' },
-    { id: 5, name: 'Vikram Patel',       company: 'Patel Corp',               city: 'Ahmedabad' },
-    { id: 6, name: 'Neha Gupta',         company: 'Gupta Welfare Trust',      city: 'Lucknow' },
+    { id: 1,  name: 'Rajesh Kumar Singh',    company: 'RK Industries Ltd',      city: 'Delhi' },
+    { id: 2,  name: 'Priya Sharma',          company: 'Sharma Enterprises',     city: 'Mumbai' },
+    { id: 3,  name: 'Anil Mehta',            company: 'Mehta Group',            city: 'Pune' },
+    { id: 4,  name: 'Sunita Verma',          company: 'Verma Foundation',       city: 'Jaipur' },
+    { id: 5,  name: 'Vikram Patel',          company: 'Patel Corp',             city: 'Ahmedabad' },
+    { id: 6,  name: 'Neha Gupta',            company: 'Gupta Welfare Trust',    city: 'Lucknow' },
+    { id: 7,  name: 'Ramesh Agarwal',        company: 'Agarwal Holdings',       city: 'Delhi' },
+    { id: 8,  name: 'Sneha Bose',            company: 'Bose Technologies',      city: 'Kolkata' },
+    { id: 9,  name: 'Tarun Khanna',          company: 'Khanna Exports',         city: 'Amritsar' },
+    { id: 10, name: 'Divya Pillai',          company: 'Pillai Associates',      city: 'Kochi' },
+    { id: 11, name: 'Harshit Singhania',     company: 'Singhania Group',        city: 'Kolkata' },
+    { id: 12, name: 'Meera Iyer',            company: 'Iyer Consultants',       city: 'Chennai' },
   ],
   gold: [
-    { id: 1, name: 'Amit Joshi',         company: 'Joshi Traders',            city: 'Nagpur' },
-    { id: 2, name: 'Rekha Nair',         company: 'Nair Exports',             city: 'Kochi' },
-    { id: 3, name: 'Suresh Yadav',       company: 'Yadav Sports Club',        city: 'Kanpur' },
-    { id: 4, name: 'Pooja Reddy',        company: 'Reddy Foundation',         city: 'Hyderabad' },
-    { id: 5, name: 'Manish Tiwari',      company: 'Tiwari & Sons',            city: 'Bhopal' },
+    { id: 1,  name: 'Amit Joshi',            company: 'Joshi Traders',          city: 'Nagpur' },
+    { id: 2,  name: 'Rekha Nair',            company: 'Nair Exports',           city: 'Kochi' },
+    { id: 3,  name: 'Suresh Yadav',          company: 'Yadav Sports Club',      city: 'Kanpur' },
+    { id: 4,  name: 'Pooja Reddy',           company: 'Reddy Foundation',       city: 'Hyderabad' },
+    { id: 5,  name: 'Manish Tiwari',         company: 'Tiwari & Sons',          city: 'Bhopal' },
+    { id: 6,  name: 'Sanjay Malviya',        company: 'Malviya Enterprises',    city: 'Indore' },
+    { id: 7,  name: 'Priyanka Saxena',       company: 'Saxena Realty',          city: 'Noida' },
+    { id: 8,  name: 'Girish Soni',           company: 'Soni Pharma',            city: 'Ahmedabad' },
   ],
   silver: [
-    { id: 1, name: 'Kavita Sharma',      company: 'Sharma Textiles',          city: 'Surat' },
-    { id: 2, name: 'Deepak Rao',         company: 'Rao Sports Academy',       city: 'Bangalore' },
-    { id: 3, name: 'Anita Desai',        company: 'Desai NGO',                city: 'Vadodara' },
-    { id: 4, name: 'Rahul Chandra',      company: 'Chandra Associates',       city: 'Chennai' },
+    { id: 1,  name: 'Kavita Sharma',         company: 'Sharma Textiles',        city: 'Surat' },
+    { id: 2,  name: 'Deepak Rao',            company: 'Rao Sports Academy',     city: 'Bangalore' },
+    { id: 3,  name: 'Anita Desai',           company: 'Desai NGO',              city: 'Vadodara' },
+    { id: 4,  name: 'Rahul Chandra',         company: 'Chandra Associates',     city: 'Chennai' },
+    { id: 5,  name: 'Simran Kapoor',         company: 'Kapoor Foundation',      city: 'Chandigarh' },
+    { id: 6,  name: 'Yash Tripathi',         company: 'Tripathi Infra',         city: 'Varanasi' },
   ],
   dignitaries: [
-    { id: 1, name: 'Dr. S.K. Mishra',    company: 'Govt. of India',           city: 'Delhi' },
-    { id: 2, name: 'Justice R.P. Saxena',company: 'Allahabad High Court',     city: 'Allahabad' },
-    { id: 3, name: 'Dr. Meena Agarwal',  company: 'SAI',                      city: 'Delhi' },
-    { id: 4, name: 'Brig. A.K. Chauhan', company: 'Indian Army',              city: 'Dehradun' },
-    { id: 5, name: 'Prof. R.N. Tripathi',company: 'Lucknow University',       city: 'Lucknow' },
+    { id: 1,  name: 'Dr. S.K. Mishra',       company: 'Govt. of India',         city: 'Delhi' },
+    { id: 2,  name: 'Justice R.P. Saxena',   company: 'Allahabad High Court',   city: 'Allahabad' },
+    { id: 3,  name: 'Dr. Meena Agarwal',     company: 'SAI',                    city: 'Delhi' },
+    { id: 4,  name: 'Brig. A.K. Chauhan',    company: 'Indian Army',            city: 'Dehradun' },
+    { id: 5,  name: 'Prof. R.N. Tripathi',   company: 'Lucknow University',     city: 'Lucknow' },
+    { id: 6,  name: 'IAS Rohini Srivastav',  company: 'UP Government',          city: 'Lucknow' },
   ],
   corporate: [
-    { id: 1, name: 'Mahendra Singh',     company: 'MS Steel Pvt Ltd',         city: 'Raipur' },
-    { id: 2, name: 'Lata Kapoor',        company: 'Kapoor Industries',        city: 'Noida' },
-    { id: 3, name: 'Rajiv Bansal',       company: 'Bansal Infra Ltd',         city: 'Gurgaon' },
-    { id: 4, name: 'Sonia Malhotra',     company: 'Malhotra & Associates',    city: 'Chandigarh' },
-    { id: 5, name: 'Harish Dubey',       company: 'Dubey Constructions',      city: 'Indore' },
-    { id: 6, name: 'Nisha Pandey',       company: 'Pandey Welfare Group',     city: 'Varanasi' },
+    { id: 1,  name: 'Mahendra Singh',        company: 'MS Steel Pvt Ltd',       city: 'Raipur' },
+    { id: 2,  name: 'Lata Kapoor',           company: 'Kapoor Industries',      city: 'Noida' },
+    { id: 3,  name: 'Rajiv Bansal',          company: 'Bansal Infra Ltd',       city: 'Gurgaon' },
+    { id: 4,  name: 'Sonia Malhotra',        company: 'Malhotra & Associates',  city: 'Chandigarh' },
+    { id: 5,  name: 'Harish Dubey',          company: 'Dubey Constructions',    city: 'Indore' },
+    { id: 6,  name: 'Nisha Pandey',          company: 'Pandey Welfare Group',   city: 'Varanasi' },
+    { id: 7,  name: 'Vikrant Chaudhary',     company: 'Chaudhary Logistics',    city: 'Delhi' },
+    { id: 8,  name: 'Roshni Bajaj',          company: 'Bajaj Retail Ltd',       city: 'Pune' },
+  ],
+}
+
+const GENERAL_STATIC_DATA = {
+  individual: [
+    { id: 1,  name: 'Arjun Sharma',          company: 'Sharma & Sons Pvt Ltd' },
+    { id: 2,  name: 'Priya Singh',           company: 'Singh Enterprises' },
+    { id: 3,  name: 'Rahul Verma',           company: 'Verma Industries' },
+    { id: 4,  name: 'Neha Gupta',            company: 'Gupta Traders' },
+    { id: 5,  name: 'Amit Kumar',            company: 'Kumar Associates' },
+    { id: 6,  name: 'Sunita Yadav',          company: 'Yadav Foundation' },
+    { id: 7,  name: 'Vikram Mehta',          company: 'Mehta Constructions' },
+    { id: 8,  name: 'Kavita Reddy',          company: 'Reddy Exports' },
+    { id: 9,  name: 'Mohit Srivastav',       company: 'Srivastav Group' },
+    { id: 10, name: 'Aarti Bhatt',           company: 'Bhatt Enterprises' },
+    { id: 11, name: 'Sandeep Tomar',         company: 'Tomar Agro' },
+    { id: 12, name: 'Reema Jain',            company: 'Jain Jewellers' },
+  ],
+  players: [
+    { id: 1,  name: 'Rohit Patel',           company: 'Rajasthan Athletics Club' },
+    { id: 2,  name: 'Anjali Tiwari',         company: 'Delhi Sports Academy' },
+    { id: 3,  name: 'Suresh Nair',           company: 'Kerala Sports Federation' },
+    { id: 4,  name: 'Pooja Joshi',           company: 'Maharashtra Athletics' },
+    { id: 5,  name: 'Deepak Chauhan',        company: 'Punjab Sports Council' },
+    { id: 6,  name: 'Ritu Agarwal',          company: 'UP Sports Academy' },
+    { id: 7,  name: 'Manoj Dubey',           company: 'MP Athletics Club' },
+    { id: 8,  name: 'Simran Dhaliwal',       company: 'Haryana Sports Board' },
+    { id: 9,  name: 'Yusuf Khan',            company: 'J&K Sports Federation' },
+    { id: 10, name: 'Nalini Rao',            company: 'Karnataka Athletics' },
   ],
 }
 
 /* ═══════════════════════════════════════════
-   SPECIAL SUB-TABS CONFIG (5 tabs)
+   SPECIAL TABS CONFIG
 ═══════════════════════════════════════════ */
 const SPECIAL_TABS = [
   {
     key: 'diamond',
     label: 'Diamond',
     emoji: '💎',
-    membershipKey: 'diamond',
-    activeBg:     'linear-gradient(135deg,#e0f2ff,#bfdbfe)',
+    desc: 'Our most prestigious patrons with the highest level of contribution to sports.',
+    tagLabel: 'Diamond Member',
+    // Tailwind-compatible inline style tokens
+    activeBg: 'linear-gradient(135deg,#e0f2ff,#bfdbfe)',
     activeBorder: '#3b82f6',
-    activeColor:  '#1d4ed8',
+    activeColor: '#1d4ed8',
     activeShadow: '0 6px 28px rgba(59,130,246,0.28)',
-    accentColor:  '#1e40af',
-    accentLight:  '#eff6ff',
+    accentColor: '#1e40af',
+    accentLight: '#eff6ff',
     accentBorder: 'rgba(59,130,246,0.22)',
-    accentGlow:   'rgba(59,130,246,0.13)',
-    ringFrom:     '#93c5fd',
-    ringTo:       '#3b82f6',
-    badgeBg:      '#dbeafe',
-    badgeColor:   '#1e40af',
-    badgeBorder:  'rgba(30,64,175,0.22)',
-    stripFrom:    '#3b82f6',
-    stripTo:      '#93c5fd',
-    dotColor:     '#3b82f6',
-    tagLabel:     'Diamond Member',
-    cardGradTop:  'linear-gradient(160deg,#dbeafe 0%,#eff6ff 60%,#fff 100%)',
+    accentGlow: 'rgba(59,130,246,0.13)',
+    ringFrom: '#93c5fd', ringTo: '#3b82f6',
+    badgeBg: '#dbeafe', badgeColor: '#1e40af', badgeBorder: 'rgba(30,64,175,0.22)',
+    stripFrom: '#3b82f6', stripTo: '#93c5fd',
+    cardGradTop: 'linear-gradient(160deg,#dbeafe 0%,#eff6ff 60%,#fff 100%)',
   },
   {
     key: 'gold',
     label: 'Gold',
     emoji: '🥇',
-    membershipKey: 'gold',
-    activeBg:     'linear-gradient(135deg,#fef9c3,#fef08a)',
+    desc: 'Gold patrons who significantly support our national sports initiatives.',
+    tagLabel: 'Gold Member',
+    activeBg: 'linear-gradient(135deg,#fef9c3,#fef08a)',
     activeBorder: '#eab308',
-    activeColor:  '#854d0e',
+    activeColor: '#854d0e',
     activeShadow: '0 6px 28px rgba(234,179,8,0.28)',
-    accentColor:  '#a16207',
-    accentLight:  '#fefce8',
+    accentColor: '#a16207',
+    accentLight: '#fefce8',
     accentBorder: 'rgba(234,179,8,0.25)',
-    accentGlow:   'rgba(234,179,8,0.13)',
-    ringFrom:     '#fde047',
-    ringTo:       '#eab308',
-    badgeBg:      '#fef9c3',
-    badgeColor:   '#854d0e',
-    badgeBorder:  'rgba(133,77,14,0.22)',
-    stripFrom:    '#eab308',
-    stripTo:      '#fde047',
-    dotColor:     '#ca8a04',
-    tagLabel:     'Gold Member',
-    cardGradTop:  'linear-gradient(160deg,#fef9c3 0%,#fefce8 60%,#fff 100%)',
+    accentGlow: 'rgba(234,179,8,0.13)',
+    ringFrom: '#fde047', ringTo: '#eab308',
+    badgeBg: '#fef9c3', badgeColor: '#854d0e', badgeBorder: 'rgba(133,77,14,0.22)',
+    stripFrom: '#eab308', stripTo: '#fde047',
+    cardGradTop: 'linear-gradient(160deg,#fef9c3 0%,#fefce8 60%,#fff 100%)',
   },
   {
     key: 'silver',
     label: 'Silver',
     emoji: '🥈',
-    membershipKey: 'silver',
-    activeBg:     'linear-gradient(135deg,#f1f5f9,#e2e8f0)',
+    desc: 'Silver members who actively contribute to our growing sports community.',
+    tagLabel: 'Silver Member',
+    activeBg: 'linear-gradient(135deg,#f1f5f9,#e2e8f0)',
     activeBorder: '#94a3b8',
-    activeColor:  '#334155',
+    activeColor: '#334155',
     activeShadow: '0 6px 28px rgba(100,116,139,0.22)',
-    accentColor:  '#475569',
-    accentLight:  '#f8fafc',
+    accentColor: '#475569',
+    accentLight: '#f8fafc',
     accentBorder: 'rgba(148,163,184,0.3)',
-    accentGlow:   'rgba(148,163,184,0.12)',
-    ringFrom:     '#cbd5e1',
-    ringTo:       '#94a3b8',
-    badgeBg:      '#f1f5f9',
-    badgeColor:   '#334155',
-    badgeBorder:  'rgba(51,65,85,0.18)',
-    stripFrom:    '#94a3b8',
-    stripTo:      '#cbd5e1',
-    dotColor:     '#64748b',
-    tagLabel:     'Silver Member',
-    cardGradTop:  'linear-gradient(160deg,#e2e8f0 0%,#f8fafc 60%,#fff 100%)',
+    accentGlow: 'rgba(148,163,184,0.12)',
+    ringFrom: '#cbd5e1', ringTo: '#94a3b8',
+    badgeBg: '#f1f5f9', badgeColor: '#334155', badgeBorder: 'rgba(51,65,85,0.18)',
+    stripFrom: '#94a3b8', stripTo: '#cbd5e1',
+    cardGradTop: 'linear-gradient(160deg,#e2e8f0 0%,#f8fafc 60%,#fff 100%)',
   },
   {
     key: 'dignitaries',
     label: 'Dignitaries',
     emoji: '👑',
-    membershipKey: 'dignitaries',
-    activeBg:     'linear-gradient(135deg,#fdf4ff,#f3e8ff)',
+    desc: 'Eminent personalities, officials and leaders who grace our organization.',
+    tagLabel: 'Dignitary',
+    activeBg: 'linear-gradient(135deg,#fdf4ff,#f3e8ff)',
     activeBorder: '#a855f7',
-    activeColor:  '#6b21a8',
+    activeColor: '#6b21a8',
     activeShadow: '0 6px 28px rgba(168,85,247,0.28)',
-    accentColor:  '#7e22ce',
-    accentLight:  '#fdf4ff',
+    accentColor: '#7e22ce',
+    accentLight: '#fdf4ff',
     accentBorder: 'rgba(168,85,247,0.22)',
-    accentGlow:   'rgba(168,85,247,0.13)',
-    ringFrom:     '#d8b4fe',
-    ringTo:       '#a855f7',
-    badgeBg:      '#f3e8ff',
-    badgeColor:   '#6b21a8',
-    badgeBorder:  'rgba(107,33,168,0.22)',
-    stripFrom:    '#a855f7',
-    stripTo:      '#d8b4fe',
-    dotColor:     '#9333ea',
-    tagLabel:     'Dignitary',
-    cardGradTop:  'linear-gradient(160deg,#f3e8ff 0%,#fdf4ff 60%,#fff 100%)',
+    accentGlow: 'rgba(168,85,247,0.13)',
+    ringFrom: '#d8b4fe', ringTo: '#a855f7',
+    badgeBg: '#f3e8ff', badgeColor: '#6b21a8', badgeBorder: 'rgba(107,33,168,0.22)',
+    stripFrom: '#a855f7', stripTo: '#d8b4fe',
+    cardGradTop: 'linear-gradient(160deg,#f3e8ff 0%,#fdf4ff 60%,#fff 100%)',
   },
   {
     key: 'corporate',
     label: 'Body Corporate',
     emoji: '🏢',
-    membershipKey: 'corporate',
-    activeBg:     'linear-gradient(135deg,#ecfdf5,#d1fae5)',
+    desc: 'Corporate bodies and organizations registered as institutional members.',
+    tagLabel: 'Corporate Member',
+    activeBg: 'linear-gradient(135deg,#ecfdf5,#d1fae5)',
     activeBorder: '#10b981',
-    activeColor:  '#064e3b',
+    activeColor: '#064e3b',
     activeShadow: '0 6px 28px rgba(16,185,129,0.25)',
-    accentColor:  '#065f46',
-    accentLight:  '#ecfdf5',
+    accentColor: '#065f46',
+    accentLight: '#ecfdf5',
     accentBorder: 'rgba(16,185,129,0.22)',
-    accentGlow:   'rgba(16,185,129,0.12)',
-    ringFrom:     '#6ee7b7',
-    ringTo:       '#10b981',
-    badgeBg:      '#d1fae5',
-    badgeColor:   '#064e3b',
-    badgeBorder:  'rgba(6,78,59,0.2)',
-    stripFrom:    '#10b981',
-    stripTo:      '#6ee7b7',
-    dotColor:     '#059669',
-    tagLabel:     'Corporate Member',
-    cardGradTop:  'linear-gradient(160deg,#d1fae5 0%,#ecfdf5 60%,#fff 100%)',
+    accentGlow: 'rgba(16,185,129,0.12)',
+    ringFrom: '#6ee7b7', ringTo: '#10b981',
+    badgeBg: '#d1fae5', badgeColor: '#064e3b', badgeBorder: 'rgba(6,78,59,0.2)',
+    stripFrom: '#10b981', stripTo: '#6ee7b7',
+    cardGradTop: 'linear-gradient(160deg,#d1fae5 0%,#ecfdf5 60%,#fff 100%)',
   },
 ]
 
-
-/* ═══════════════════════════════════════════
-   STATIC GENERAL DATA
-═══════════════════════════════════════════ */
-const GENERAL_STATIC_DATA = {
-  individual: [
-    { id: 1, name: 'Arjun Sharma',       company: 'Sharma & Sons Pvt Ltd' },
-    { id: 2, name: 'Priya Singh',        company: 'Singh Enterprises' },
-    { id: 3, name: 'Rahul Verma',        company: 'Verma Industries' },
-    { id: 4, name: 'Neha Gupta',         company: 'Gupta Traders' },
-    { id: 5, name: 'Amit Kumar',         company: 'Kumar Associates' },
-    { id: 6, name: 'Sunita Yadav',       company: 'Yadav Foundation' },
-    { id: 7, name: 'Vikram Mehta',       company: 'Mehta Constructions' },
-    { id: 8, name: 'Kavita Reddy',       company: 'Reddy Exports' },
-  ],
-  players: [
-    { id: 1, name: 'Rohit Patel',        company: 'Rajasthan Athletics Club' },
-    { id: 2, name: 'Anjali Tiwari',      company: 'Delhi Sports Academy' },
-    { id: 3, name: 'Suresh Nair',        company: 'Kerala Sports Federation' },
-    { id: 4, name: 'Pooja Joshi',        company: 'Maharashtra Athletics' },
-    { id: 5, name: 'Deepak Chauhan',     company: 'Punjab Sports Council' },
-    { id: 6, name: 'Ritu Agarwal',       company: 'UP Sports Academy' },
-    { id: 7, name: 'Manoj Dubey',        company: 'MP Athletics Club' },
-  ],
-}
-
-/* ═══════════════════════════════════════════
-   INJECTED CSS
-═══════════════════════════════════════════ */
-const STYLES = `
-@keyframes card-shine {
-  0%   { transform: translateX(-130%) skewX(-15deg); }
-  100% { transform: translateX(300%)  skewX(-15deg); }
-}
-@keyframes spTabFade {
-  from { opacity: 0; transform: translateY(14px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
-}
-@keyframes float {
-  0%,100% { transform: translateY(0px); }
-  50%     { transform: translateY(-6px); }
-}
-@keyframes pulseRing {
-  0%   { box-shadow: 0 0 0 0 rgba(240,90,26,0.25); }
-  70%  { box-shadow: 0 0 0 10px rgba(240,90,26,0); }
-  100% { box-shadow: 0 0 0 0 rgba(240,90,26,0); }
-}
-@keyframes gradShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes barSlide {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-@keyframes fadeUp {
-  from { opacity:0; transform: translateY(20px); }
-  to   { opacity:1; transform: translateY(0); }
-}
-
-/* ── BIG PREMIUM CARD ── */
-.pmcard {
-  transition: transform .42s cubic-bezier(.34,1.18,.64,1),
-              box-shadow .42s ease;
-  cursor: default;
-}
-.pmcard:hover .pmcard-shine { animation: card-shine .8s ease forwards; }
-.pmcard:hover .pmcard-bar   {
-  animation: barSlide .38s ease forwards;
-}
-.pmcard:hover .pmcard-avatar {
-  animation: float 3s ease-in-out infinite;
-}
-
-.sp3tab-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border-radius: 14px;
-  font-size: 12.5px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  letter-spacing: 0.3px;
-  transition: all .3s cubic-bezier(.34,1.3,.64,1);
-  overflow: hidden;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.dot-bg {
-  background-image: radial-gradient(circle, rgba(11,30,75,0.06) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-/* Scroll fade in cards */
-.card-reveal {
-  animation: fadeUp .45s ease both;
-}
-`
-
-/* ═══════════════════════════════════════════
-   SPECIAL TAB BUTTON
-═══════════════════════════════════════════ */
-const SpecialTabBtn = ({ tab, isActive, onClick, count }) => (
-  <button className="sp3tab-btn" onClick={onClick}
-    style={{
-      background: isActive ? tab.activeBg : '#fff',
-      border: `1.5px solid ${isActive ? tab.activeBorder : '#e2e8f0'}`,
-      color: isActive ? tab.activeColor : '#64748b',
-      boxShadow: isActive ? tab.activeShadow : '0 2px 10px rgba(11,30,75,0.06)',
-    }}
-  >
-    {isActive && (
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 0,
-        background: 'linear-gradient(105deg,transparent 35%,rgba(255,255,255,0.55) 50%,transparent 65%)',
-        animation: 'card-shine 2.8s ease-in-out infinite',
-        pointerEvents: 'none',
-      }} />
-    )}
-    <span style={{ fontSize: 17, position: 'relative', zIndex: 1 }}>{tab.emoji}</span>
-    <span style={{ position: 'relative', zIndex: 1, fontWeight: 800 }}>{tab.label}</span>
-    <span style={{
-      position: 'relative', zIndex: 1,
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      minWidth: 22, height: 22, borderRadius: 999,
-      background: isActive ? `${tab.activeBorder}22` : '#f1f5f9',
-      border: `1px solid ${isActive ? tab.activeBorder + '55' : '#e2e8f0'}`,
-      color: isActive ? tab.activeColor : '#94a3b8',
-      fontSize: 10, fontWeight: 800, padding: '0 6px',
-    }}>
-      {count}
-    </span>
-  </button>
-)
-
-/* ═══════════════════════════════════════════
-   BIG PREMIUM MEMBER CARD
-═══════════════════════════════════════════ */
-const PremiumMemberCard = ({ member, theme, idx }) => (
-  <div
-    className="pmcard card-reveal"
-    style={{
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      textAlign: 'center',
-      background: '#fff',
-      borderRadius: 28,
-      overflow: 'hidden',
-      border: `1.5px solid ${theme.accentBorder}`,
-      boxShadow: `0 10px 40px ${theme.accentGlow}, 0 2px 10px rgba(11,30,75,0.07)`,
-      animationDelay: `${idx * 0.07}s`,
-      minHeight: 420,
-    }}
-  >
-    {/* Shine overlay */}
-    <div className="pmcard-shine" style={{
-      position: 'absolute', inset: 0,
-      background: 'linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.6) 50%,transparent 70%)',
-      transform: 'translateX(-130%) skewX(-15deg)',
-      pointerEvents: 'none', zIndex: 20,
-    }} />
-
-    {/* Top gradient bg */}
-    <div style={{
-      position: 'absolute', top: 0, left: 0, right: 0, height: 220,
-      background: theme.cardGradTop,
-      zIndex: 0,
-    }} />
-
-    {/* Decorative circles */}
-    <div style={{
-      position: 'absolute', top: -30, right: -30,
-      width: 120, height: 120, borderRadius: '50%',
-      background: `radial-gradient(circle, ${theme.accentGlow} 0%, transparent 70%)`,
-      pointerEvents: 'none', zIndex: 1,
-    }} />
-    <div style={{
-      position: 'absolute', top: 20, left: -20,
-      width: 80, height: 80, borderRadius: '50%',
-      background: `radial-gradient(circle, ${theme.accentGlow} 0%, transparent 70%)`,
-      pointerEvents: 'none', zIndex: 1,
-    }} />
-
-    {/* Top accent strip */}
-    <div style={{
-      position: 'absolute', top: 0, left: 0, right: 0, height: 5,
-      background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo}, ${theme.stripFrom})`,
-      backgroundSize: '200% 100%',
-      animation: 'gradShift 3s ease infinite',
-      zIndex: 3,
-    }} />
-
-    {/* Content */}
-    <div style={{
-      position: 'relative', zIndex: 10,
-      paddingTop: 20, paddingBottom: 24,
-      paddingLeft: 14, paddingRight: 14,
-      display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%',
-      flex: 1,
-    }}>
-
-      {/* AVATAR — large square */}
-      <div className="pmcard-avatar" style={{ position: 'relative', marginBottom: 18, width: '100%' }}>
-        <div style={{
-          width: '100%',
-          position: 'relative',
-          borderRadius: 18,
-          padding: 3,
-          background: `linear-gradient(135deg, ${theme.ringFrom}, ${theme.ringTo}, ${theme.ringFrom})`,
-          backgroundSize: '200% 200%',
-          animation: 'gradShift 4s ease infinite',
-          boxShadow: `0 12px 40px ${theme.accentGlow}, 0 4px 16px rgba(11,30,75,0.1)`,
-        }}>
-          <div style={{
-            width: '100%',
-            paddingTop: '100%',
-            position: 'relative',
-            borderRadius: 16,
-            overflow: 'hidden',
-            background: theme.accentLight,
-            border: '3px solid #fff',
-          }}>
-            <img
-              src={member.img || member.photo}
-              alt={member.name}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }}
-              onError={e => {
-                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=${theme.ringTo.replace('#','')}&color=fff&size=400&bold=true&length=2`
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Emoji badge corner */}
-        <div style={{
-          position: 'absolute', bottom: -8, right: -8,
-          width: 36, height: 36, borderRadius: 10,
-          background: `linear-gradient(135deg, ${theme.ringFrom}, ${theme.ringTo})`,
-          border: '3px solid #fff',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 15, boxShadow: `0 4px 14px ${theme.accentGlow}`,
-          zIndex: 2,
-        }}>
-          {theme.emoji}
-        </div>
-      </div>
-
-      {/* NAME */}
-      <h3 style={{
-        margin: '0 0 4px',
-        fontSize: 16.5, fontWeight: 900,
-        color: '#0B1E4B',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        lineHeight: 1.2,
-        letterSpacing: '-0.2px',
-      }}>
-        {member.name}
-      </h3>
-
-      {/* COMPANY */}
-      {(member.company || member.organization) && (
-        <p style={{
-          margin: '0 0 16px',
-          fontSize: 11.5, fontWeight: 500,
-          color: '#94a3b8',
-          lineHeight: 1.4,
-          maxWidth: '100%',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-        }}>
-          <FaBuilding style={{ fontSize: 9, marginRight: 4, verticalAlign: 'middle', color: '#cbd5e1' }} />
-          {member.company || member.organization}
-        </p>
-      )}
-
-
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* BADGE PILL */}
-      <span style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '6px 16px', borderRadius: 999,
-        background: theme.badgeBg,
-        border: `1.5px solid ${theme.badgeBorder}`,
-        color: theme.badgeColor,
-        fontSize: 10, fontWeight: 800,
-        letterSpacing: '1.8px', textTransform: 'uppercase',
-        marginTop: 'auto',
-      }}>
-        <MdVerified style={{ fontSize: 12 }} />
-        {theme.tagLabel}
-      </span>
-    </div>
-
-    {/* Bottom bar — animates on hover */}
-    <div className="pmcard-bar" style={{
-      position: 'absolute', bottom: 0, left: 0, right: 0, height: 4,
-      background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo})`,
-      transform: 'scaleX(0)', transformOrigin: 'left',
-      transition: 'transform .35s ease',
-    }} />
-  </div>
-)
-
-/* ═══════════════════════════════════════════
-   ROUTE MAP  →  /members/special-members/:tab
-═══════════════════════════════════════════ */
 const TAB_ROUTES = {
   diamond:     '/members/special-members/diamond',
   gold:        '/members/special-members/gold',
@@ -492,48 +197,382 @@ const TAB_ROUTES = {
   dignitaries: '/members/special-members/dignitaries',
   corporate:   '/members/special-members/corporate',
 }
-
 const VALID_KEYS = Object.keys(TAB_ROUTES)
+const PAGE_SIZE = 6
 
-/** Read active tab from current pathname */
-const getTabFromPath = (pathname) => {
-  const seg = pathname.split('/').pop()            // last segment
-  return VALID_KEYS.includes(seg) ? seg : 'diamond'
-}
+/* ═══════════════════════════════════════════
+   GLOBAL KEYFRAME STYLES (minimal, non-Tailwind animations)
+═══════════════════════════════════════════ */
+const GLOBAL_STYLES = `
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
+  * { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  @keyframes shimmer {
+    0%   { background-position: -500px 0; }
+    100% { background-position: 500px 0; }
+  }
+  @keyframes gradShift {
+    0%,100% { background-position: 0% 50%; }
+    50%     { background-position: 100% 50%; }
+  }
+  @keyframes cardShine {
+    0%   { transform: translateX(-150%) skewX(-15deg); }
+    100% { transform: translateX(350%)  skewX(-15deg); }
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes floatAvatar {
+    0%,100% { transform:translateY(0); }
+    50%     { transform:translateY(-5px); }
+  }
+  @keyframes stripGrad {
+    0%,100% { background-position:0% 50%; }
+    50%     { background-position:100% 50%; }
+  }
+  @keyframes tabIn {
+    from { opacity:0; transform:translateY(10px) scale(.98); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 37%, #f0f0f0 63%);
+    background-size: 1000px 100%;
+    animation: shimmer 1.4s infinite linear;
+  }
+  .card-shine-overlay {
+    position:absolute; inset:0; pointer-events:none; z-index:20;
+    background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);
+    transform:translateX(-150%) skewX(-15deg);
+  }
+  .pmcard:hover .card-shine-overlay { animation:cardShine .8s ease forwards; }
+  .pmcard:hover .avatar-wrap         { animation:floatAvatar 3s ease-in-out infinite; }
+  .pmcard:hover .bottom-bar          { transform:scaleX(1) !important; }
+
+  .strip-anim {
+    background-size:200% 100%;
+    animation:stripGrad 3s ease infinite;
+  }
+  .ring-anim {
+    background-size:200% 200%;
+    animation:gradShift 4s ease infinite;
+  }
+
+  .tab-content { animation:tabIn .3s ease both; }
+
+  .tabs-scroll::-webkit-scrollbar { display:none; }
+  .tabs-scroll { scrollbar-width:none; }
+
+  .gm-row:hover { background:#FFF6F0 !important; }
+  .gm-row:hover .gm-sr { color:#F05A1A !important; }
+
+  .main-tab-btn::after {
+    content:''; position:absolute; bottom:-2px; left:0; right:0;
+    height:3px; border-radius:3px 3px 0 0;
+    background:linear-gradient(90deg,#F05A1A,#FF7D42);
+    transform:scaleX(0); transition:transform .25s ease;
+  }
+  .main-tab-btn.active::after { transform:scaleX(1); }
+
+  .dot-bg {
+    background-image:radial-gradient(circle,rgba(11,30,75,.06) 1px,transparent 1px);
+    background-size:28px 28px;
+  }
+  .spinner {
+    width:28px; height:28px; border-radius:50%;
+    border:3px solid #e2e8f0;
+    border-top-color:#F05A1A;
+    animation:spin .7s linear infinite;
+  }
+`
+
+/* ═══════════════════════════════════════════
+   SKELETON CARD
+═══════════════════════════════════════════ */
+const SkeletonCard = () => (
+  <div className="rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm">
+    {/* top strip */}
+    <div className="h-1 shimmer-bg" />
+    <div className="flex flex-col items-center px-3 sm:px-4 py-4 sm:py-6 gap-3 sm:gap-4">
+      {/* avatar square */}
+      <div className="w-full rounded-xl sm:rounded-2xl overflow-hidden shimmer-bg" style={{ paddingTop: '100%' }} />
+      {/* name */}
+      <div className="shimmer-bg h-4 rounded-full w-3/4" />
+      {/* company */}
+      <div className="shimmer-bg h-3 rounded-full w-1/2" />
+      <div className="flex-1 w-full" style={{ minHeight: 12 }} />
+      {/* badge */}
+      <div className="shimmer-bg h-7 rounded-full w-28 mt-2" />
+    </div>
+  </div>
+)
+
+/* ═══════════════════════════════════════════
+   SKELETON ROW
+═══════════════════════════════════════════ */
+const SkeletonRow = ({ i }) => (
+  <div
+    className="grid gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4"
+    style={{ gridTemplateColumns: '40px 1fr 1fr', background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: '1px solid #f1f5f9' }}
+  >
+    <div className="shimmer-bg h-3 rounded-full w-6" />
+    <div className="shimmer-bg h-4 rounded-full w-4/5" />
+    <div className="shimmer-bg h-3 rounded-full w-3/5" />
+  </div>
+)
+
+/* ═══════════════════════════════════════════
+   PREMIUM MEMBER CARD
+═══════════════════════════════════════════ */
+const PremiumMemberCard = ({ member, theme, idx }) => (
+  <div
+    className="pmcard relative flex flex-col items-center text-center bg-white rounded-2xl sm:rounded-3xl overflow-hidden"
+    style={{
+      border: `1.5px solid ${theme.accentBorder}`,
+      boxShadow: `0 8px 32px ${theme.accentGlow}, 0 2px 10px rgba(11,30,75,.07)`,
+      animation: `fadeUp .45s ease both`,
+      animationDelay: `${idx * 0.06}s`,
+      minHeight: 340,
+      transition: 'transform .4s cubic-bezier(.34,1.18,.64,1), box-shadow .4s ease',
+    }}
+  >
+    {/* shine overlay */}
+    <div className="card-shine-overlay" />
+
+    {/* top gradient bg */}
+    <div className="absolute top-0 left-0 right-0 z-0" style={{ height: 200, background: theme.cardGradTop }} />
+
+    {/* deco circles */}
+    <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full pointer-events-none z-0"
+      style={{ background: `radial-gradient(circle, ${theme.accentGlow} 0%, transparent 70%)` }} />
+    <div className="absolute top-4 -left-5 w-20 h-20 rounded-full pointer-events-none z-0"
+      style={{ background: `radial-gradient(circle, ${theme.accentGlow} 0%, transparent 70%)` }} />
+
+    {/* top accent strip */}
+    <div className="absolute top-0 left-0 right-0 strip-anim z-10" style={{
+      height: 4,
+      background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo}, ${theme.stripFrom})`,
+    }} />
+
+    {/* Content */}
+    <div className="relative z-10 flex flex-col items-center w-full flex-1 px-3 sm:px-4 pt-4 sm:pt-5 pb-4 sm:pb-5">
+
+      {/* Avatar */}
+      <div className="avatar-wrap relative mb-3 sm:mb-4 w-full">
+        <div className="ring-anim rounded-2xl sm:rounded-3xl p-[3px]" style={{
+          background: `linear-gradient(135deg, ${theme.ringFrom}, ${theme.ringTo}, ${theme.ringFrom})`,
+          boxShadow: `0 10px 36px ${theme.accentGlow}`,
+        }}>
+          <div className="relative w-full rounded-xl sm:rounded-2xl overflow-hidden border-2 border-white" style={{
+            paddingTop: '100%', background: theme.accentLight,
+          }}>
+            <img
+              src={member.img || member.photo}
+              alt={member.name}
+              className="absolute inset-0 w-full h-full object-cover object-top block"
+              onError={e => {
+                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=${theme.ringTo.replace('#','')}&color=fff&size=400&bold=true&length=2`
+              }}
+            />
+          </div>
+        </div>
+
+        {/* emoji badge */}
+        <div className="absolute -bottom-2 -right-2 w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl border-2 border-white flex items-center justify-center z-10"
+          style={{
+            background: `linear-gradient(135deg, ${theme.ringFrom}, ${theme.ringTo})`,
+            fontSize: 14,
+            boxShadow: `0 4px 12px ${theme.accentGlow}`,
+          }}>
+          {theme.emoji}
+        </div>
+      </div>
+
+      {/* Name */}
+      <h3 className="m-0 mb-1 text-sm sm:text-base font-black text-[#0B1E4B] leading-tight tracking-tight line-clamp-2">
+        {member.name}
+      </h3>
+
+      {/* Company */}
+      {(member.company || member.organization) && (
+        <p className="m-0 mb-3 sm:mb-4 text-[10px] sm:text-xs font-medium text-slate-400 flex items-center justify-center gap-1 overflow-hidden max-w-full">
+          <FaBuilding className="shrink-0 text-slate-300" style={{ fontSize: 8 }} />
+          <span className="truncate">{member.company || member.organization}</span>
+        </p>
+      )}
+
+      <div className="flex-1" />
+
+      {/* Badge */}
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mt-auto text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest"
+        style={{
+          background: theme.badgeBg,
+          border: `1.5px solid ${theme.badgeBorder}`,
+          color: theme.badgeColor,
+          letterSpacing: '1.6px',
+        }}>
+        <MdVerified style={{ fontSize: 11 }} />
+        {theme.tagLabel}
+      </span>
+    </div>
+
+    {/* bottom bar — revealed on hover */}
+    <div className="bottom-bar absolute bottom-0 left-0 right-0 z-10" style={{
+      height: 4,
+      background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo})`,
+      transform: 'scaleX(0)',
+      transformOrigin: 'left',
+      transition: 'transform .35s ease',
+    }} />
+  </div>
+)
+
+/* ═══════════════════════════════════════════
+   SPECIAL TAB BUTTON
+═══════════════════════════════════════════ */
+const SpecialTabBtn = ({ tab, isActive, onClick, count }) => (
+  <button
+    className="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-[12.5px] font-extrabold cursor-pointer whitespace-nowrap shrink-0 overflow-hidden border transition-all duration-300"
+    onClick={onClick}
+    style={{
+      background: isActive ? tab.activeBg : '#fff',
+      borderColor: isActive ? tab.activeBorder : '#e2e8f0',
+      color: isActive ? tab.activeColor : '#64748b',
+      boxShadow: isActive ? tab.activeShadow : '0 2px 10px rgba(11,30,75,.06)',
+    }}
+  >
+    {isActive && (
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(105deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%)',
+          animation: 'cardShine 2.8s ease-in-out infinite',
+          zIndex: 0,
+        }} />
+    )}
+    <span className="relative z-10 text-base sm:text-lg">{tab.emoji}</span>
+    <span className="relative z-10 font-extrabold">{tab.label}</span>
+    <span className="relative z-10 inline-flex items-center justify-center min-w-[20px] h-5 rounded-full px-1.5 text-[9px] sm:text-[10px] font-extrabold border"
+      style={{
+        background: isActive ? `${tab.activeBorder}22` : '#f1f5f9',
+        borderColor: isActive ? `${tab.activeBorder}55` : '#e2e8f0',
+        color: isActive ? tab.activeColor : '#94a3b8',
+      }}>
+      {count}
+    </span>
+  </button>
+)
+
+/* ═══════════════════════════════════════════
+   SIMULATE ASYNC LOAD (replaces API call)
+═══════════════════════════════════════════ */
+const simulateLoad = (data, page, pageSize) =>
+  new Promise(res => setTimeout(() => {
+    const slice = data.slice(0, page * pageSize)
+    res({ items: slice, hasMore: slice.length < data.length })
+  }, 800))
 
 /* ═══════════════════════════════════════════
    MAIN COMPONENT
 ═══════════════════════════════════════════ */
 const MembersData = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate  = useNavigate()
+  const location  = useLocation()
 
-  // ── Main tab: special | general ──
   const isGeneralPath = location.pathname.includes('/general-members')
   const [mainTab, setMainTab] = useState(isGeneralPath ? 'general' : 'special')
 
-  // ── Special sub-tab from URL ──
   const specialSub = (() => {
     const seg = location.pathname.split('/').pop()
     return VALID_KEYS.includes(seg) ? seg : 'diamond'
   })()
-  const [subAnimKey, setSubAnimKey] = useState(0)
 
-  // ── General sub-tab ──
   const [generalSub, setGeneralSub] = useState('individual')
 
-  // Redirect bare /members/special-members → .../diamond
+  // ── Cards state ──
+  const [visibleCards, setVisibleCards]     = useState([])
+  const [cardPage, setCardPage]             = useState(1)
+  const [hasMoreCards, setHasMoreCards]     = useState(true)
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [loadingMore, setLoadingMore]       = useState(false)
+
+  // ── Table state ──
+  const [visibleRows, setVisibleRows]       = useState([])
+  const [rowPage, setRowPage]               = useState(1)
+  const [hasMoreRows, setHasMoreRows]       = useState(true)
+  const [tableLoading, setTableLoading]     = useState(true)
+  const [loadingMoreRows, setLoadingMoreRows] = useState(false)
+
+  // ── Load cards when specialSub changes ──
+  useEffect(() => {
+    if (mainTab !== 'special') return
+    setInitialLoading(true)
+    setVisibleCards([])
+    setCardPage(1)
+    setHasMoreCards(true)
+    const allData = ALL_STATIC_DATA[specialSub] || []
+    simulateLoad(allData, 1, PAGE_SIZE).then(({ items, hasMore }) => {
+      setVisibleCards(items)
+      setHasMoreCards(hasMore)
+      setInitialLoading(false)
+    })
+  }, [specialSub, mainTab])
+
+  // ── Load more cards ──
+  const loadMoreCards = useCallback(() => {
+    if (loadingMore || !hasMoreCards) return
+    setLoadingMore(true)
+    const allData = ALL_STATIC_DATA[specialSub] || []
+    const nextPage = cardPage + 1
+    simulateLoad(allData, nextPage, PAGE_SIZE).then(({ items, hasMore }) => {
+      setVisibleCards(items)
+      setHasMoreCards(hasMore)
+      setCardPage(nextPage)
+      setLoadingMore(false)
+    })
+  }, [loadingMore, hasMoreCards, specialSub, cardPage])
+
+  // ── Load rows when generalSub/mainTab changes ──
+  useEffect(() => {
+    if (mainTab !== 'general') return
+    setTableLoading(true)
+    setVisibleRows([])
+    setRowPage(1)
+    setHasMoreRows(true)
+    const allData = GENERAL_STATIC_DATA[generalSub] || []
+    simulateLoad(allData, 1, PAGE_SIZE).then(({ items, hasMore }) => {
+      setVisibleRows(items)
+      setHasMoreRows(hasMore)
+      setTableLoading(false)
+    })
+  }, [generalSub, mainTab])
+
+  // ── Load more rows ──
+  const loadMoreRows = useCallback(() => {
+    if (loadingMoreRows || !hasMoreRows) return
+    setLoadingMoreRows(true)
+    const allData = GENERAL_STATIC_DATA[generalSub] || []
+    const nextPage = rowPage + 1
+    simulateLoad(allData, nextPage, PAGE_SIZE).then(({ items, hasMore }) => {
+      setVisibleRows(items)
+      setHasMoreRows(hasMore)
+      setRowPage(nextPage)
+      setLoadingMoreRows(false)
+    })
+  }, [loadingMoreRows, hasMoreRows, generalSub, rowPage])
+
+  // ── Navigate helpers ──
   useEffect(() => {
     if (mainTab === 'special' && !VALID_KEYS.includes(location.pathname.split('/').pop())) {
       navigate(TAB_ROUTES.diamond, { replace: true })
     }
   }, [])
 
-  const switchSpecialTab = (key) => {
-    setSubAnimKey(k => k + 1)
-    navigate(TAB_ROUTES[key])
-  }
-
+  const switchSpecialTab = (key) => navigate(TAB_ROUTES[key])
   const switchMainTab = (tab) => {
     setMainTab(tab)
     if (tab === 'special') navigate(TAB_ROUTES[specialSub])
@@ -541,117 +580,25 @@ const MembersData = () => {
   }
 
   const currentTheme = SPECIAL_TABS.find(t => t.key === specialSub)
-  const currentData  = STATIC_DATA[specialSub] || []
-  const generalData  = GENERAL_STATIC_DATA[generalSub] || []
-  const isLoading    = false
-  const isError      = null
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F4F6FB', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
-      <style>{STYLES}</style>
-      <style>{`
-        .pmgrid { grid-template-columns: repeat(4, 1fr); }
-        @media(max-width:1200px){ .pmgrid{ grid-template-columns: repeat(3,1fr) !important; } }
-        @media(max-width:860px){  .pmgrid{ grid-template-columns: repeat(2,1fr) !important; } }
-        @media(max-width:500px){  .pmgrid{ grid-template-columns: 1fr !important; } }
+    <div className="min-h-screen bg-[#F4F6FB] relative">
+      <style>{GLOBAL_STYLES}</style>
 
-        .tabs-scroll {
-          display: flex; gap: 10px; overflow-x: auto;
-          padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none;
-        }
-        .tabs-scroll::-webkit-scrollbar { display: none; }
+      {/* dot bg */}
+      <div className="dot-bg fixed inset-0 pointer-events-none opacity-60 z-0" />
 
-        /* Main tabs */
-        .main-tab-btn {
-          background: transparent; border: none; cursor: pointer;
-          padding: 12px 22px; font-size: 14px; font-weight: 700;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          position: relative; color: #64748b;
-          transition: color .2s ease;
-        }
-        .main-tab-btn.active { color: #0B1E4B; }
-        .main-tab-btn::after {
-          content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
-          height: 3px; border-radius: 3px 3px 0 0;
-          background: linear-gradient(90deg, #F05A1A, #FF7D42);
-          transform: scaleX(0); transition: transform .25s ease;
-        }
-        .main-tab-btn.active::after { transform: scaleX(1); }
+      <div className="max-w-screen-xl mx-auto px-3 sm:px-5 lg:px-8 py-4 sm:py-6 relative z-10">
 
-        /* General table row hover */
-        .gm-row:hover { background: #FFF6F0 !important; }
-        .gm-row:hover .gm-sr { color: #F05A1A !important; }
-
-        /* Tab content animation */
-        @keyframes tabFadeIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .tab-content { animation: tabFadeIn .3s ease both; }
-
-        /* General sub tab */
-        .gen-sub-btn {
-          background: transparent; border: none; border-bottom: 3px solid transparent;
-          cursor: pointer; padding: 10px 18px 12px; font-size: 13px; font-weight: 600;
-          font-family: 'Plus Jakarta Sans', sans-serif; color: #64748b;
-          display: flex; align-items: center; gap: 8px;
-          transition: color .2s; margin-bottom: -2px;
-        }
-        .gen-sub-btn.active {
-          color: #0B1E4B; font-weight: 800;
-          border-bottom-color: #F05A1A;
-        }
-      `}</style>
-
-      {/* Dot bg */}
-      <div className="dot-bg" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0.6 }} />
-
-      <div style={{ maxWidth: 1340, margin: '0 auto', padding: '44px 20px', position: 'relative', zIndex: 1 }}>
-
-        {/* ── PAGE HEADER ── */}
-        <div style={{ textAlign: 'center', marginBottom: 36 }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 7,
-            padding: '6px 18px', borderRadius: 999,
-            background: 'rgba(240,90,26,0.08)', border: '1px solid rgba(240,90,26,0.2)',
-            color: '#F05A1A', fontSize: 11, fontWeight: 700,
-            letterSpacing: '2.5px', textTransform: 'uppercase', marginBottom: 14,
-          }}>
-            <HiSparkles style={{ fontSize: 13 }} /> UDI Sports NGO
-          </div>
-
-          <h1 style={{
-            fontFamily: "'Bebas Neue',cursive",
-            fontSize: 'clamp(42px,7vw,76px)',
-            letterSpacing: 4, lineHeight: 1, color: '#0B1E4B',
-            marginBottom: 14, marginTop: 0,
-          }}>
-            OUR <span style={{ color: '#F05A1A' }}>MEMBERS</span>
-          </h1>
-
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 10 }}>
-            <div style={{ height: 3, width: 40, borderRadius: 3, background: 'linear-gradient(90deg,#F05A1A,#FF7D42)' }} />
-            <div style={{ height: 3, width: 12, borderRadius: 3, background: '#e2e8f0' }} />
-            <div style={{ height: 3, width: 6, borderRadius: 3, background: '#e2e8f0' }} />
-          </div>
-
-          <p style={{ color: '#64748b', fontSize: 15, maxWidth: 520, margin: '0 auto', lineHeight: 1.75 }}>
-            Meet the dedicated individuals and organizations powering India's grassroots sports revolution.
-          </p>
-        </div>
-
-        {/* ══ MAIN TABS: Special | General ══ */}
-        <div style={{
-          display: 'flex', justifyContent: 'center',
-          borderBottom: '2px solid #e2e8f0', marginBottom: 36,
-        }}>
+        {/* ══ MAIN TABS ══ */}
+        <div className="flex justify-center border-b-2 border-slate-200 mb-6 sm:mb-8">
           {[
             { key: 'special', label: 'Special Members' },
             { key: 'general', label: 'General Members' },
           ].map(t => (
             <button
               key={t.key}
-              className={`main-tab-btn ${mainTab === t.key ? 'active' : ''}`}
+              className={`main-tab-btn relative px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-bold transition-colors duration-200 bg-transparent border-none cursor-pointer ${mainTab === t.key ? 'active text-[#0B1E4B]' : 'text-slate-500'}`}
               onClick={() => switchMainTab(t.key)}
             >
               {t.label}
@@ -659,121 +606,190 @@ const MembersData = () => {
           ))}
         </div>
 
-        {/* ════════════════════════════
+        {/* ════════════════════
             SPECIAL MEMBERS
-        ════════════════════════════ */}
+        ════════════════════ */}
         {mainTab === 'special' && (
           <div className="tab-content">
 
-            {/* 5 sub-tabs */}
-            <div className="tabs-scroll" style={{ marginBottom: 28 }}>
+            {/* Sub-tabs */}
+            <div className="tabs-scroll flex gap-2 sm:gap-2.5 overflow-x-auto pb-1 mb-5 sm:mb-7">
               {SPECIAL_TABS.map(tab => (
                 <SpecialTabBtn
                   key={tab.key}
                   tab={tab}
                   isActive={specialSub === tab.key}
                   onClick={() => switchSpecialTab(tab.key)}
-                  count={STATIC_DATA[tab.key]?.length ?? 0}
+                  count={ALL_STATIC_DATA[tab.key]?.length ?? 0}
                 />
               ))}
             </div>
 
-            {/* Context banner */}
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: '12px 20px', borderRadius: 14, marginBottom: 30,
-              background: `linear-gradient(90deg, ${currentTheme.accentLight}, rgba(255,255,255,0))`,
-              border: `1.5px solid ${currentTheme.accentBorder}`,
-              transition: 'all 0.3s ease',
-            }}>
-              <span style={{ fontSize: 20 }}>{currentTheme.emoji}</span>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: currentTheme.accentColor, marginBottom: 2 }}>
+            {/* Banner */}
+            <div className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl mb-5 sm:mb-7 border transition-all duration-300"
+              style={{
+                background: `linear-gradient(90deg, ${currentTheme.accentLight}, rgba(255,255,255,0))`,
+                borderColor: currentTheme.accentBorder,
+              }}>
+              <span className="text-lg sm:text-xl shrink-0">{currentTheme.emoji}</span>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs sm:text-sm font-extrabold mb-0.5" style={{ color: currentTheme.accentColor }}>
                   {currentTheme.label} Members
                 </div>
-                <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>
-                  {specialSub === 'diamond'     ? 'Our most prestigious patrons with the highest level of contribution to sports.' :
-                   specialSub === 'gold'        ? 'Gold patrons who significantly support our national sports initiatives.' :
-                   specialSub === 'silver'      ? 'Silver members who actively contribute to our growing sports community.' :
-                   specialSub === 'dignitaries' ? 'Eminent personalities, officials and leaders who grace our organization.' :
-                   'Corporate bodies and organizations registered as institutional members.'}
+                <div className="text-[10px] sm:text-xs text-slate-500 font-medium leading-snug">
+                  {currentTheme.desc}
                 </div>
               </div>
-              <div style={{ marginLeft: 'auto', fontSize: 13, fontWeight: 800, color: currentTheme.accentColor }}>
-                {currentData.length} Members
+              <div className="text-xs sm:text-sm font-extrabold shrink-0" style={{ color: currentTheme.accentColor }}>
+                {ALL_STATIC_DATA[specialSub]?.length} Members
               </div>
             </div>
 
             {/* Cards grid */}
-            {currentData.length === 0 ? (
-              <div style={{ padding: 80, textAlign: 'center' }}>
-                <div style={{ fontSize: 44, marginBottom: 14 }}>{currentTheme.emoji}</div>
-                <div style={{ color: '#94a3b8', fontSize: 14, fontWeight: 600 }}>No {currentTheme.label} members found.</div>
+            {initialLoading ? (
+              <div className="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+                {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+              </div>
+            ) : visibleCards.length === 0 ? (
+              <div className="py-16 sm:py-20 text-center">
+                <div className="text-4xl mb-3">{currentTheme.emoji}</div>
+                <div className="text-slate-400 text-sm font-semibold">No {currentTheme.label} members found.</div>
               </div>
             ) : (
-              <div key={subAnimKey} className="pmgrid" style={{ display: 'grid', gap: 24 }}>
-                {currentData.map((m, i) => (
-                  <PremiumMemberCard key={m.id} member={m} theme={currentTheme} idx={i} />
-                ))}
-              </div>
+              <>
+                <div className="grid gap-3 sm:gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                  {visibleCards.map((m, i) => (
+                    <PremiumMemberCard key={m.id} member={m} theme={currentTheme} idx={i} />
+                  ))}
+                </div>
+
+                {/* Load more skeleton row */}
+                {loadingMore && (
+                  <div className="grid gap-3 sm:gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-3 sm:mt-5">
+                    {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+                  </div>
+                )}
+
+                {/* Load more button */}
+                {hasMoreCards && !loadingMore && (
+                  <div className="flex justify-center mt-6 sm:mt-8">
+                    <button
+                      onClick={loadMoreCards}
+                      className="flex items-center gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm text-white transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
+                      style={{
+                        background: `linear-gradient(135deg, ${currentTheme.stripFrom}, ${currentTheme.stripTo})`,
+                        boxShadow: `0 6px 20px ${currentTheme.accentGlow}`,
+                      }}
+                    >
+                      <span>Load More Members</span>
+                      <span className="opacity-75">↓</span>
+                    </button>
+                  </div>
+                )}
+
+                {!hasMoreCards && visibleCards.length > 0 && (
+                  <div className="flex items-center gap-3 justify-center mt-6 sm:mt-8">
+                    <div className="flex-1 h-px bg-slate-200 max-w-24" />
+                    <span className="text-[10px] sm:text-xs text-slate-400 font-semibold tracking-wider uppercase">All members loaded</span>
+                    <div className="flex-1 h-px bg-slate-200 max-w-24" />
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
 
-        {/* ════════════════════════════
+        {/* ════════════════════
             GENERAL MEMBERS
-        ════════════════════════════ */}
+        ════════════════════ */}
         {mainTab === 'general' && (
           <div className="tab-content">
 
-            {/* Individual | Players sub-tabs */}
-            <div style={{ display: 'flex', alignItems: 'center', borderBottom: '2px solid #e2e8f0', marginBottom: 20 }}>
+            {/* Sub-tabs */}
+            <div className="flex items-center border-b-2 border-slate-200 mb-4 sm:mb-5">
               {[
                 { key: 'individual', label: 'Individual', count: GENERAL_STATIC_DATA.individual.length },
                 { key: 'players',    label: 'Players',    count: GENERAL_STATIC_DATA.players.length },
               ].map(st => (
                 <button
                   key={st.key}
-                  className={`gen-sub-btn ${generalSub === st.key ? 'active' : ''}`}
+                  className={`flex items-center gap-1.5 sm:gap-2 pb-2.5 sm:pb-3 pt-2 px-3 sm:px-5 text-xs sm:text-sm font-semibold cursor-pointer bg-transparent border-none transition-colors duration-200 -mb-0.5 ${generalSub === st.key ? 'text-[#0B1E4B] font-extrabold border-b-2 border-[#F05A1A]' : 'text-slate-500'}`}
+                  style={{ borderBottom: generalSub === st.key ? '3px solid #F05A1A' : '3px solid transparent' }}
                   onClick={() => setGeneralSub(st.key)}
                 >
                   {st.label}
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    width: 20, height: 20, borderRadius: '50%',
-                    background: generalSub === st.key ? '#F05A1A' : '#f1f5f9',
-                    color: generalSub === st.key ? '#fff' : '#94a3b8',
-                    fontSize: 10, fontWeight: 800, flexShrink: 0,
-                  }}>{st.count}</span>
+                  <span className={`inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full text-[9px] sm:text-[10px] font-extrabold ${generalSub === st.key ? 'bg-[#F05A1A] text-white' : 'bg-slate-100 text-slate-400'}`}>
+                    {st.count}
+                  </span>
                 </button>
               ))}
             </div>
 
             {/* Table */}
-            <div style={{ borderRadius: 18, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 24px rgba(11,30,75,0.08)' }}>
+            <div className="rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-md">
 
               {/* Header */}
-              <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr', padding: '13px 22px', gap: 10, background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)' }}>
+              <div className="grid gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3"
+                style={{
+                  gridTemplateColumns: '40px 1fr 1fr',
+                  background: 'linear-gradient(90deg,#0B1E4B,#1e3a8a)',
+                }}>
                 {['SR.', 'NAME', 'COMPANY / ORGANIZATION'].map(h => (
-                  <div key={h} style={{ fontSize: 10, fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{h}</div>
+                  <div key={h} className="text-[9px] sm:text-[10px] font-extrabold tracking-widest uppercase text-white/60">
+                    {h}
+                  </div>
                 ))}
               </div>
 
               {/* Rows */}
-              {generalData.length === 0 ? (
-                <div style={{ padding: 28, textAlign: 'center', color: '#94a3b8', fontSize: 13, background: '#fff' }}>No members available.</div>
-              ) : generalData.map((m, i) => (
-                <div
-                  key={m.id}
-                  className="gm-row"
-                  style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr', padding: '12px 22px', gap: 10, background: i % 2 === 0 ? '#fff' : '#f9fafb', borderBottom: i < generalData.length - 1 ? '1px solid #f1f5f9' : 'none' }}
-                >
-                  <div className="gm-sr" style={{ fontSize: 12.5, fontWeight: 700, color: '#cbd5e1', transition: 'color .15s', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{i + 1}</div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: '#0B1E4B', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{m.name}</div>
-                  <div style={{ fontSize: 12.5, color: '#64748b', fontFamily: "'Plus Jakarta Sans',sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.company || m.organization || '-'}</div>
-                </div>
-              ))}
+              {tableLoading ? (
+                Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} i={i} />)
+              ) : visibleRows.length === 0 ? (
+                <div className="py-7 text-center text-slate-400 text-sm bg-white">No members available.</div>
+              ) : (
+                <>
+                  {visibleRows.map((m, i) => (
+                    <div
+                      key={m.id}
+                      className="gm-row grid gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3.5 transition-colors duration-150"
+                      style={{
+                        gridTemplateColumns: '40px 1fr 1fr',
+                        background: i % 2 === 0 ? '#fff' : '#f9fafb',
+                        borderBottom: i < visibleRows.length - 1 ? '1px solid #f1f5f9' : 'none',
+                      }}
+                    >
+                      <div className="gm-sr text-[11px] sm:text-xs font-bold text-slate-300 transition-colors duration-150">{i + 1}</div>
+                      <div className="text-xs sm:text-sm font-bold text-[#0B1E4B] truncate">{m.name}</div>
+                      <div className="text-[11px] sm:text-xs text-slate-500 truncate">{m.company || m.organization || '-'}</div>
+                    </div>
+                  ))}
+
+                  {/* skeleton rows while loading more */}
+                  {loadingMoreRows && Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} i={visibleRows.length + i} />)}
+                </>
+              )}
             </div>
+
+            {/* Load more rows btn */}
+            {!tableLoading && hasMoreRows && !loadingMoreRows && (
+              <div className="flex justify-center mt-4 sm:mt-6">
+                <button
+                  onClick={loadMoreRows}
+                  className="flex items-center gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm text-white bg-[#0B1E4B] hover:bg-[#1e3a8a] transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
+                >
+                  <span>Load More</span>
+                  <span className="opacity-75">↓</span>
+                </button>
+              </div>
+            )}
+
+            {!tableLoading && !hasMoreRows && visibleRows.length > 0 && (
+              <div className="flex items-center gap-3 justify-center mt-4 sm:mt-6">
+                <div className="flex-1 h-px bg-slate-200 max-w-24" />
+                <span className="text-[10px] sm:text-xs text-slate-400 font-semibold tracking-wider uppercase">All members loaded</span>
+                <div className="flex-1 h-px bg-slate-200 max-w-24" />
+              </div>
+            )}
 
           </div>
         )}

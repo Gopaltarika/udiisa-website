@@ -138,7 +138,7 @@ const HeroSection = () => {
         {/* Stats Bar */}
         <div className="stats-bar flex justify-center items-center flex-wrap !mx-auto !px-[20px] sm:!px-[40px] lg:!px-[48px] !py-[18px] sm:!py-[22px] lg:!py-[26px] w-full max-w-[320px] sm:max-w-[480px] lg:max-w-[600px] bg-[rgba(255,255,255,.07)] backdrop-blur-[14px] border border-[rgba(255,255,255,.12)] rounded-[16px] sm:rounded-[22px]">
           {[
-            { icon: <FaUsers />, num: "5,000+", lbl: "Athletes" },
+            { icon: <FaUsers />, num: "5,000+", lbl: "Players" },
             { icon: <MdGroups />, num: "28",     lbl: "States" },
             { icon: <FaMedal />, num: "200+",   lbl: "Medals Won" },
           ].map((s, i) => (

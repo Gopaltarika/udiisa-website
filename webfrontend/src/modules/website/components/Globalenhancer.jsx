@@ -144,7 +144,7 @@ function Preloader({ onDone }) {
     const doneTimer = setTimeout(() => {
       setHidden(true);
       onDone?.();
-    }, 2250);
+    }, 1250);
 
     return () => {
       clearTimeout(exitTimer);

@@ -123,7 +123,7 @@ const BecomeAMember = () => {
         }
       `}</style>
 
-      <section className="!py-[28px] sm:!py-[48px] lg:!py-[64px] !px-[12px] sm:!px-[24px] lg:!px-[10px]">
+      <section className="!py-[44px] sm:!py-[48px] lg:!py-[64px] !px-[12px] sm:!px-[24px] lg:!px-[10px]">
         <div className="!max-w-[1100px] !mx-auto">
 
           {/* ── Card ── */}
@@ -157,7 +157,7 @@ const BecomeAMember = () => {
                     color: '#fff',
                   }}
                 >
-                  Become A<br />Member
+                  Become A Member
                 </h2>
 
                 <p
@@ -170,7 +170,7 @@ const BecomeAMember = () => {
                   }}
                 >
                   Join our growing family of sports enthusiasts, patrons, and champions.
-                  Your membership helps us reach more athletes and change more lives across India.
+                  Your membership helps us reach more Sports people and change more lives across India.
                 </p>
 
                 {/* Dropdown + Submit */}
@@ -204,7 +204,7 @@ const BecomeAMember = () => {
                     {/* Dropdown list */}
                     {dropOpen && (
                       <ul
-                        className="drop-list !absolute !left-0 !right-0 !top-[calc(100%+6px)] !m-0 !p-[4px] !list-none !z-50"
+                        className="drop-list !absolute !left-0 !right-0 !top-[calc(100%+6px)] !m-0 !p-[2px] !list-none !z-50"
                         style={{
                           background: '#fff',
                           borderRadius: 12,
@@ -245,7 +245,7 @@ const BecomeAMember = () => {
 
                   {/* Submit */}
                   <button
-                    className="submit-btn !flex !items-center !gap-2 !border-0 !cursor-pointer !flex-shrink-0"
+                    className="submit-btn !flex !items-center !gap-2 !border-0 !cursor-pointer max-sm:mt-4 !flex-shrink-0"
                     style={{
                       padding: '13px 22px',
                       background: '#1D4ED8',

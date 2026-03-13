@@ -143,7 +143,7 @@ export default function AboutUs() {
               <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-br from-[#0B1E4B] to-[#1565C0] aspect-[4/3]">
                 <img
                   src={aboutimg}
-                  alt="UDI Sports athletes"
+                  alt="UDI Sports Players"
                   className="w-full h-full"
                   onError={e => { e.target.style.display = 'none' }}
                 />
@@ -257,7 +257,7 @@ growth and pride of the nation.
               A Decade of <span className="text-[#F05A1A]">Impact & Growth</span>
             </h2>
             <p className="text-slate-500 text-[15px] !m-0 !mt-[10px] max-w-[520px] !mx-auto leading-[1.7]">
-              Every milestone is a story of athletes believed in, opportunities created, and barriers broken.
+              Every milestone is a story of Players believed in, opportunities created, and barriers broken.
             </p>
           </div>
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { getPublicGeneralMembers, getPublicPlayers } from '../../../../shared/services/publicApi'
 
 const tabs = [
-  { key: 'individual', label: 'Individual' },
+  { key: 'individual', label: 'General' },
   { key: 'players',    label: 'Players' },
 ]
 
@@ -25,7 +25,7 @@ const GeneralMembers = () => {
 
     Promise.all([
       getPublicGeneralMembers('individual'),
-      getPublicPlayers(),                       // ← Players API
+      getPublicPlayers(),
     ])
       .then(([individualData, playersData]) => {
         if (cancelled) return
@@ -49,6 +49,17 @@ const GeneralMembers = () => {
   return (
     <>
       <style>{`
+        @keyframes gmSkelShimmer {
+          0%   { background-position: -600px 0; }
+          100% { background-position:  600px 0; }
+        }
+        .gm-skel {
+          background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+          background-size: 1200px 100%;
+          animation: gmSkelShimmer 1.4s ease-in-out infinite;
+          border-radius: 6px;
+        }
+
         .gm-tab {
           transition: all .22s ease;
           cursor: pointer;
@@ -213,25 +224,60 @@ const GeneralMembers = () => {
               </div>
             </div>
 
-            {/* States */}
-            {loading && (
-              <div style={{ padding: '22px 20px', background: '#fff', color: '#64748b', fontSize: 13, textAlign: 'center' }}>
-                Loading members...
+            {/* ── Skeleton Loading ── */}
+            {loading && Array.from({ length: 8 }).map((_, index) => (
+              <div
+                key={index}
+                className="gm-table-row !grid !items-center"
+                style={{
+                  gridTemplateColumns: '52px 1fr 1fr',
+                  padding: '13px 20px',
+                  background: index % 2 === 0 ? '#fff' : '#f8fafc',
+                  borderBottom: index < 7 ? '1px solid #f1f5f9' : 'none',
+                }}
+              >
+                {/* SR */}
+                <div>
+                  <div className="gm-skel" style={{ width: 22, height: 12 }} />
+                </div>
+                {/* Name */}
+                <div>
+                  <div
+                    className="gm-skel"
+                    style={{
+                      width: `${[60, 75, 50, 70, 55, 80, 65, 45][index % 8]}%`,
+                      height: 13,
+                    }}
+                  />
+                </div>
+                {/* Company */}
+                <div className="gm-col-company">
+                  <div
+                    className="gm-skel"
+                    style={{
+                      width: `${[45, 60, 70, 40, 65, 50, 55, 75][index % 8]}%`,
+                      height: 12,
+                    }}
+                  />
+                </div>
               </div>
-            )}
+            ))}
 
+            {/* ── Error ── */}
             {!loading && error && (
               <div style={{ padding: '22px 20px', background: '#fff', color: '#b91c1c', fontSize: 13, textAlign: 'center' }}>
                 {error}
               </div>
             )}
 
+            {/* ── Empty ── */}
             {!loading && !error && data.length === 0 && (
               <div style={{ padding: '22px 20px', background: '#fff', color: '#64748b', fontSize: 13, textAlign: 'center' }}>
                 No members available.
               </div>
             )}
 
+            {/* ── Rows ── */}
             {!loading && !error && data.map((member, index) => (
               <div
                 key={member.id}

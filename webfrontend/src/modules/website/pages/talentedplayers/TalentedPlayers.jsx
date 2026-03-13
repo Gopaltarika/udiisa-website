@@ -20,7 +20,7 @@ const TalentedPlayers = () => {
             badge="Rising Stars"
             heading="Talented"
             highlight="Players"
-            description="Meet the athletes we proudly support and Celebrate their achievements"
+            description="Meet the Players we proudly support and Celebrate their achievements"
             bgImage="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1920&q=85&fit=crop"
             />
             {loading ? (

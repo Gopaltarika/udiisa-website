@@ -9,7 +9,7 @@ const SEO_BY_PATH = [
     match: /^\/$/,
     title: "UDIISA | Sports NGO India",
     description:
-      "UDIISA is a sports NGO in India supporting athletes through mentorship, opportunities, and community-driven programs.",
+      "UDIISA is a sports NGO in India supporting Players through mentorship, opportunities, and community-driven programs.",
   },
   {
     match: /^\/about-us\/?$/,
@@ -37,16 +37,16 @@ const SEO_BY_PATH = [
   },
   {
     match: /^\/donate-now\/?$/,
-    title: "donate to UDIISA | Support Athletes",
+    title: "donate to UDIISA | Support Players",
     description:
-      "Support UDIISA initiatives by donating to help talented athletes with opportunities, mentorship, and resources.",
+      "Support UDIISA initiatives by donating to help talented Players with opportunities, mentorship, and resources.",
   },
 ];
 
 const DEFAULT_SEO = {
   title: "UDIISA | Sports NGO India",
   description:
-    "UDIISA is a sports NGO in India empowering athletes through grassroots programs, mentorship, and opportunities.",
+    "UDIISA is a sports NGO in India empowering Players through grassroots programs, mentorship, and opportunities.",
 };
 
 const getOrCreateMeta = (name, attr = "name") => {

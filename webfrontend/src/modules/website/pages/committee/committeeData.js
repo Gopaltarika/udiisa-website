@@ -118,7 +118,7 @@ export const committees = [
     icon: "🏥",
     role: "Health, Safety & Player Welfare",
     description:
-      "The Board of Medical Community safeguards the physical and mental well-being of all UDIISA members and athletes. It oversees medical support, implements wellness programmes, and advocates for health and safety standards.",
+      "The Board of Medical Community safeguards the physical and mental well-being of all UDIISA members and Players. It oversees medical support, implements wellness programmes, and advocates for health and safety standards.",
     cardVariant: "teal",
     members: [
       { name: "Dr. Surender Gupta", role: "Member", image: null },

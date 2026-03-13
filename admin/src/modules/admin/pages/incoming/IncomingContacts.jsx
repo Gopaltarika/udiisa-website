@@ -115,6 +115,8 @@ export default function IncomingContacts() {
                 ['Name',      selected.name],
                 ['Email',     selected.email],
                 ['Phone',     selected.phone],
+                ['Gender',     selected.gender],
+                ['Aadhar',     selected.aadhar],
                 ['Submitted', formatDate(selected.submittedAt)],
               ].map(([label, val]) => (
                 <div key={label} className="bg-slate-50 rounded-[10px] p-[12px]">
@@ -124,8 +126,8 @@ export default function IncomingContacts() {
               ))}
             </div>
             <div className="bg-slate-50 rounded-[10px] p-[12px]">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Subject</p>
-              <p className="text-[13px] font-semibold text-slate-700 m-0 mt-[3px]">{selected.subject}</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Address</p>
+              <p className="text-[13.5px] text-slate-700 m-0 mt-[6px] leading-relaxed">{selected.address || '—'}</p>
             </div>
             <div className="bg-slate-50 rounded-[10px] p-[12px]">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Message</p>

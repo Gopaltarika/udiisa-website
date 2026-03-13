@@ -13,8 +13,7 @@ import { useAdminToast } from '../hooks/ToastContext'
 import { useDebounce } from '../hooks/useDebounce'
 import blogService from '../services/blogService'
 import { validateRequired, buildFormData, API_IMG, formatDate } from '../utils/helpers'
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor'
+import QuillEditor from './QuillEditor'   // ← replaces TinyMCE
 
 const PAGE_OPTIONS = ['home', 'events', 'success-stories', 'initiatives', 'partnerships', 'mentorship', 'general']
 
@@ -34,7 +33,8 @@ export default function Blogs() {
   const [selected, setSelected]= useState(null)
   const [form,     setForm]    = useState(EMPTY)
   const [preview,  setPreview] = useState(null)
-  const [errors,   setErrors]  = useState({})
+  const [errors,      setErrors]     = useState({})
+  const [expandContent, setExpandContent] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -166,13 +166,17 @@ export default function Blogs() {
         </div>
       ),
     },
-    { key: 'heading',      label: 'Heading',  render: (v) => <span className="font-semibold line-clamp-1 max-w-[220px] block">{v}</span> },
+    { key: 'heading',      label: 'Heading',  render: (v) => (
+        <span title={v} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', maxWidth: '220px' }} className="font-semibold text-[13px] cursor-default block">{v}</span>
+      )},
     { key: 'pageName',     label: 'Page',     render: (v) => <Badge variant="navy">{v}</Badge> },
-    { key: 'shortContent', label: 'Excerpt',  render: (v) => <span className="text-slate-500 line-clamp-2 max-w-[200px] block text-[12px]">{v}</span> },
+    { key: 'shortContent', label: 'Content',  render: (v) => (
+        <span title={v} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', maxWidth: '200px' }} className="text-slate-500 text-[12px] cursor-default block">{v}</span>
+      )},
     { key: 'createdAt',    label: 'Published', render: (v) => formatDate(v) },
     {
       key: 'act', label: 'Actions',
-      render: (_, row) => <ActionButtons onView={() => { setSelected(row); setViewOpen(true) }} onEdit={() => openEdit(row)} onDelete={() => { setSelected(row); setDelOpen(true) }} />,
+      render: (_, row) => <ActionButtons onView={() => { setSelected(row); setViewOpen(true); setExpandContent(false) }} onEdit={() => openEdit(row)} onDelete={() => { setSelected(row); setDelOpen(true) }} />,
     },
   ]
 
@@ -211,7 +215,7 @@ export default function Blogs() {
             </FormField>
           </div>
 
-          <FormField label="Short Content (Card Excerpt)" required error={errors.shortContent}>
+          <FormField label="Short Content (Card Content)" required error={errors.shortContent}>
             <Textarea
               placeholder="Brief description shown on blog cards (2-3 sentences)"
               rows={2}
@@ -221,24 +225,13 @@ export default function Blogs() {
             />
           </FormField>
 
+          {/* ✅ Quill Editor — no API key, no CDN errors */}
           <FormField label="Full Blog Content">
-            <div className="rounded-[10px] border border-slate-200 overflow-hidden">
-              <CKEditor
-                editor={ClassicEditor}
-                data={form.content || ''}
-                config={{
-                  placeholder: 'Write full blog content here...',
-                  toolbar: [
-                    'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
-                    '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo',
-                  ],
-                }}
-                onChange={(_, editor) => {
-                  const data = editor.getData()
-                  setForm((f) => ({ ...f, content: data }))
-                }}
-              />
-            </div>
+            <QuillEditor
+              value={form.content}
+              onChange={(content) => setForm(f => ({ ...f, content }))}
+              height={380}
+            />
           </FormField>
 
           <div className="flex gap-[10px] justify-end pt-[6px]">
@@ -264,7 +257,17 @@ export default function Blogs() {
             {selected.content && (
               <div className="bg-slate-50 rounded-[12px] p-[16px]">
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0 mb-[8px]">Full Content</p>
-                <div className="text-[13.5px] text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: selected.content }} />
+                <div
+                  className="text-[13.5px] text-slate-700 leading-relaxed overflow-hidden transition-all duration-300"
+                  style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: expandContent ? 'unset' : 5, overflow: 'hidden' }}
+                  dangerouslySetInnerHTML={{ __html: selected.content }}
+                />
+                <button
+                  onClick={() => setExpandContent(e => !e)}
+                  className="mt-[10px] text-[12px] font-bold text-[#F05A1A] hover:text-[#d44a10] transition-colors"
+                >
+                  {expandContent ? '▲ Read less' : '▼ Read more'}
+                </button>
               </div>
             )}
           </div>

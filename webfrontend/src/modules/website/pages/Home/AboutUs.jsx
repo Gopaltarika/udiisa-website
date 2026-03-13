@@ -17,7 +17,7 @@ const features = [
   {
     icon: <FaHandHoldingHeart />,
     title: 'Holistic Support',
-    desc: 'Financial, mental and technical support for selected athletes.',
+    desc: 'Financial, mental and technical support for selected Players.',
   },
   {
     icon: <FaGraduationCap />,

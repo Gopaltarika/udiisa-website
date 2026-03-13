@@ -1,100 +1,139 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BsStarFill } from "react-icons/bs";
 import { FaArrowRight } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Keyboard, A11y } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { getPublicSpecialMembers } from "../../../../shared/services/publicApi";
 
-const EMPTY_GROUPS = { diamond: [], gold: [], silver: [] };
+const EMPTY_GROUPS = { diamond: [], gold: [], silver: [], dignitaries: [], bodyCorporate: [] };
 
 // ─── Themes ───────────────────────────────────────────────────────────────────
 const TABS = [
   {
-    key: "diamond",
-    label: "Diamond",
-    emoji: "💎",
+    key: "diamond", label: "Diamond", emoji: "💎",
     tabActiveBg: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
-    tabActiveBorder: "#3b82f6",
-    tabActiveText: "#fff",
+    tabActiveBorder: "#3b82f6", tabActiveText: "#fff",
     tabActiveShadow: "0 8px 28px rgba(37,99,235,0.35)",
     cardBg: "linear-gradient(145deg, #ffffff 0%, #eff6ff 60%, #dbeafe 100%)",
     cardBorder: "#bfdbfe",
     cardShadow: "0 20px 60px rgba(37,99,235,0.13), 0 4px 20px rgba(37,99,235,0.08)",
     cardTopBar: "linear-gradient(90deg, #1e3a8a, #3b82f6, #60a5fa)",
     ringGrad: "conic-gradient(from 0deg, #1d4ed8, #60a5fa, #bfdbfe, #60a5fa, #1d4ed8)",
-    accentColor: "#2563eb",
-    accentLight: "#dbeafe",
-    badgeBg: "linear-gradient(135deg, #dbeafe, #eff6ff)",
-    badgeBorder: "#93c5fd",
-    badgeText: "#1e40af",
-    verifiedBg: "linear-gradient(135deg, #1e3a8a, #2563eb)",
-    companyColor: "#2563eb",
-    dotActive: "#2563eb",
-    dotShadow: "rgba(37,99,235,0.4)",
+    accentColor: "#2563eb", accentLight: "#dbeafe",
+    badgeBg: "linear-gradient(135deg, #dbeafe, #eff6ff)", badgeBorder: "#93c5fd", badgeText: "#1e40af",
+    verifiedBg: "linear-gradient(135deg, #1e3a8a, #2563eb)", companyColor: "#2563eb",
+    dotActive: "#2563eb", dotShadow: "rgba(37,99,235,0.4)",
   },
   {
-    key: "gold",
-    label: "Gold",
-    emoji: "🥇",
+    key: "gold", label: "Gold", emoji: "🥇",
     tabActiveBg: "linear-gradient(135deg, #92400e 0%, #d97706 100%)",
-    tabActiveBorder: "#f59e0b",
-    tabActiveText: "#fff",
+    tabActiveBorder: "#f59e0b", tabActiveText: "#fff",
     tabActiveShadow: "0 8px 28px rgba(217,119,6,0.35)",
     cardBg: "linear-gradient(145deg, #ffffff 0%, #fffbeb 60%, #fef3c7 100%)",
     cardBorder: "#fcd34d",
     cardShadow: "0 20px 60px rgba(217,119,6,0.13), 0 4px 20px rgba(217,119,6,0.08)",
     cardTopBar: "linear-gradient(90deg, #92400e, #d97706, #fbbf24)",
     ringGrad: "conic-gradient(from 0deg, #92400e, #fbbf24, #fef3c7, #fbbf24, #92400e)",
-    accentColor: "#d97706",
-    accentLight: "#fef3c7",
-    badgeBg: "linear-gradient(135deg, #fef3c7, #fffbeb)",
-    badgeBorder: "#fcd34d",
-    badgeText: "#92400e",
-    verifiedBg: "linear-gradient(135deg, #92400e, #d97706)",
-    companyColor: "#d97706",
-    dotActive: "#d97706",
-    dotShadow: "rgba(217,119,6,0.4)",
+    accentColor: "#d97706", accentLight: "#fef3c7",
+    badgeBg: "linear-gradient(135deg, #fef3c7, #fffbeb)", badgeBorder: "#fcd34d", badgeText: "#92400e",
+    verifiedBg: "linear-gradient(135deg, #92400e, #d97706)", companyColor: "#d97706",
+    dotActive: "#d97706", dotShadow: "rgba(217,119,6,0.4)",
   },
   {
-    key: "silver",
-    label: "Silver",
-    emoji: "🥈",
+    key: "silver", label: "Silver", emoji: "🥈",
     tabActiveBg: "linear-gradient(135deg, #334155 0%, #64748b 100%)",
-    tabActiveBorder: "#94a3b8",
-    tabActiveText: "#fff",
+    tabActiveBorder: "#94a3b8", tabActiveText: "#fff",
     tabActiveShadow: "0 8px 28px rgba(100,116,139,0.3)",
     cardBg: "linear-gradient(145deg, #ffffff 0%, #f8fafc 60%, #f1f5f9 100%)",
     cardBorder: "#cbd5e1",
     cardShadow: "0 20px 60px rgba(100,116,139,0.1), 0 4px 20px rgba(100,116,139,0.06)",
     cardTopBar: "linear-gradient(90deg, #334155, #64748b, #94a3b8)",
     ringGrad: "conic-gradient(from 0deg, #334155, #94a3b8, #e2e8f0, #94a3b8, #334155)",
-    accentColor: "#64748b",
-    accentLight: "#f1f5f9",
-    badgeBg: "linear-gradient(135deg, #f1f5f9, #f8fafc)",
-    badgeBorder: "#cbd5e1",
-    badgeText: "#334155",
-    verifiedBg: "linear-gradient(135deg, #334155, #64748b)",
-    companyColor: "#475569",
-    dotActive: "#64748b",
-    dotShadow: "rgba(100,116,139,0.35)",
+    accentColor: "#64748b", accentLight: "#f1f5f9",
+    badgeBg: "linear-gradient(135deg, #f1f5f9, #f8fafc)", badgeBorder: "#cbd5e1", badgeText: "#334155",
+    verifiedBg: "linear-gradient(135deg, #334155, #64748b)", companyColor: "#475569",
+    dotActive: "#64748b", dotShadow: "rgba(100,116,139,0.35)",
+  },
+  {
+    key: "dignitaries", label: "Dignitaries", emoji: "🎖️",
+    tabActiveBg: "linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%)",
+    tabActiveBorder: "#a78bfa", tabActiveText: "#fff",
+    tabActiveShadow: "0 8px 28px rgba(124,58,237,0.35)",
+    cardBg: "linear-gradient(145deg, #ffffff 0%, #f5f3ff 60%, #ede9fe 100%)",
+    cardBorder: "#c4b5fd",
+    cardShadow: "0 20px 60px rgba(124,58,237,0.13), 0 4px 20px rgba(124,58,237,0.08)",
+    cardTopBar: "linear-gradient(90deg, #4c1d95, #7c3aed, #a78bfa)",
+    ringGrad: "conic-gradient(from 0deg, #4c1d95, #a78bfa, #ede9fe, #a78bfa, #4c1d95)",
+    accentColor: "#7c3aed", accentLight: "#ede9fe",
+    badgeBg: "linear-gradient(135deg, #ede9fe, #f5f3ff)", badgeBorder: "#c4b5fd", badgeText: "#4c1d95",
+    verifiedBg: "linear-gradient(135deg, #4c1d95, #7c3aed)", companyColor: "#7c3aed",
+    dotActive: "#7c3aed", dotShadow: "rgba(124,58,237,0.4)",
+  },
+  {
+    key: "bodyCorporate", label: "Body Corporate", emoji: "🏢",
+    tabActiveBg: "linear-gradient(135deg, #064e3b 0%, #059669 100%)",
+    tabActiveBorder: "#34d399", tabActiveText: "#fff",
+    tabActiveShadow: "0 8px 28px rgba(5,150,105,0.35)",
+    cardBg: "linear-gradient(145deg, #ffffff 0%, #ecfdf5 60%, #d1fae5 100%)",
+    cardBorder: "#6ee7b7",
+    cardShadow: "0 20px 60px rgba(5,150,105,0.13), 0 4px 20px rgba(5,150,105,0.08)",
+    cardTopBar: "linear-gradient(90deg, #064e3b, #059669, #34d399)",
+    ringGrad: "conic-gradient(from 0deg, #064e3b, #34d399, #d1fae5, #34d399, #064e3b)",
+    accentColor: "#059669", accentLight: "#d1fae5",
+    badgeBg: "linear-gradient(135deg, #d1fae5, #ecfdf5)", badgeBorder: "#6ee7b7", badgeText: "#064e3b",
+    verifiedBg: "linear-gradient(135deg, #064e3b, #059669)", companyColor: "#059669",
+    dotActive: "#059669", dotShadow: "rgba(5,150,105,0.4)",
   },
 ];
 
-// ─── Tab Button ───────────────────────────────────────────────────────────────
+// ─── Skeleton Card ─────────────────────────────────────────────────────────────
+function SkeletonCard({ isCenter }) {
+  return (
+    <div style={{
+      background: "#fff", borderRadius: 20,
+      display: "flex", flexDirection: "column", alignItems: "center",
+      border: "1.5px solid #f0f4f8", overflow: "hidden",
+      height: "100%", width: "100%",
+    }}>
+      <div className="skel-shine" style={{ width: "100%", height: isCenter ? 5 : 3, flexShrink: 0 }} />
+      <div style={{
+        padding: isCenter ? "20px 16px 18px" : "14px 12px 14px",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        width: "100%", flex: 1, boxSizing: "border-box", gap: 10,
+      }}>
+        <div className="skel-shine" style={{ width: 90, height: 20, borderRadius: 999 }} />
+        <div className="skel-shine" style={{
+          width: isCenter ? 90 : 72, height: isCenter ? 90 : 72,
+          borderRadius: "50%", flexShrink: 0,
+        }} />
+        <div className="skel-shine" style={{ width: "60%", height: 13, borderRadius: 8 }} />
+        <div className="skel-shine" style={{ width: "45%", height: 10, borderRadius: 8 }} />
+        <div className="skel-shine" style={{ width: "35%", height: 9, borderRadius: 8 }} />
+      </div>
+    </div>
+  );
+}
+
+// ─── Tab Button ────────────────────────────────────────────────────────────────
 function TabButton({ tab, isActive, onClick }) {
   return (
     <button
       onClick={onClick}
       style={{
         position: "relative",
-        padding: "13px 28px",
-        borderRadius: 16,
+        padding: "8px 14px",
+        borderRadius: 12,
         border: `1.5px solid ${isActive ? tab.tabActiveBorder : "#e2e8f0"}`,
         background: isActive ? tab.tabActiveBg : "#fff",
         color: isActive ? tab.tabActiveText : "#64748b",
-        fontSize: 13,
+        fontSize: 11,
         fontWeight: 700,
-        letterSpacing: "0.8px",
+        letterSpacing: "0.5px",
         textTransform: "uppercase",
         cursor: "pointer",
         transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -102,11 +141,12 @@ function TabButton({ tab, isActive, onClick }) {
         fontFamily: "'Plus Jakarta Sans', sans-serif",
         display: "flex",
         alignItems: "center",
-        gap: 9,
-        transform: isActive ? "translateY(-3px)" : "translateY(0)",
+        gap: 6,
+        transform: isActive ? "translateY(-2px)" : "translateY(0)",
         overflow: "hidden",
-        minWidth: 148,
-        justifyContent: "center",
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+        userSelect: "none",
       }}
     >
       {isActive && (
@@ -117,14 +157,13 @@ function TabButton({ tab, isActive, onClick }) {
           pointerEvents: "none",
         }} />
       )}
-      <span style={{ fontSize: 18 }}>{tab.emoji}</span>
+      <span style={{ fontSize: 14 }}>{tab.emoji}</span>
       <span style={{ position: "relative", zIndex: 1 }}>{tab.label}</span>
       <span style={{
         background: isActive ? "rgba(255,255,255,0.22)" : "#f1f5f9",
         color: isActive ? "#fff" : "#94a3b8",
-        fontSize: 10, fontWeight: 800,
-        padding: "2px 9px", borderRadius: 999,
-        letterSpacing: "0.5px",
+        fontSize: 9, fontWeight: 800,
+        padding: "2px 7px", borderRadius: 999,
       }}>
         {tab.count}
       </span>
@@ -132,42 +171,39 @@ function TabButton({ tab, isActive, onClick }) {
   );
 }
 
-// ─── Member Card ──────────────────────────────────────────────────────────────
+// ─── Member Card ───────────────────────────────────────────────────────────────
 function MemberCard({ member, isCenter, theme }) {
   if (!member) return null;
   return (
     <div style={{
       background: isCenter ? theme.cardBg : "#fff",
-      borderRadius: 24,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
+      borderRadius: 20,
+      display: "flex", flexDirection: "column", alignItems: "center",
       transition: "all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
-      transform: isCenter ? "scale(1.05)" : "scale(0.93)",
+      transform: isCenter ? "scale(1.04)" : "scale(0.93)",
       opacity: isCenter ? 1 : 0.6,
       boxShadow: isCenter ? theme.cardShadow : "0 4px 20px rgba(0,0,0,0.05)",
       border: `1.5px solid ${isCenter ? theme.cardBorder : "#f0f4f8"}`,
       cursor: "pointer",
       position: "relative",
       overflow: "hidden",
-      minWidth: 0,
       height: "100%",
+      userSelect: "none",
     }}>
-      {/* Top color bar */}
+      {/* Top bar */}
       <div style={{
         width: "100%", height: isCenter ? 5 : 3, flexShrink: 0,
         background: isCenter ? theme.cardTopBar : "#f1f5f9",
       }} />
 
       <div style={{
-        padding: isCenter ? "26px 22px 24px" : "20px 16px 18px",
+        padding: isCenter ? "20px 16px 18px" : "14px 12px 14px",
         display: "flex", flexDirection: "column", alignItems: "center",
         width: "100%", flex: 1, boxSizing: "border-box",
       }}>
-        {/* BG tint blob */}
         {isCenter && (
           <div style={{
-            position: "absolute", top: -30, right: -30, width: 160, height: 160,
+            position: "absolute", top: -25, right: -25, width: 130, height: 130,
             borderRadius: "50%",
             background: `radial-gradient(circle, ${theme.accentLight}90 0%, transparent 70%)`,
             pointerEvents: "none",
@@ -176,24 +212,24 @@ function MemberCard({ member, isCenter, theme }) {
 
         {/* BADGE */}
         <div style={{
-          display: "flex", alignItems: "center", gap: 6,
-          padding: "5px 14px", borderRadius: 999,
+          display: "flex", alignItems: "center", gap: 5,
+          padding: "4px 12px", borderRadius: 999,
           background: isCenter ? theme.badgeBg : "#f8faff",
           border: `1px solid ${isCenter ? theme.badgeBorder : "#e8ecf4"}`,
           color: isCenter ? theme.badgeText : "#94a3b8",
-          fontSize: 9, fontWeight: 800, letterSpacing: "2px",
-          textTransform: "uppercase", marginBottom: 20,
+          fontSize: 8, fontWeight: 800, letterSpacing: "1.8px",
+          textTransform: "uppercase", marginBottom: 14,
           position: "relative", zIndex: 1,
         }}>
-          <span style={{ fontSize: 11 }}>{theme.emoji}</span>
-          {theme.label} Member
+          <span style={{ fontSize: 10 }}>{theme.emoji}</span>
+          {theme.label}
         </div>
 
         {/* PHOTO */}
-        <div style={{ position: "relative", marginBottom: 16, zIndex: 1 }}>
+        <div style={{ position: "relative", marginBottom: 12, zIndex: 1 }}>
           <div style={{
-            width: isCenter ? 104 : 86,
-            height: isCenter ? 104 : 86,
+            width: isCenter ? 90 : 74,
+            height: isCenter ? 90 : 74,
             borderRadius: "50%", padding: 3,
             background: isCenter ? theme.ringGrad : "linear-gradient(135deg, #e2e8f0, #cbd5e1)",
             flexShrink: 0,
@@ -204,9 +240,13 @@ function MemberCard({ member, isCenter, theme }) {
             }}>
               <img
                 src={member.photo}
-                className="object-top"
                 alt={member.name}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                draggable={false}
+                style={{
+                  width: "100%", height: "100%", objectFit: "cover",
+                  objectPosition: "top", userSelect: "none",
+                  WebkitUserDrag: "none", pointerEvents: "none",
+                }}
                 onError={e => {
                   e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=f1f5f9&color=475569&size=200&bold=true`;
                 }}
@@ -214,29 +254,26 @@ function MemberCard({ member, isCenter, theme }) {
             </div>
           </div>
 
-          {/* Glow halo */}
           {isCenter && (
             <div style={{
-              position: "absolute", inset: -6, borderRadius: "50%",
+              position: "absolute", inset: -5, borderRadius: "50%",
               background: `radial-gradient(circle, ${theme.accentLight} 0%, transparent 65%)`,
               zIndex: -1, animation: "haloBreath 3s ease-in-out infinite",
             }} />
           )}
 
-          {/* Verified */}
           {isCenter && (
             <div style={{
               position: "absolute", bottom: 2, right: 2,
-              width: 24, height: 24, borderRadius: "50%",
-              background: theme.verifiedBg,
-              border: "2px solid #fff",
+              width: 20, height: 20, borderRadius: "50%",
+              background: theme.verifiedBg, border: "2px solid #fff",
               display: "flex", alignItems: "center", justifyContent: "center",
               boxShadow: `0 2px 8px ${theme.accentColor}50`,
             }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                   stroke="#fff" strokeWidth="2.5" fill="none"
-                  strokeLinecap="round" strokeLinejoin="round"/>
+                  strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
           )}
@@ -244,41 +281,41 @@ function MemberCard({ member, isCenter, theme }) {
 
         {/* NAME */}
         <div style={{
-          fontSize: isCenter ? 17 : 14, fontWeight: 800,
+          fontSize: isCenter ? 15 : 12, fontWeight: 800,
           color: "#0f172a", textAlign: "center",
-          letterSpacing: "-0.3px", marginBottom: 5,
+          letterSpacing: "-0.3px", marginBottom: 4,
           position: "relative", zIndex: 1,
-          fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: 1.2,
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          lineHeight: 1.2, userSelect: "none",
         }}>
           {member.name}
         </div>
 
         {/* COMPANY */}
         <div style={{
-          fontSize: 11, fontWeight: 700,
+          fontSize: 10, fontWeight: 700,
           color: isCenter ? theme.companyColor : "#F05A1A",
-          textAlign: "center", marginBottom: 4,
-          letterSpacing: "0.2px",
+          textAlign: "center", marginBottom: 3,
           position: "relative", zIndex: 1,
           maxWidth: "100%", overflow: "hidden",
           textOverflow: "ellipsis", whiteSpace: "nowrap",
+          userSelect: "none",
         }}>
           {member.company}
         </div>
 
         {/* ROLE */}
         <div style={{
-          fontSize: 10, fontWeight: 600, color: "#94a3b8",
-          textAlign: "center", marginBottom: 18,
-          textTransform: "uppercase", letterSpacing: "1.5px",
-          position: "relative", zIndex: 1,
+          fontSize: 9, fontWeight: 600, color: "#94a3b8",
+          textAlign: "center", marginBottom: 14,
+          textTransform: "uppercase", letterSpacing: "1.3px",
+          position: "relative", zIndex: 1, userSelect: "none",
         }}>
           {member.role}
         </div>
 
-        {/* Bottom accent line */}
         <div style={{
-          width: isCenter ? "55%" : "35%", height: 2, borderRadius: 999,
+          width: isCenter ? "50%" : "30%", height: 2, borderRadius: 999,
           background: isCenter
             ? `linear-gradient(90deg, transparent, ${theme.accentColor}, transparent)`
             : "linear-gradient(90deg, transparent, #e2e8f0, transparent)",
@@ -289,14 +326,118 @@ function MemberCard({ member, isCenter, theme }) {
   );
 }
 
-// ─── Main Export ──────────────────────────────────────────────────────────────
+// ─── Swiper Slider Section ─────────────────────────────────────────────────────
+function SwiperSliderSection({ members, theme, activeTab }) {
+  const total = members.length;
+  const [swiper, setSwiper] = useState(null);
+
+  const paginationStyle = `
+    .sms-swiper-${activeTab} .swiper-pagination-bullet-active {
+      background: ${theme.dotActive} !important;
+      box-shadow: 0 0 8px ${theme.dotShadow};
+    }
+  `;
+
+  return (
+    <>
+      <style>{paginationStyle}</style>
+      <div style={{ position: "relative" }}>
+        <Swiper
+          modules={[Navigation, Pagination, Keyboard, A11y]}
+          className={`sms-swiper sms-swiper-${activeTab}`}
+          centeredSlides
+          loop={total > 3}
+          keyboard={{ enabled: true }}
+          pagination={{ clickable: true }}
+          grabCursor={false}
+          simulateTouch
+          onSwiper={setSwiper}
+          breakpoints={{
+            0:    { slidesPerView: 1.2, spaceBetween: 10 },
+            400:  { slidesPerView: 1.6, spaceBetween: 12 },
+            560:  { slidesPerView: 2.2, spaceBetween: 14 },
+            768:  { slidesPerView: 2.8, spaceBetween: 16 },
+            1024: { slidesPerView: 3.4, spaceBetween: 18 },
+            1200: { slidesPerView: 3.8, spaceBetween: 20 },
+          }}
+          style={{ userSelect: "none" }}
+        >
+          {members.map((member, i) => (
+            <SwiperSlide key={member.id || i}>
+              {({ isActive }) => (
+                <div style={{
+                  width: "100%",
+                  height: isActive ? 280 : 245,
+                  transition: "all 0.45s cubic-bezier(0.34,1.2,0.64,1)",
+                  margin: "0 auto",
+                }}>
+                  <MemberCard member={member} isCenter={isActive} theme={theme} />
+                </div>
+              )}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Nav Arrows */}
+        {total > 1 && (
+          <div style={{
+            display: "flex", justifyContent: "center", alignItems: "center",
+            gap: 12, marginTop: 2, marginBottom: 6,
+          }}>
+            <button
+              style={{
+                width: 40, height: 40, borderRadius: 12,
+                border: "1.5px solid #e2e8f0",
+                background: "#fff", color: "#64748b",
+                fontSize: 20, fontWeight: 700,
+                cursor: "pointer", display: "flex",
+                alignItems: "center", justifyContent: "center",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+                transition: "all 0.25s ease",
+                userSelect: "none",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "#0B1E4B";
+                e.currentTarget.style.color = "#fff";
+                e.currentTarget.style.borderColor = "#0B1E4B";
+                e.currentTarget.style.transform = "scale(1.08)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "#fff";
+                e.currentTarget.style.color = "#64748b";
+                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+              onClick={() => swiper?.slidePrev()}
+            >‹</button>
+
+            <button
+              style={{
+                width: 40, height: 40, borderRadius: 12,
+                border: "none",
+                background: theme.tabActiveBg, color: "#fff",
+                fontSize: 20, fontWeight: 700,
+                cursor: "pointer", display: "flex",
+                alignItems: "center", justifyContent: "center",
+                boxShadow: theme.tabActiveShadow,
+                transition: "all 0.25s ease",
+                userSelect: "none",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+              onClick={() => swiper?.slideNext()}
+            >›</button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// ─── Main Export ───────────────────────────────────────────────────────────────
 export default function SpecialMembersSection() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("diamond");
-  const [current, setCurrent] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState(0);
-  const [animKey, setAnimKey] = useState(0);
   const [memberGroups, setMemberGroups] = useState(EMPTY_GROUPS);
   const [loading, setLoading] = useState(true);
 
@@ -306,345 +447,289 @@ export default function SpecialMembersSection() {
     getPublicSpecialMembers()
       .then((list) => {
         if (cancelled) return;
-        const groups = { diamond: [], gold: [], silver: [] };
+        const groups = { diamond: [], gold: [], silver: [], dignitaries: [], bodyCorporate: [] };
         const items = Array.isArray(list) ? list : [];
         items.forEach((item) => {
           const categoryRaw = String(item.membershipCategory || item.membershipType || "").toLowerCase();
-          const key = categoryRaw.includes("diamond")
-            ? "diamond"
-            : categoryRaw.includes("gold")
-              ? "gold"
-              : "silver";
+          let key = "silver";
+          if (categoryRaw.includes("diamond"))                                    key = "diamond";
+          else if (categoryRaw.includes("gold"))                                  key = "gold";
+          else if (categoryRaw.includes("dignitar"))                              key = "dignitaries";
+          else if (categoryRaw.includes("corporate") || categoryRaw.includes("body")) key = "bodyCorporate";
           groups[key].push({
             id: item.id || `${key}-${Math.random()}`,
             name: item.name || "Member",
             company: item.companyName || "",
-            role: item.designation || "Special Member",
-            photo:
-              item.img ||
+            role: item.designation || "Member",
+            photo: item.img ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name || "Member")}&background=f1f5f9&color=475569&size=200&bold=true`,
           });
         });
         setMemberGroups(groups);
       })
-      .catch(() => {
-        if (!cancelled) setMemberGroups(EMPTY_GROUPS);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .catch(() => { if (!cancelled) setMemberGroups(EMPTY_GROUPS); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   const tabConfig = useMemo(
     () => TABS.map((tab) => ({ ...tab, count: memberGroups[tab.key]?.length || 0 })),
     [memberGroups]
   );
+
   const theme = tabConfig.find((t) => t.key === activeTab) || tabConfig[0];
   const members = memberGroups[activeTab] || [];
   const total = members.length;
 
   useEffect(() => {
-    if (loading) return;
-    if (total > 0) return;
+    if (loading || total > 0) return;
     const fallback = tabConfig.find((tab) => (memberGroups[tab.key] || []).length > 0);
-    if (fallback && fallback.key !== activeTab) {
-      setActiveTab(fallback.key);
-      setCurrent(0);
-    }
+    if (fallback && fallback.key !== activeTab) setActiveTab(fallback.key);
   }, [activeTab, loading, memberGroups, tabConfig, total]);
-
-  const switchTab = (key) => {
-    setActiveTab(key);
-    setCurrent(0);
-    setAnimKey(k => k + 1);
-  };
-
-  const prev = useCallback(() => {
-    if (total <= 1) return;
-    setCurrent(c => (c - 1 + total) % total);
-  }, [total]);
-
-  const next = useCallback(() => {
-    if (total <= 1) return;
-    setCurrent(c => (c + 1) % total);
-  }, [total]);
-
-  const handleDragStart = (e) => {
-    setIsDragging(true);
-    setDragStart(e.touches ? e.touches[0].clientX : e.clientX);
-  };
-  const handleDragEnd = (e) => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    const end = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-    const diff = dragStart - end;
-    if (Math.abs(diff) > 50) diff > 0 ? next() : prev();
-  };
-
-  const getVisible = () => {
-    if (total === 0) return [];
-    return [-2, -1, 0, 1, 2].map(i => (current + i + total) % total);
-  };
-
-  const visible = getVisible();
 
   return (
     <section style={{
       background: "linear-gradient(170deg, #f8faff 0%, #ffffff 50%, #fff8f4 100%)",
-      padding: "100px 0 80px",
-      position: "relative",
-      overflow: "hidden",
+      padding: "clamp(48px, 8vw, 100px) 0 clamp(36px, 6vw, 80px)",
+      position: "relative", overflow: "hidden",
       fontFamily: "'Plus Jakarta Sans', sans-serif",
     }}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap');
+
         @keyframes tabShimmer {
-          0% { left: -100%; }
+          0%   { left: -100%; }
           60%, 100% { left: 200%; }
-        }
-        @keyframes spinRing {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
         }
         @keyframes haloBreath {
           0%, 100% { opacity: 0.5; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.1); }
-        }
-        @keyframes trackFade {
-          from { opacity: 0; transform: translateY(14px); }
-          to { opacity: 1; transform: translateY(0); }
+          50%       { opacity: 1;   transform: scale(1.1); }
         }
         @keyframes headReveal {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; transform: translateY(18px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes skelShimmer {
+          0%   { background-position: -600px 0; }
+          100% { background-position:  600px 0; }
+        }
+        .skel-shine {
+          background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+          background-size: 1200px 100%;
+          animation: skelShimmer 1.4s ease-in-out infinite;
         }
 
-        .sms-arrow {
-          width: 46px; height: 46px; border-radius: 14px;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; border: none;
-          transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-          flex-shrink: 0; font-size: 20px; font-weight: 700; line-height: 1;
+        /* ── Tab scroll bar ── */
+        .sms-tabs-row {
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          gap: 8px;
+          padding-bottom: 4px;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          justify-content: flex-start;
         }
-        .sms-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+        .sms-tabs-row::-webkit-scrollbar { display: none; }
 
-        .sms-dot {
-          height: 5px; border-radius: 999px;
-          transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
-          cursor: pointer; border: none; padding: 0;
+        @media (min-width: 640px) {
+          .sms-tabs-row {
+            justify-content: center;
+            flex-wrap: wrap;
+            overflow-x: visible;
+          }
         }
 
-        .sms-track {
-          display: flex; align-items: center; gap: 16px;
-          justify-content: center; padding: 12px 0 24px;
-          user-select: none;
+        /* ── Swiper ── */
+        .sms-swiper {
+          padding: 16px 0 44px !important;
+          overflow: visible !important;
         }
-        .sms-slot {
-          flex-shrink: 0;
+        .sms-swiper .swiper-slide {
           transition: all 0.45s cubic-bezier(0.34,1.2,0.64,1);
+          height: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
+        .sms-swiper .swiper-slide-active { z-index: 2; }
+        .sms-swiper .swiper-pagination   { bottom: 10px !important; }
+        .sms-swiper .swiper-pagination-bullet {
+          width: 6px; height: 5px; border-radius: 999px;
+          background: #e2e8f0; opacity: 1;
+          transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .sms-swiper .swiper-pagination-bullet-active { width: 24px; }
+        .sms-swiper .swiper-button-prev,
+        .sms-swiper .swiper-button-next { display: none; }
 
-        @media (max-width: 900px) { .sms-slot.side2 { display: none !important; } }
-        @media (max-width: 640px) { .sms-slot.side1 { display: none !important; } }
+        /* ── Skeleton row responsive ── */
+        .skel-row {
+          display: flex; align-items: center; justify-content: center;
+          gap: 12px; padding: 16px 0 44px;
+        }
+        .skel-item { flex-shrink: 0; }
+        .skel-hide-far  { display: none; }
+        .skel-hide-side { display: none; }
+
+        @media (min-width: 560px)  { .skel-hide-side { display: block !important; } }
+        @media (min-width: 900px)  { .skel-hide-far  { display: block !important; } }
+
+        /* Disable drag */
+        .sms-swiper img,
+        .sms-swiper .swiper-slide {
+          -webkit-user-drag: none;
+          user-select: none;
+          -webkit-user-select: none;
+        }
       `}</style>
 
-      {/* Background */}
+      {/* Background decorations */}
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
         backgroundImage: "radial-gradient(circle, #d1d5db 1px, transparent 1px)",
-        backgroundSize: "32px 32px", opacity: 0.35,
+        backgroundSize: "30px 30px", opacity: 0.3,
       }} />
       <div style={{
-        position: "absolute", top: -120, right: -100, width: 500, height: 500,
+        position: "absolute", top: -100, right: -80, width: 400, height: 400,
         borderRadius: "50%", pointerEvents: "none",
         background: "radial-gradient(circle, rgba(240,90,26,0.05) 0%, transparent 65%)",
       }} />
       <div style={{
-        position: "absolute", bottom: -80, left: -80, width: 400, height: 400,
+        position: "absolute", bottom: -60, left: -60, width: 300, height: 300,
         borderRadius: "50%", pointerEvents: "none",
         background: "radial-gradient(circle, rgba(11,30,75,0.04) 0%, transparent 65%)",
       }} />
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
+      <div style={{
+        maxWidth: 1200, margin: "0 auto",
+        padding: "0 clamp(14px, 4vw, 24px)",
+        position: "relative",
+      }}>
 
         {/* ── HEADER ── */}
-        <div style={{ textAlign: "center", marginBottom: 44, animation: "headReveal 0.7s ease both" }}>
+        <div style={{ textAlign: "center", marginBottom: "clamp(24px, 4vw, 44px)", animation: "headReveal 0.7s ease both" }}>
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            padding: "7px 20px", borderRadius: 999,
+            display: "inline-flex", alignItems: "center", gap: 7,
+            padding: "6px 16px", borderRadius: 999,
             background: "linear-gradient(135deg, rgba(240,90,26,0.08), rgba(255,173,92,0.08))",
             border: "1px solid rgba(240,90,26,0.18)",
-            color: "#F05A1A", fontSize: 11, fontWeight: 700,
-            letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 18,
+            color: "#F05A1A",
+            fontSize: "clamp(9px, 2vw, 11px)",
+            fontWeight: 700, letterSpacing: "2.2px",
+            textTransform: "uppercase",
+            marginBottom: "clamp(10px, 2vw, 18px)",
           }}>
-            <HiSparkles style={{ fontSize: 13 }} />
+            <HiSparkles style={{ fontSize: 12 }} />
             Our Distinguished Members
           </div>
 
           <h2 style={{
             fontFamily: "'Bebas Neue', cursive",
-            fontSize: "clamp(40px, 6.5vw, 58px)",
-            letterSpacing: 3, lineHeight: 1,
-            color: "#0B1E4B", margin: "0 0 14px",
+            fontSize: "clamp(28px, 6.5vw, 58px)",
+            letterSpacing: "clamp(1px, .4vw, 3px)",
+            lineHeight: 1, color: "#0B1E4B",
+            margin: "0 0 clamp(8px, 1.5vw, 14px)",
           }}>
             SPECIAL{" "}
             <span style={{
               background: "linear-gradient(90deg, #F05A1A, #FF9D42)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            }}> {theme.label}              MEMBERS
-            </span>{" "}OF UDIISA
+            }}>
+              {theme.label} MEMBERS
+            </span>
+            {" "}OF UDIISA
           </h2>
 
           <p style={{
-            fontSize: 15, color: "#64748b", maxWidth: 480,
-            margin: "12px auto 0", lineHeight: 1.8, fontWeight: 500,
+            fontSize: "clamp(12px, 2.2vw, 15px)",
+            color: "#64748b",
+            maxWidth: 460, margin: "0 auto",
+            lineHeight: 1.75, fontWeight: 500,
           }}>
             Visionary leaders and dedicated patrons who champion the cause of sports in India
           </p>
         </div>
 
         {/* ── TABS ── */}
-        <div style={{
-          display: "flex", justifyContent: "center", gap: 12,
-          flexWrap: "wrap", marginBottom: 44,
-          animation: "headReveal 0.7s 0.1s ease both",
-        }}>
-          {tabConfig.map(tab => (
-            <TabButton
-              key={tab.key}
-              tab={tab}
-              isActive={activeTab === tab.key}
-              onClick={() => switchTab(tab.key)}
-            />
-          ))}
+        <div style={{ marginBottom: "clamp(20px, 4vw, 44px)", animation: "headReveal 0.7s 0.1s ease both" }}>
+          <div className="sms-tabs-row">
+            {tabConfig.map(tab => (
+              <TabButton
+                key={tab.key}
+                tab={tab}
+                isActive={activeTab === tab.key}
+                onClick={() => setActiveTab(tab.key)}
+              />
+            ))}
+          </div>
         </div>
+
+        {/* ── SKELETON ── */}
+        {loading && (
+          <div className="skel-row">
+            {/* far-left */}
+            <div className="skel-item skel-hide-far" style={{ width: 170, height: 235 }}>
+              <SkeletonCard isCenter={false} />
+            </div>
+            {/* side-left */}
+            <div className="skel-item skel-hide-side" style={{ width: 190, height: 245 }}>
+              <SkeletonCard isCenter={false} />
+            </div>
+            {/* center */}
+            <div className="skel-item" style={{ width: 220, height: 272 }}>
+              <SkeletonCard isCenter />
+            </div>
+            {/* side-right */}
+            <div className="skel-item skel-hide-side" style={{ width: 190, height: 245 }}>
+              <SkeletonCard isCenter={false} />
+            </div>
+            {/* far-right */}
+            <div className="skel-item skel-hide-far" style={{ width: 170, height: 235 }}>
+              <SkeletonCard isCenter={false} />
+            </div>
+          </div>
+        )}
 
         {/* ── SLIDER ── */}
-        <div
-          style={{ position: "relative", userSelect: "none" }}
-          onMouseDown={handleDragStart}
-          onMouseUp={handleDragEnd}
-          onMouseLeave={() => isDragging && setIsDragging(false)}
-          onTouchStart={handleDragStart}
-          onTouchEnd={handleDragEnd}
-        >
-          <div className="sms-track" key={animKey} style={{ animation: "trackFade 0.4s ease both" }}>
-            {visible.map((memberIdx, slotIdx) => {
-              const isCenter = slotIdx === 2;
-              const dist = Math.abs(slotIdx - 2);
-              return (
-                <div
-                  key={`${activeTab}-${memberIdx}-${slotIdx}`}
-                  className={`sms-slot ${dist === 2 ? "side2" : dist === 1 ? "side1" : ""}`}
-                  onClick={() => !isCenter && setCurrent(memberIdx)}
-                  style={{
-                    width: isCenter ? 252 : dist === 1 ? 212 : 188,
-                    height: isCenter ? 308 : 268,
-                  }}
-                >
-                  <MemberCard member={members[memberIdx]} isCenter={isCenter} theme={theme} />
-                </div>
-              );
-            })}
-          </div>
+        {!loading && total > 0 && (
+          <SwiperSliderSection key={activeTab} members={members} theme={theme} activeTab={activeTab} />
+        )}
 
-          {/* NAV */}
+        {/* ── EMPTY ── */}
+        {!loading && total === 0 && (
           <div style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            gap: 14, marginBottom: 22,
+            textAlign: "center", padding: "48px 0",
+            color: "#94a3b8", fontSize: 14, fontWeight: 600,
           }}>
-            <button
-              className="sms-arrow"
-              disabled={total <= 1}
-              onClick={prev}
-              style={{
-                background: "#fff", border: "1.5px solid #e2e8f0",
-                color: "#64748b", boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = "#0B1E4B";
-                e.currentTarget.style.color = "#fff";
-                e.currentTarget.style.transform = "scale(1.08)";
-                e.currentTarget.style.borderColor = "#0B1E4B";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = "#fff";
-                e.currentTarget.style.color = "#64748b";
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.borderColor = "#e2e8f0";
-              }}
-            >
-              ‹
-            </button>
-
-            <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-              {members.map((_, i) => (
-                <button
-                  key={i}
-                  className="sms-dot"
-                  onClick={() => setCurrent(i)}
-                  style={{
-                    width: i === current ? 28 : 6,
-                    background: i === current ? theme.dotActive : "#e2e8f0",
-                    boxShadow: i === current ? `0 0 8px ${theme.dotShadow}` : "none",
-                  }}
-                />
-              ))}
-            </div>
-
-            <button
-              className="sms-arrow"
-              disabled={total <= 1}
-              onClick={next}
-              style={{
-                background: theme.tabActiveBg,
-                color: "#fff", border: "none",
-                boxShadow: theme.tabActiveShadow,
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
-            >
-              ›
-            </button>
+            No members found for this category.
           </div>
+        )}
 
-          {/* Counter */}
-          <div style={{
-            textAlign: "center", fontSize: 12, fontWeight: 700,
-            color: "#94a3b8", letterSpacing: "2px", marginBottom: 40,
-          }}>
-            <span style={{
-              color: theme.accentColor, fontSize: 18,
-              fontFamily: "'Bebas Neue', cursive", letterSpacing: 3,
-            }}>
-              {String(current + 1).padStart(2, "0")}
-            </span>
-            {" "}/ {String(total).padStart(2, "0")}
-          </div>
-        </div>
-
-        {/* VIEW ALL */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        {/* ── VIEW ALL ── */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "clamp(8px, 2vw, 16px)" }}>
           <button
             onClick={() => navigate("/members/special-members")}
             style={{
-              display: "inline-flex", alignItems: "center", gap: 10,
-              padding: "14px 38px", borderRadius: 16,
-              background: theme.tabActiveBg, border: "none",
-              color: "#fff", fontSize: 13, fontWeight: 800,
-              letterSpacing: "1px", textTransform: "uppercase",
-              cursor: "pointer", boxShadow: theme.tabActiveShadow,
+              display: "inline-flex", alignItems: "center",
+              gap: "clamp(6px, 1.5vw, 10px)",
+              padding: "clamp(10px, 2vw, 14px) clamp(22px, 4vw, 38px)",
+              borderRadius: 14, background: theme.tabActiveBg,
+              border: "none", color: "#fff",
+              fontSize: "clamp(10px, 2vw, 13px)",
+              fontWeight: 800, letterSpacing: "0.8px",
+              textTransform: "uppercase", cursor: "pointer",
+              boxShadow: theme.tabActiveShadow,
               fontFamily: "'Plus Jakarta Sans', sans-serif",
               transition: "all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
+              userSelect: "none",
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}
           >
-            <BsStarFill style={{ fontSize: 13 }} />
+            <BsStarFill style={{ fontSize: 12 }} />
             View All {theme.label} Members
-            <FaArrowRight style={{ fontSize: 12 }} />
+            <FaArrowRight style={{ fontSize: 11 }} />
           </button>
         </div>
 

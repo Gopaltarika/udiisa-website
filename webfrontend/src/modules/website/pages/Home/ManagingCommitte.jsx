@@ -3,6 +3,102 @@ import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { getPublicCommittees } from '@/shared/services/publicApi'
 
+/* ── Skeleton Card ── */
+const SkeletonCard = ({ size }) => {
+  const isLg = size === 'lg'
+  return (
+    <div
+      className="flex flex-col items-center text-center bg-white rounded-[16px] sm:rounded-[20px] border border-slate-100 shadow-[0_4px_18px_rgba(11,30,75,.07)] overflow-hidden"
+      style={{ padding: isLg ? 'clamp(10px,1.5vw,16px)' : 'clamp(8px,1.2vw,12px)' }}
+    >
+      {/* Photo skeleton */}
+      <div
+        className="w-full rounded-[10px] sm:rounded-[14px] skeleton-shimmer"
+        style={{
+          aspectRatio: '3/3.6',
+          marginBottom: isLg ? 'clamp(8px,1.2vw,14px)' : 'clamp(6px,1vw,10px)',
+        }}
+      />
+      {/* Name skeleton */}
+      <div
+        className="skeleton-shimmer rounded-[6px]"
+        style={{
+          width: '70%',
+          height: isLg ? 14 : 12,
+          marginBottom: isLg ? 8 : 6,
+        }}
+      />
+      {/* Role badge skeleton */}
+      <div
+        className="skeleton-shimmer rounded-full"
+        style={{
+          width: '50%',
+          height: isLg ? 22 : 18,
+        }}
+      />
+    </div>
+  )
+}
+
+/* ── Member Card ── */
+const MemberCard = ({ m, size }) => {
+  const isLg = size === 'lg'
+  return (
+    <div className="mc-card-wrap">
+      <div
+        className="mc-card flex flex-col items-center text-center bg-white rounded-[16px] sm:rounded-[20px] border border-slate-100 shadow-[0_4px_18px_rgba(11,30,75,.07)] overflow-hidden"
+        style={{ padding: isLg ? 'clamp(10px,1.5vw,16px)' : 'clamp(8px,1.2vw,12px)' }}
+      >
+        {/* Photo */}
+        <div
+          className="w-full overflow-hidden rounded-[10px] sm:rounded-[14px] border border-[#edf0f7] shadow-[0_2px_10px_rgba(11,30,75,.07)]"
+          style={{
+            aspectRatio: '3/3.6',
+            marginBottom: isLg ? 'clamp(8px,1.2vw,14px)' : 'clamp(6px,1vw,10px)',
+          }}
+        >
+          <img
+            src={m.img}
+            alt={m.name}
+            className="mc-photo w-full h-full object-cover object-top"
+            onError={(e) => {
+              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=300`
+            }}
+          />
+        </div>
+
+        {/* Name */}
+        <h3
+          className="text-[#0B1E4B] font-extrabold leading-[1.2] !m-0 w-full"
+          style={{
+            fontSize: isLg ? 'clamp(11px,1.4vw,15px)' : 'clamp(10px,1.2vw,13px)',
+            marginBottom: isLg ? 6 : 4,
+          }}
+        >
+          <span className="mc-name-line truncate">{m.name}</span>
+        </h3>
+
+        {/* Role badge */}
+        <span
+          className={`inline-flex items-center rounded-full font-extrabold capitalize ${
+            m.isOrange
+              ? 'bg-[rgba(240,90,26,.1)] text-[#F05A1A] border border-[rgba(240,90,26,.22)]'
+              : 'bg-[rgba(100,116,139,.07)] text-slate-500 border border-[rgba(100,116,139,.18)]'
+          }`}
+          style={{
+            fontSize: isLg ? 'clamp(8px,0.9vw,11px)' : 'clamp(7.5px,0.8vw,10px)',
+            padding: isLg ? '3px 10px' : '2px 8px',
+            letterSpacing: '0.2px',
+          }}
+        >
+          {m.role}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/* ── Main Component ── */
 const ManagingCommittee = () => {
   const navigate = useNavigate()
   const [members, setMembers] = useState([])
@@ -53,13 +149,37 @@ const ManagingCommittee = () => {
     return () => { active = false }
   }, [])
 
-  const visibleMembers = useMemo(() => members.slice(0, 5), [members])
-  const topTwo    = visibleMembers.slice(0, 2)
-  const bottomThree = visibleMembers.slice(2, 5)
+  const visibleMembers  = useMemo(() => members.slice(0, 5), [members])
+  const topTwo          = visibleMembers.slice(0, 2)
+  const bottomThree     = visibleMembers.slice(2, 5)
+
+  /* Connector line between rows */
+  const Connector = () => (
+    <div style={{ display: 'flex', justifyContent: 'center', margin: '0 auto', padding: '10px 0 6px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: 'clamp(200px, 40%, 400px)' }}>
+        <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, transparent, rgba(240,90,26,.2))' }} />
+        <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#F05A1A', opacity: .4 }} />
+        <div style={{ flex: 1, height: 1, background: 'rgba(240,90,26,.15)' }} />
+        <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#F05A1A', opacity: .4 }} />
+        <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(240,90,26,.2), transparent)' }} />
+      </div>
+    </div>
+  )
 
   return (
     <>
       <style>{`
+        /* Skeleton shimmer */
+        @keyframes shimmer {
+          0%   { background-position: -400px 0; }
+          100% { background-position:  400px 0; }
+        }
+        .skeleton-shimmer {
+          background: linear-gradient(90deg, #f1f5f9 25%, #e8edf5 50%, #f1f5f9 75%);
+          background-size: 800px 100%;
+          animation: shimmer 1.4s ease-in-out infinite;
+        }
+
         /* Card lift */
         .mc-card {
           transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease;
@@ -110,17 +230,17 @@ const ManagingCommittee = () => {
         .btn-arrow { transition: transform .25s ease; }
         .view-btn:hover .btn-arrow { transform: translateX(4px); }
 
-        /* Top-2 row */
+        /* ── Layout: Top 2 ── */
         .mc-top-row {
           display: flex;
           justify-content: center;
           gap: 20px;
         }
         .mc-top-row .mc-card-wrap {
-          width: clamp(160px, 22vw, 240px);
+          width: clamp(150px, 22vw, 240px);
         }
 
-        /* Bottom-3 row */
+        /* ── Layout: Bottom 3 ── */
         .mc-bottom-row {
           display: flex;
           justify-content: center;
@@ -128,37 +248,50 @@ const ManagingCommittee = () => {
           margin-top: 16px;
         }
         .mc-bottom-row .mc-card-wrap {
-          width: clamp(140px, 20vw, 210px);
+          width: clamp(130px, 20vw, 210px);
         }
 
-        /* Connector line between rows */
-        .mc-connector {
+        /* ── Skeleton rows mirror real layout ── */
+        .mc-skel-top {
           display: flex;
-          align-items: center;
           justify-content: center;
-          gap: 0;
-          margin: 0 auto;
-          width: fit-content;
-          position: relative;
+          gap: 20px;
         }
-        .mc-connector-line {
-          height: 2px;
-          background: linear-gradient(90deg, transparent, rgba(240,90,26,.25), rgba(240,90,26,.25), transparent);
-          flex: 1;
+        .mc-skel-top .mc-skel-wrap {
+          width: clamp(150px, 22vw, 240px);
         }
-        .mc-connector-dot {
-          width: 6px; height: 6px;
-          border-radius: 50%;
-          background: #F05A1A;
-          opacity: .4;
-          flex-shrink: 0;
+        .mc-skel-bottom {
+          display: flex;
+          justify-content: center;
+          gap: 16px;
+          margin-top: 16px;
+        }
+        .mc-skel-bottom .mc-skel-wrap {
+          width: clamp(130px, 20vw, 210px);
         }
 
-        @media (max-width: 600px) {
-          .mc-top-row { gap: 10px; }
-          .mc-top-row .mc-card-wrap { width: calc(50% - 5px); }
-          .mc-bottom-row { gap: 8px; flex-wrap: nowrap; }
-          .mc-bottom-row .mc-card-wrap { width: calc(33.33% - 6px); }
+        /* ── Mobile ── */
+        @media (max-width: 480px) {
+          .mc-top-row,
+          .mc-skel-top { gap: 10px; }
+
+          .mc-top-row .mc-card-wrap,
+          .mc-skel-top .mc-skel-wrap { width: calc(50% - 5px); }
+
+          .mc-bottom-row,
+          .mc-skel-bottom { gap: 8px; flex-wrap: nowrap; }
+
+          .mc-bottom-row .mc-card-wrap,
+          .mc-skel-bottom .mc-skel-wrap { width: calc(33.33% - 6px); }
+        }
+
+        /* ── Tablet ── */
+        @media (min-width: 481px) and (max-width: 768px) {
+          .mc-top-row .mc-card-wrap,
+          .mc-skel-top .mc-skel-wrap { width: clamp(140px, 28vw, 200px); }
+
+          .mc-bottom-row .mc-card-wrap,
+          .mc-skel-bottom .mc-skel-wrap { width: clamp(110px, 24vw, 170px); }
         }
       `}</style>
 
@@ -182,11 +315,36 @@ const ManagingCommittee = () => {
             </p>
           </div>
 
+          {/* ── Skeleton Loading ── */}
+          {loading && (
+            <div className="!mb-[28px] sm:!mb-[36px] lg:!mb-[44px]">
+              {/* Top 2 skeletons */}
+              <div className="mc-skel-top">
+                {[0, 1].map((i) => (
+                  <div key={i} className="mc-skel-wrap">
+                    <SkeletonCard size="lg" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Connector */}
+              <Connector />
+
+              {/* Bottom 3 skeletons */}
+              <div className="mc-skel-bottom">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="mc-skel-wrap">
+                    <SkeletonCard size="sm" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ── 5-Member Layout ── */}
           {!loading && visibleMembers.length > 0 && (
             <div className="!mb-[28px] sm:!mb-[36px] lg:!mb-[44px]">
-
-              {/* Top Row — 2 prominent members */}
+              {/* Top Row */}
               <div className="mc-top-row">
                 {topTwo.map((m) => (
                   <MemberCard key={m.id} m={m} size="lg" />
@@ -194,19 +352,9 @@ const ManagingCommittee = () => {
               </div>
 
               {/* Connector */}
-              {bottomThree.length > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'center', margin: '0 auto', padding: '10px 0 6px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: 'clamp(200px, 40%, 400px)' }}>
-                    <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, transparent, rgba(240,90,26,.2))' }} />
-                    <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#F05A1A', opacity: .4 }} />
-                    <div style={{ flex: 1, height: 1, background: 'rgba(240,90,26,.15)' }} />
-                    <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#F05A1A', opacity: .4 }} />
-                    <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(240,90,26,.2), transparent)' }} />
-                  </div>
-                </div>
-              )}
+              {bottomThree.length > 0 && <Connector />}
 
-              {/* Bottom Row — 3 members */}
+              {/* Bottom Row */}
               {bottomThree.length > 0 && (
                 <div className="mc-bottom-row">
                   {bottomThree.map((m) => (
@@ -217,16 +365,7 @@ const ManagingCommittee = () => {
             </div>
           )}
 
-          {/* Loading */}
-          {loading && (
-            <div className="flex justify-center items-center !py-16 !gap-3">
-              <div style={{ width: 20, height: 20, border: '2.5px solid #e2e8f0', borderTopColor: '#F05A1A', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
-              <span className="text-slate-400 text-[13px] font-medium">Loading committee...</span>
-              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-            </div>
-          )}
-
-          {/* Empty */}
+          {/* ── Empty ── */}
           {!loading && visibleMembers.length === 0 && (
             <div className="text-center text-slate-400 text-[14px] font-semibold !py-10">
               No committee members available.
@@ -248,65 +387,6 @@ const ManagingCommittee = () => {
         </div>
       </section>
     </>
-  )
-}
-
-/* ── Member Card Component ── */
-const MemberCard = ({ m, size }) => {
-  const isLg = size === 'lg'
-
-  return (
-    <div className="mc-card-wrap">
-      <div
-        className={`mc-card flex flex-col items-center text-center bg-white rounded-[16px] sm:rounded-[20px] border border-slate-100 shadow-[0_4px_18px_rgba(11,30,75,.07)] overflow-hidden`}
-        style={{ padding: isLg ? 'clamp(10px,1.5vw,16px)' : 'clamp(8px,1.2vw,12px)' }}
-      >
-        {/* Photo */}
-        <div
-          className="w-full overflow-hidden rounded-[10px] sm:rounded-[14px] border border-[#edf0f7] shadow-[0_2px_10px_rgba(11,30,75,.07)]"
-          style={{
-            aspectRatio: '3/3.6',
-            marginBottom: isLg ? 'clamp(8px,1.2vw,14px)' : 'clamp(6px,1vw,10px)',
-          }}
-        >
-          <img
-            src={m.img}
-            alt={m.name}
-            className="mc-photo w-full h-full object-cover object-top"
-            onError={(e) => {
-              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=300`
-            }}
-          />
-        </div>
-
-        {/* Name */}
-        <h3
-          className="text-[#0B1E4B] font-extrabold leading-[1.2] !m-0 w-full"
-          style={{
-            fontSize: isLg ? 'clamp(11px,1.4vw,15px)' : 'clamp(10px,1.2vw,13px)',
-            marginBottom: isLg ? 6 : 4,
-          }}
-        >
-          <span className="mc-name-line">{m.name}</span>
-        </h3>
-
-        {/* Role badge */}
-        <span
-          className={`inline-flex items-center rounded-full font-extrabold capitalize ${
-            m.isOrange
-              ? 'bg-[rgba(240,90,26,.1)] text-[#F05A1A] border border-[rgba(240,90,26,.22)]'
-              : 'bg-[rgba(100,116,139,.07)] text-slate-500 border border-[rgba(100,116,139,.18)]'
-          }`}
-          style={{
-            fontSize: isLg ? 'clamp(8px,0.9vw,11px)' : 'clamp(7.5px,0.8vw,10px)',
-            padding: isLg ? '3px 10px' : '2px 8px',
-            letterSpacing: '0.2px',
-          }}
-        >
-          {m.role}
-        </span>
-      </div>
-    </div>
   )
 }
 
