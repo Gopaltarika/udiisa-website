@@ -26,6 +26,8 @@ const normalizeSpecialMembershipCategory = (raw) => {
   const value = String(raw || '').trim().toLowerCase()
   if (value === 'diamond') return 'Diamond'
   if (value === 'gold') return 'Gold'
+  if (value === 'dignitaries' || value === 'dignitary') return 'Dignitaries'
+  if (value === 'body corporate' || value === 'body-corporate' || value === 'corporate') return 'Body Corporate'
   return 'Silver'
 }
 
@@ -238,6 +240,13 @@ export const deleteCommittee = async (req, res) => {
 export const getCommitteeGroups = async (req, res) => {
   try {
     const list = await CommitteeGroup.find({}).sort({ createdAt: -1 }).lean()
+    list.forEach((group) => {
+      if (!Array.isArray(group.members)) return
+      group.members = group.members.map((member) => ({
+        ...member,
+        image: toPublicMediaUrl(req, member.image),
+      }))
+    })
     return res.json(list)
   } catch (e) {
     return res.status(500).json({ message: e.message || 'Failed to fetch committees' })
