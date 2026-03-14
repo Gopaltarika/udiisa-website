@@ -44,6 +44,7 @@ api.interceptors.response.use(
     // Logout only when token is explicitly invalid/expired.
     if (status === 401 && isAuthFailureMessage) {
       localStorage.removeItem('adminToken')
+      localStorage.removeItem('adminEmail')
       window.location.href = '/admin/login'
     }
     return Promise.reject(err)

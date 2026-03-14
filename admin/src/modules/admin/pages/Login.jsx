@@ -69,6 +69,8 @@ export default function Login() {
     try {
       const { data } = await authService.login(form)
       localStorage.setItem('adminToken', data.token)
+      const loggedInEmail = data?.admin?.email || form.email
+      if (loggedInEmail) localStorage.setItem('adminEmail', loggedInEmail)
       navigate('/admin/dashboard')
     } catch (err) {
       setApiErr(err?.response?.data?.message || 'Invalid credentials')

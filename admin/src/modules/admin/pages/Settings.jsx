@@ -47,6 +47,7 @@ function PasswordInput({ label, name, value, onChange, show, onToggle, error, pl
 export default function Settings() {
   const toast    = useAdminToast()
   const navigate = useNavigate()
+  const adminEmail = localStorage.getItem('adminEmail') || '—'
 
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
   const [show, setShow] = useState({ current: false, newPass: false, confirm: false })
@@ -87,6 +88,7 @@ export default function Settings() {
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
+    localStorage.removeItem('adminEmail')
     navigate('/admin/login')
     toast.success('Logged out successfully!')
   }
@@ -150,7 +152,7 @@ export default function Settings() {
               <div className="w-[48px] h-[48px] rounded-full bg-gradient-to-br from-[#0B1E4B] to-[#F05A1A] flex items-center justify-center text-white text-[18px] font-extrabold shadow-md">A</div>
               <div>
                 <p className="text-[15px] font-extrabold text-[#0B1E4B] m-0">Admin User</p>
-                <p className="text-[12px] text-slate-400 m-0">admin@udisports.org</p>
+                <p className="text-[12px] text-slate-400 m-0">{adminEmail}</p>
                 <span className="text-[10px] font-bold text-[#1a6b3a] bg-green-50 border border-green-200 px-[8px] py-[2px] rounded-full">Super Admin</span>
               </div>
             </div>

@@ -10,6 +10,7 @@ export default function Topbar({ collapsed, mobileOpen, setMobileOpen, pageTitle
   const [dropOpen, setDropOpen] = useState(false)
   const dropRef = useRef(null)
   const navigate = useNavigate()
+  const adminEmail = localStorage.getItem('adminEmail') || '—'
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function Topbar({ collapsed, mobileOpen, setMobileOpen, pageTitle
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
+    localStorage.removeItem('adminEmail')
     navigate('/admin/login')
   }
 
@@ -69,7 +71,7 @@ export default function Topbar({ collapsed, mobileOpen, setMobileOpen, pageTitle
 
               <div className="px-[14px] py-[10px] border-b border-slate-100 mb-[4px]">
                 <p className="text-[13px] font-extrabold text-[#0B1E4B] m-0">Admin User</p>
-                <p className="text-[11px] text-slate-400 m-0">admin@udisports.org</p>
+                <p className="text-[11px] text-slate-400 m-0">{adminEmail}</p>
               </div>
 
               <button
