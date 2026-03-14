@@ -53,6 +53,7 @@ export default function GeneralMembers() {
 
   const currentData = data[activeTab] || []
   const emptyForm   = makeEmptyForm(activeTab)
+  const modalTypeLabel = form.type === 'players' ? 'Sports Participant' : 'General Member'
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -266,7 +267,7 @@ export default function GeneralMembers() {
       <Modal
         isOpen={formOpen}
         onClose={() => setFormOpen(false)}
-        title={`${selected ? 'Edit' : 'Add'} ${isSports ? 'Sports Participant' : 'General Member'}`}
+        title={`${selected ? 'Edit' : 'Add'} ${modalTypeLabel}`}
         size="sm"
       >
         <div className="flex flex-col gap-[14px]">

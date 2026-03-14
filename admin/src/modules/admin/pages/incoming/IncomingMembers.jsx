@@ -14,9 +14,9 @@ import { formatDate } from '../../utils/helpers'
 
 // ─── Tab definitions ───────────────────────────────────────────────────────────
 const TABS = [
-  { key: 'individual_player',  label: 'Individual Players'    },
-  { key: 'individual_patron',  label: 'Individual Patron'     },
-  { key: 'lifetime_corporate', label: 'Lifetime Corporate'    },
+  { key: 'individual',  label: 'Individual Players'    },
+  { key: 'player',      label: 'Individual Patron'     },
+  { key: 'corporate',   label: 'Lifetime Corporate'    },
 ]
 
 // ─── Detail row helper used inside the view modal ─────────────────────────────
@@ -27,6 +27,12 @@ function DetailRow({ label, value }) {
       <p className="text-[13px] font-semibold text-slate-700 m-0 mt-[3px] break-words">{value || '—'}</p>
     </div>
   )
+}
+
+const hasValue = (value) => {
+  if (value === null || value === undefined) return false
+  const str = String(value).trim()
+  return str !== '' && str !== '—'
 }
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
@@ -43,6 +49,7 @@ export default function IncomingMembers() {
   const [viewOpen, setViewOpen] = useState(false)
   const [delOpen,  setDelOpen]  = useState(false)
   const [selected, setSelected] = useState(null)
+  const isCorporateTab = activeTab === 'corporate'
 
   // ── Reset search when tab changes ──
   useEffect(() => { setSearch('') }, [activeTab])
@@ -53,7 +60,7 @@ export default function IncomingMembers() {
     const load = async () => {
       setLoading(true)
       try {
-        const params = { memberType: activeTab, ...(dSearch ? { search: dSearch } : {}) }
+        const params = { category: activeTab, ...(dSearch ? { search: dSearch } : {}) }
         const res  = await incomingService.getMemberForms(params)
         const list = Array.isArray(res?.data) ? res.data : []
         if (!mounted) return
@@ -65,10 +72,25 @@ export default function IncomingMembers() {
           age:          item.age                              || '—',
           gender:       item.gender                          || '—',
           memberType:   item.memberType                      || '—',
+          membershipType: item.membershipType                || '',
+          formType:     item.formType                        || '',
+          category:     item.category                        || '',
           address:      item.address                         || '—',
+          companyName:  item.companyName                     || '',
+          aadharNumber: item.aadharNumber                    || '',
+          panNumber:    item.panNumber                       || '',
+          qualification:item.qualification                   || '',
+          sportsInterest:item.sportsInterest                 || '',
           message:      item.message      || item.msg        || '—',
           utr:          item.utr          || item.utrNumber  || '—',
           amount:       item.amount                          || '—',
+          paymentSender:item.paymentSender                   || '',
+          designation:  item.designation                     || '',
+          organization: item.organization                    || '',
+          linkedin:     item.linkedin                        || '',
+          contribution: item.contribution                    || '',
+          termsAccepted: item.termsAccepted ? 'Yes' : '',
+          photo:        item.photo                           || null,
           submittedAt:  item.submittedAt  || item.createdAt,
         })))
       } catch (e) {
@@ -119,7 +141,7 @@ export default function IncomingMembers() {
       ),
     },
     {
-      key: 'memberType', label: 'Member Type',
+      key: 'memberType', label: isCorporateTab ? 'Turnover Slab' : 'Member Type',
       render: (v) => <Badge variant="navy">{v}</Badge>,
     },
     {
@@ -196,6 +218,33 @@ export default function IncomingMembers() {
       >
         {selected && (
           <div className="flex flex-col gap-[12px]">
+            {(() => {
+              const detailRows = [
+                { label: 'Phone', value: selected.phone },
+                { label: 'Age', value: selected.age },
+                { label: 'Gender', value: selected.gender },
+                { label: isCorporateTab ? 'Turnover Slab' : 'Member Type', value: selected.memberType || selected.membershipType },
+                { label: isCorporateTab ? 'Membership Plan' : 'Membership Type', value: selected.membershipType },
+                { label: 'Category', value: selected.category },
+                { label: 'UTR Number', value: selected.utr },
+                { label: 'Amount Paid', value: selected.amount },
+                { label: 'Payment Sender', value: selected.paymentSender },
+                { label: 'Company Name', value: selected.companyName },
+                { label: 'Organization', value: selected.organization },
+                { label: 'Designation', value: selected.designation },
+                { label: 'Qualification', value: selected.qualification },
+                { label: 'Sports Interest', value: selected.sportsInterest },
+                { label: 'Aadhaar Number', value: selected.aadharNumber },
+                { label: 'PAN Number', value: selected.panNumber },
+                { label: 'LinkedIn', value: selected.linkedin },
+                { label: 'Contribution', value: selected.contribution },
+                { label: 'Terms Accepted', value: selected.termsAccepted },
+                { label: 'Form Type', value: selected.formType },
+                { label: 'Submitted', value: formatDate(selected.submittedAt) },
+              ].filter(row => hasValue(row.value))
+
+              return (
+                <>
 
             {/* Top name banner */}
             <div className="flex items-center gap-[12px] bg-gradient-to-r from-[#0B1E4B] to-[#152B6B] rounded-[12px] p-[14px] mb-[4px]">
@@ -213,13 +262,9 @@ export default function IncomingMembers() {
 
             {/* Details grid */}
             <div className="grid grid-cols-2 gap-[10px]">
-              <DetailRow label="Phone"       value={selected.phone}      />
-              <DetailRow label="Age"         value={selected.age}        />
-              <DetailRow label="Gender"      value={selected.gender}     />
-              <DetailRow label="Member Type" value={selected.memberType} />
-              <DetailRow label="UTR Number"  value={selected.utr}        />
-              <DetailRow label="Amount Paid" value={selected.amount}     />
-              <DetailRow label="Submitted"   value={formatDate(selected.submittedAt)} />
+              {detailRows.map((row) => (
+                <DetailRow key={row.label} label={row.label} value={row.value} />
+              ))}
             </div>
 
             {/* Address - full width */}
@@ -228,11 +273,26 @@ export default function IncomingMembers() {
               <p className="text-[13px] font-semibold text-slate-700 m-0 mt-[3px]">{selected.address || '—'}</p>
             </div>
 
+            {/* Photo - full width */}
+            {selected.photo && (
+              <div className="bg-slate-50 rounded-[10px] p-[12px]">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0 mb-[6px]">Uploaded Photo</p>
+                <img
+                  src={selected.photo}
+                  alt={`${selected.name} profile`}
+                  className="w-[96px] h-[96px] rounded-[10px] object-cover border border-slate-200"
+                />
+              </div>
+            )}
+
             {/* Message - full width */}
             <div className="bg-slate-50 rounded-[10px] p-[12px]">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Message</p>
               <p className="text-[13px] font-semibold text-slate-700 m-0 mt-[3px] whitespace-pre-wrap">{selected.message || '—'}</p>
             </div>
+                </>
+              )
+            })()}
 
           </div>
         )}

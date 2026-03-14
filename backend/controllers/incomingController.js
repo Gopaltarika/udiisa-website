@@ -241,8 +241,13 @@ export const deleteContactForm = async (req, res) => {
 // ─── Admin: List member forms ─────────────────────
 export const getMemberForms = async (req, res) => {
   try {
-    const { search } = req.query
+    const { search, category } = req.query
     const filter = {}
+    const normalizedCategory = String(category || '').trim().toLowerCase()
+    if (['individual', 'player', 'corporate'].includes(normalizedCategory)) {
+      filter.category = normalizedCategory
+      filter.formType = 'membership-query'
+    }
     if (search && search.trim()) {
       filter.$or = [
         { fullName: new RegExp(search, 'i') },
@@ -257,6 +262,22 @@ export const getMemberForms = async (req, res) => {
       m.photo = toPublicMediaUrl(req, m.photo)
       m.name = m.fullName
       m.phone = m.phone || '—'
+      m.address = m.fullAddress || m.address || ''
+      m.membershipType = m.membershipType || ''
+      m.category = m.category || ''
+      m.formType = m.formType || ''
+      m.companyName = m.companyName || ''
+      m.aadharNumber = m.aadharNumber || ''
+      m.panNumber = m.panNumber || ''
+      m.qualification = m.qualification || ''
+      m.sportsInterest = m.sportsInterest || ''
+      m.paymentSender = m.paymentSender || ''
+      m.designation = m.designation || ''
+      m.organization = m.organization || ''
+      m.linkedin = m.linkedin || ''
+      m.contribution = m.contribution || ''
+      m.termsAccepted = !!m.termsAccepted
+      m.gender = m.gender ? m.gender.charAt(0).toUpperCase() + m.gender.slice(1) : '—'
       if (m.formType === 'membership-query') {
         const typeLabel = m.membershipType || m.memberType || '—'
         const normalizedTypeLabel = String(typeLabel).trim().toLowerCase()

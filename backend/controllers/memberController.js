@@ -31,10 +31,11 @@ const normalizeSpecialMembershipCategory = (raw) => {
   return 'Silver'
 }
 
-const ALLOWED_GENERAL_TYPES = new Set(['individual', 'body-corporate'])
+const ALLOWED_GENERAL_TYPES = new Set(['individual', 'players', 'body-corporate'])
 const normalizeGeneralType = (raw) => {
   const value = String(raw || '').trim().toLowerCase()
   if (value === 'corporate') return 'body-corporate'
+  if (value === 'sports-participants' || value === 'sports participants' || value === 'participant') return 'players'
   return ALLOWED_GENERAL_TYPES.has(value) ? value : 'individual'
 }
 

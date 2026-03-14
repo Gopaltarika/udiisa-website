@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-import { getPublicGeneralMembers, getPublicPlayers } from '../../../../shared/services/publicApi'
+import { getPublicGeneralMembers } from '../../../../shared/services/publicApi'
 
 const tabs = [
   { key: 'individual',        label: 'General' },
@@ -25,7 +25,7 @@ const GeneralMembers = () => {
 
     Promise.all([
       getPublicGeneralMembers('individual'),
-      getPublicPlayers(),
+      getPublicGeneralMembers('players'),
     ])
       .then(([individualData, sportsParticipantsData]) => {
         if (cancelled) return
@@ -301,7 +301,7 @@ const GeneralMembers = () => {
                     {member.name}
                   </div>
                   <span className="gm-row-company-sub" style={{ display: 'none' }}>
-                    {activeTab === 'sportsParticipants' ? member.sport || member.category : member.company}
+                    {activeTab === 'sportsParticipants' ? member.sport || member.category || member.company : member.company}
                   </span>
                 </div>
 
@@ -309,7 +309,7 @@ const GeneralMembers = () => {
                   className="gm-col-company"
                   style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}
                 >
-                  {activeTab === 'sportsParticipants' ? member.sport || member.category : member.company}
+                  {activeTab === 'sportsParticipants' ? member.sport || member.category || member.company : member.company}
                 </div>
               </div>
             ))}

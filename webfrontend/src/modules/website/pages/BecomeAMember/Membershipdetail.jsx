@@ -176,6 +176,10 @@ const TAB_TO_PATH = {
 }
 
 const GENDER_OPTS = ['', 'Male', 'Female', 'Other / Prefer not to say']
+const getMembershipAmountLabel = (value = '') => {
+  const match = String(value || '').match(/\((₹[^)]+)\)/)
+  return match ? match[1] : ''
+}
 
 /* ════════════════════════════════════════════════════════
    OTP MODAL  (unchanged logic, only minor padding tweak)
@@ -352,6 +356,8 @@ function QueryFormModal({ tabData, onClose }) {
   const [showOTP, setShowOTP] = useState(false)
   const [success, setSuccess] = useState(false)
   const [busy,    setBusy]    = useState(false)
+  const selectedMembershipType = form.membershipType && !form.membershipType.startsWith('—') ? form.membershipType : ''
+  const selectedFee = getMembershipAmountLabel(selectedMembershipType)
 
   const set = (k, v) => { setForm(p => ({ ...p, [k]: v })); setErrors(e => ({ ...e, [k]: '' })) }
 
@@ -445,8 +451,8 @@ function QueryFormModal({ tabData, onClose }) {
                 <tabData.Icon style={{ color: ac }} className="text-[13px] sm:text-[17px]" />
               </div>
               <div>
-                <h3 className="!m-0 text-[13px] sm:text-[15px] font-extrabold text-[#0B1E4B]">Query Form For Membership</h3>
-                <p className="!m-0 text-[10px] sm:text-[11px] text-slate-400">{tabData.label}</p>
+                <h3 className="!m-0 text-[13px] sm:text-[15px] font-extrabold text-[#0B1E4B]">Membership Application Form</h3>
+                <p className="!m-0 text-[10px] sm:text-[11px] text-slate-400">Applying under: <span className="font-bold text-[#0B1E4B]">{tabData.label}</span></p>
               </div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors flex-shrink-0">
@@ -455,6 +461,21 @@ function QueryFormModal({ tabData, onClose }) {
           </div>
           {/* scrollable body */}
           <div className="flex-1 overflow-y-auto !px-4 sm:!px-7 !py-4 sm:!py-5 flex flex-col !gap-3 sm:!gap-4" style={{ scrollbarWidth: 'thin' }}>
+            <div className="rounded-xl border border-[#dbe5ff] bg-[#f8fbff] !px-3.5 sm:!px-4 !py-3">
+              <p className="!m-0 text-[10.5px] sm:text-[11px] font-extrabold tracking-[0.9px] uppercase text-slate-500">You are applying for</p>
+              <p className="!m-0 !mt-1 text-[13px] sm:text-[14px] font-extrabold text-[#0B1E4B]">{tabData.label}</p>
+              <p className="!m-0 !mt-1 text-[11.5px] sm:text-[12px] text-slate-500">
+                {selectedMembershipType
+                  ? <>Selected sub-type: <span className="font-bold text-[#0B1E4B]">{selectedMembershipType}</span></>
+                  : <>Please select your membership sub-type below.</>}
+              </p>
+              {selectedFee && (
+                <p className="!m-0 !mt-1 text-[11.5px] sm:text-[12px] font-semibold text-[#1a6b3a]">
+                  Expected Fee: {selectedFee} + GST
+                </p>
+              )}
+            </div>
+
             <QField label="Full Name" required error={errors.fullName}>
               <QInput type="text" placeholder="Enter your full name" value={form.fullName}
                 onChange={e => set('fullName', e.target.value)} err={errors.fullName} />
@@ -498,7 +519,7 @@ function QueryFormModal({ tabData, onClose }) {
                 <QInput type="number" placeholder="e.g. 28" min="5" max="100"
                   value={form.age} onChange={e => set('age', e.target.value)} err={errors.age} />
               </QField>
-              <QField label="Membership Type" required error={errors.membershipType}>
+              <QField label={tabData.id === 'corporate' ? 'Turnover Slab' : 'Membership Sub-Type'} required error={errors.membershipType}>
                 <QSelect value={form.membershipType} onChange={e => set('membershipType', e.target.value)} err={errors.membershipType}>
                   {tabData.membershipOpts.map(o => <option key={o} value={o}>{o}</option>)}
                 </QSelect>

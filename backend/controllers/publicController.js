@@ -205,6 +205,9 @@ export const getPublicGeneralMembers = async (req, res) => {
       corporate: 'body-corporate',
       'body-corporate': 'body-corporate',
       individual: 'individual',
+      players: 'players',
+      'sports-participants': 'players',
+      'sports participants': 'players',
     }
     const filter = normalizedType ? { type: typeMap[normalizedType] || 'individual' } : {}
     const list = await GeneralMember.find(filter).sort({ createdAt: -1 }).lean()
@@ -215,6 +218,15 @@ export const getPublicGeneralMembers = async (req, res) => {
           name: m.contactPerson || m.name,
           company: m.companyName || '',
           sector: '-',
+        }
+      }
+      if (m.type === 'players') {
+        return {
+          id: m._id.toString(),
+          name: m.name,
+          company: m.companyName || '-',
+          category: m.companyName || '-',
+          sport: m.companyName || '-',
         }
       }
       return {

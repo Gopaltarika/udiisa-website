@@ -11,6 +11,12 @@ import { useDebounce } from '../../hooks/useDebounce'
 import incomingService from '../../services/incomingService'
 import { formatDate } from '../../utils/helpers'
 
+const hasValue = (value) => {
+  if (value === null || value === undefined) return false
+  const str = String(value).trim()
+  return str !== '' && str !== '—'
+}
+
 export default function IncomingContacts() {
   const toast = useAdminToast()
   const [forms,    setForms]   = useState([])
@@ -38,6 +44,11 @@ export default function IncomingContacts() {
             name: item.fullName || '—',
             email: item.email || '—',
             phone: item.phone || '—',
+            gender: item.gender ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1) : '',
+            age: item.age ?? '',
+            aadhar: item.aadharNumber || '',
+            address: item.address || '',
+            qualification: item.qualification || '',
             // Website contact form sends "Your Message", not a separate subject.
             subject: item.message || item.subject || '—',
             message: item.message || '—',
@@ -117,18 +128,22 @@ export default function IncomingContacts() {
                 ['Phone',     selected.phone],
                 ['Gender',     selected.gender],
                 ['Aadhar',     selected.aadhar],
+                ['Age',        selected.age],
+                ['Qualification', selected.qualification],
                 ['Submitted', formatDate(selected.submittedAt)],
-              ].map(([label, val]) => (
+              ].filter(([, val]) => hasValue(val)).map(([label, val]) => (
                 <div key={label} className="bg-slate-50 rounded-[10px] p-[12px]">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">{label}</p>
                   <p className="text-[13px] font-semibold text-slate-700 m-0 mt-[3px]">{val || '—'}</p>
                 </div>
               ))}
             </div>
-            <div className="bg-slate-50 rounded-[10px] p-[12px]">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Address</p>
-              <p className="text-[13.5px] text-slate-700 m-0 mt-[6px] leading-relaxed">{selected.address || '—'}</p>
-            </div>
+            {hasValue(selected.address) && (
+              <div className="bg-slate-50 rounded-[10px] p-[12px]">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Address</p>
+                <p className="text-[13.5px] text-slate-700 m-0 mt-[6px] leading-relaxed">{selected.address}</p>
+              </div>
+            )}
             <div className="bg-slate-50 rounded-[10px] p-[12px]">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Message</p>
               <p className="text-[13.5px] text-slate-700 m-0 mt-[6px] leading-relaxed">{selected.message}</p>
