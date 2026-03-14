@@ -36,7 +36,8 @@ const AppRoutes = () => {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/blogs/*" element={<BlogRoutes />} />
             <Route path="/committee" element={<CommitteePage />} />
-            <Route path="/Contribute-now" element={<DonateNow />} />
+            <Route path="/donate-now" element={<DonateNow />} />
+            <Route path="/Contribute-now" element={<Navigate to="/donate-now" replace />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           </Route>
         </Routes>

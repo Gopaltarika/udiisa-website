@@ -14,6 +14,7 @@
  * Route: /blogs/:slug
  */
 
+import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   FaCalendarAlt, FaClock, FaArrowLeft,
@@ -25,6 +26,41 @@ import { MdArticle }  from 'react-icons/md'
 import BlogSidebar from './BlogSidebar'
 import BlogCard    from './BlogCard'
 import { useBlogDetail, useRecentBlogs, getCatColor } from './blogData'
+
+const SITE_URL = 'https://udisports.in'
+const DEFAULT_IMAGE = `${SITE_URL}/short-logo.webp`
+
+const getOrCreateMeta = (name, attr = 'name') => {
+  const selector = `meta[${attr}="${name}"]`
+  let el = document.head.querySelector(selector)
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute(attr, name)
+    document.head.appendChild(el)
+  }
+  return el
+}
+
+const setCanonical = (url) => {
+  let link = document.head.querySelector('link[rel="canonical"]')
+  if (!link) {
+    link = document.createElement('link')
+    link.setAttribute('rel', 'canonical')
+    document.head.appendChild(link)
+  }
+  link.setAttribute('href', url)
+}
+
+const upsertJsonLd = (id, data) => {
+  let script = document.head.querySelector(`script[data-seo-id="${id}"]`)
+  if (!script) {
+    script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.setAttribute('data-seo-id', id)
+    document.head.appendChild(script)
+  }
+  script.textContent = JSON.stringify(data)
+}
 
 /* ── Skeleton loader ── */
 const DetailSkeleton = () => (
@@ -76,6 +112,62 @@ export default function BlogDetail () {
   const related = recentBlogs.filter(
     (b) => b.slug !== slug && b.category === blog?.category
   ).slice(0, 3)
+
+  useEffect(() => {
+    if (!blog) return
+
+    const canonicalUrl = `${SITE_URL}/blogs/${blog.slug || slug}`
+    const title = `${blog.title} | UDIISA Blogs`
+    const description = blog.excerpt || 'Read this article on UDIISA Blogs.'
+    const image = blog.image || DEFAULT_IMAGE
+
+    document.title = title
+    setCanonical(canonicalUrl)
+
+    getOrCreateMeta('description').setAttribute('content', description)
+    getOrCreateMeta('og:type', 'property').setAttribute('content', 'article')
+    getOrCreateMeta('og:title', 'property').setAttribute('content', title)
+    getOrCreateMeta('og:description', 'property').setAttribute('content', description)
+    getOrCreateMeta('og:url', 'property').setAttribute('content', canonicalUrl)
+    getOrCreateMeta('og:image', 'property').setAttribute('content', image)
+    getOrCreateMeta('article:published_time', 'property').setAttribute('content', blog.dateISO || '')
+    getOrCreateMeta('article:author', 'property').setAttribute('content', blog.author || 'UDIISA')
+
+    getOrCreateMeta('twitter:card').setAttribute('content', 'summary_large_image')
+    getOrCreateMeta('twitter:title').setAttribute('content', title)
+    getOrCreateMeta('twitter:description').setAttribute('content', description)
+    getOrCreateMeta('twitter:image').setAttribute('content', image)
+
+    const articleSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: blog.title,
+      description,
+      image: [image],
+      mainEntityOfPage: canonicalUrl,
+      datePublished: blog.dateISO || undefined,
+      dateModified: blog.dateISO || undefined,
+      author: {
+        '@type': 'Person',
+        name: blog.author || 'UDIISA',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'UDIISA Sports NGO (India)',
+        logo: {
+          '@type': 'ImageObject',
+          url: DEFAULT_IMAGE,
+        },
+      },
+    }
+
+    upsertJsonLd('blog-article-schema', articleSchema)
+
+    return () => {
+      const script = document.head.querySelector('script[data-seo-id="blog-article-schema"]')
+      if (script) script.remove()
+    }
+  }, [blog, slug])
 
   const shareUrl = encodeURIComponent(window.location.href)
   const shareTitle = encodeURIComponent(blog?.title || '')

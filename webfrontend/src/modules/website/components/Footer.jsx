@@ -3,12 +3,13 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaLinkedinIn, FaMapMark
 import { VscInfo } from "react-icons/vsc";
 
 const quickLinks = [
-  { label: 'Home',            href: '/' },
-  { label: 'Members',         href: '/members/special-members' },
-  { label: 'Blogs',           href: '/blogs/' },
-  { label: 'Players',         href: '/talented-players' },
-  { label: 'Contact',         href: '/contact-us' },
-  { label: 'Become a member', href: '/membership/individual-patron' },
+  { label: 'UDIISA Home',                     href: '/' },
+  { label: 'General Members',                 href: '/members/general-members' },
+  { label: 'Special Members',                 href: '/members/special-members' },
+  { label: 'Talented Players',                href: '/talented-players' },
+  { label: 'Sports NGO Blogs',                href: '/blogs/' },
+  { label: 'Contact UDIISA',                  href: '/contact-us' },
+  { label: 'UDIISA Membership Application',   href: '/membership/individual-patron' },
 ]
 
 const programs = [
@@ -96,7 +97,7 @@ const Footer = () => {
                 />
               </a>
               <p className="!mt-[12px] !mb-[16px]" style={{ fontSize: 12.5, color: 'rgba(255,255,255,.55)', lineHeight: 1.75, maxWidth: 280 }}>
-               A non-profit organization dedicated to identifying, nurturing, and empowering talented sportspeople across India.
+               UDIISA Sports NGO (India) is a non-profit organization dedicated to identifying, nurturing, and empowering talented sportspeople across India.
               </p>
               <div className="!flex !items-center !gap-[8px] !flex-wrap">
                 {socials.map((s, i) => (
