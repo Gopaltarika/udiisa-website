@@ -129,7 +129,6 @@ const specialItems = [
               src="/Logo.webp"
               alt="UDIISA logo"
               className="max-h-12 w-auto"
-              loading="eager"
               fetchPriority="high"
               decoding="async"
             />

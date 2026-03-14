@@ -267,7 +267,6 @@ export default function BlogDetail () {
                     src={blog.image}
                     alt={blog.title}
                     className="w-full h-full object-cover"
-                    loading="eager"
                     fetchPriority="high"
                     decoding="async"
                     onError={e => {

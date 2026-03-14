@@ -92,7 +92,6 @@ const Footer = () => {
                   src="/white-logo.webp"
                   alt="UDIISA logo"
                   className="w-full max-w-[180px] sm:max-w-[200px]"
-                  loading="lazy"
                   decoding="async"
                 />
               </a>

@@ -14,7 +14,6 @@ const HeroSection = () => {
         className="absolute inset-0 w-full h-full object-cover object-top"
         src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1920&q=85&fit=crop"
         alt="Sports"
-        loading="eager"
         fetchPriority="high"
         decoding="async"
       />
