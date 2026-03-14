@@ -5,18 +5,36 @@ import {
   MdDashboard, MdPeople, MdStar, MdEmail,
   MdArticle, MdSettings, MdSportsCricket,
 } from 'react-icons/md'
-import { FaChevronLeft, FaChevronRight, FaBars, FaTimes } from 'react-icons/fa'
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { useState } from 'react'
 
 const NAV = [
-  { to: '/admin/dashboard',        icon: <MdDashboard />,      label: 'Dashboard' },
-  { to: '/admin/players',          icon: <MdSportsCricket />,  label: 'Talented Players' },
-  { to: '/admin/committees',       icon: <MdPeople />,  label: 'Committees' },
   {
-    label: 'Members', icon: <MdPeople />, isGroup: true,
+    to: '/admin/dashboard',
+    icon: <MdDashboard />,
+    label: 'Dashboard',
+  },
+  {
+    label: 'Community', icon: <MdPeople />, isGroup: true,
     children: [
-      { to: '/admin/members/general',   label: 'General Members' },
-      { to: '/admin/members/special',   label: 'Special Members' },
+      { to: '/admin/members/general',  label: 'General Members' },
+      { to: '/admin/players',          label: 'Talented Players' },
     ],
+  },
+  {
+    to: '/admin/members/special',
+    icon: <MdStar />,
+    label: 'Special Members',
+  },
+  {
+    to: '/admin/committees',
+    icon: <MdPeople />,
+    label: 'Committees',
+  },
+  {
+    to: '/admin/blogs',
+    icon: <MdArticle />,
+    label: 'Blog Management',
   },
   {
     label: 'Incoming', icon: <MdEmail />, isGroup: true,
@@ -25,11 +43,12 @@ const NAV = [
       { to: '/admin/incoming/contacts', label: 'Contact Forms' },
     ],
   },
-  { to: '/admin/blogs',    icon: <MdArticle />,  label: 'Blog Management' },
-  { to: '/admin/settings', icon: <MdSettings />, label: 'Settings' },
+  {
+    to: '/admin/settings',
+    icon: <MdSettings />,
+    label: 'Settings',
+  },
 ]
-
-import { useState } from 'react'
 
 function NavGroup({ item, collapsed }) {
   const [open, setOpen] = useState(true)
@@ -47,7 +66,7 @@ function NavGroup({ item, collapsed }) {
         {!collapsed && (
           <>
             <span className="flex-1 text-[13px] font-semibold">{item.label}</span>
-            <span className="text-[10px]">{open ? '▾' : '▸'}</span>
+            <span className="text-[10px] transition-transform duration-200" style={{ display: 'inline-block', transform: open ? 'rotate(0deg)' : 'rotate(-90deg)' }}>▾</span>
           </>
         )}
       </button>

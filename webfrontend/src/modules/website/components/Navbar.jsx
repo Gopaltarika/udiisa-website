@@ -144,7 +144,7 @@ const specialItems = [
             {/* Members dropdown — General Member + Talented Players */}
             <div className="relative" onMouseEnter={onMEnter} onMouseLeave={onMLeave}>
               <button className={linkCls("Members")}>
-                Members
+                Community
                 <FaChevronDown className={`text-[10px] transition-transform duration-200 ${membersDrop ? "rotate-180 text-[#F05A1A]" : "rotate-0"}`} />
               </button>
 

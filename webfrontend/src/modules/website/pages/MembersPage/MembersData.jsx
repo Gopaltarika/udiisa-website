@@ -98,7 +98,6 @@ const SPECIAL_TABS = [
     emoji: '💎',
     desc: 'Our most prestigious patrons with the highest level of contribution to sports.',
     tagLabel: 'Diamond Member',
-    // Tailwind-compatible inline style tokens
     activeBg: 'linear-gradient(135deg,#e0f2ff,#bfdbfe)',
     activeBorder: '#3b82f6',
     activeColor: '#1d4ed8',
@@ -201,7 +200,7 @@ const VALID_KEYS = Object.keys(TAB_ROUTES)
 const PAGE_SIZE = 6
 
 /* ═══════════════════════════════════════════
-   GLOBAL KEYFRAME STYLES (minimal, non-Tailwind animations)
+   GLOBAL KEYFRAME STYLES
 ═══════════════════════════════════════════ */
 const GLOBAL_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -271,13 +270,13 @@ const GLOBAL_STYLES = `
   .gm-row:hover { background:#FFF6F0 !important; }
   .gm-row:hover .gm-sr { color:#F05A1A !important; }
 
-  .main-tab-btn::after {
+  .gen-tab-btn::after {
     content:''; position:absolute; bottom:-2px; left:0; right:0;
     height:3px; border-radius:3px 3px 0 0;
     background:linear-gradient(90deg,#F05A1A,#FF7D42);
     transform:scaleX(0); transition:transform .25s ease;
   }
-  .main-tab-btn.active::after { transform:scaleX(1); }
+  .gen-tab-btn.active::after { transform:scaleX(1); }
 
   .dot-bg {
     background-image:radial-gradient(circle,rgba(11,30,75,.06) 1px,transparent 1px);
@@ -296,17 +295,12 @@ const GLOBAL_STYLES = `
 ═══════════════════════════════════════════ */
 const SkeletonCard = () => (
   <div className="rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm">
-    {/* top strip */}
     <div className="h-1 shimmer-bg" />
     <div className="flex flex-col items-center px-3 sm:px-4 py-4 sm:py-6 gap-3 sm:gap-4">
-      {/* avatar square */}
       <div className="w-full rounded-xl sm:rounded-2xl overflow-hidden shimmer-bg" style={{ paddingTop: '100%' }} />
-      {/* name */}
       <div className="shimmer-bg h-4 rounded-full w-3/4" />
-      {/* company */}
       <div className="shimmer-bg h-3 rounded-full w-1/2" />
       <div className="flex-1 w-full" style={{ minHeight: 12 }} />
-      {/* badge */}
       <div className="shimmer-bg h-7 rounded-full w-28 mt-2" />
     </div>
   </div>
@@ -341,28 +335,17 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
       transition: 'transform .4s cubic-bezier(.34,1.18,.64,1), box-shadow .4s ease',
     }}
   >
-    {/* shine overlay */}
     <div className="card-shine-overlay" />
-
-    {/* top gradient bg */}
     <div className="absolute top-0 left-0 right-0 z-0" style={{ height: 200, background: theme.cardGradTop }} />
-
-    {/* deco circles */}
     <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full pointer-events-none z-0"
       style={{ background: `radial-gradient(circle, ${theme.accentGlow} 0%, transparent 70%)` }} />
     <div className="absolute top-4 -left-5 w-20 h-20 rounded-full pointer-events-none z-0"
       style={{ background: `radial-gradient(circle, ${theme.accentGlow} 0%, transparent 70%)` }} />
-
-    {/* top accent strip */}
     <div className="absolute top-0 left-0 right-0 strip-anim z-10" style={{
       height: 4,
       background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo}, ${theme.stripFrom})`,
     }} />
-
-    {/* Content */}
     <div className="relative z-10 flex flex-col items-center w-full flex-1 px-3 sm:px-4 pt-4 sm:pt-5 pb-4 sm:pb-5">
-
-      {/* Avatar */}
       <div className="avatar-wrap relative mb-3 sm:mb-4 w-full">
         <div className="ring-anim rounded-2xl sm:rounded-3xl p-[3px]" style={{
           background: `linear-gradient(135deg, ${theme.ringFrom}, ${theme.ringTo}, ${theme.ringFrom})`,
@@ -381,8 +364,6 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
             />
           </div>
         </div>
-
-        {/* emoji badge */}
         <div className="absolute -bottom-2 -right-2 w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl border-2 border-white flex items-center justify-center z-10"
           style={{
             background: `linear-gradient(135deg, ${theme.ringFrom}, ${theme.ringTo})`,
@@ -392,23 +373,16 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
           {theme.emoji}
         </div>
       </div>
-
-      {/* Name */}
       <h3 className="m-0 mb-1 text-sm sm:text-base font-black text-[#0B1E4B] leading-tight tracking-tight line-clamp-2">
         {member.name}
       </h3>
-
-      {/* Company */}
       {(member.company || member.organization) && (
         <p className="m-0 mb-3 sm:mb-4 text-[10px] sm:text-xs font-medium text-slate-400 flex items-center justify-center gap-1 overflow-hidden max-w-full">
           <FaBuilding className="shrink-0 text-slate-300" style={{ fontSize: 8 }} />
           <span className="truncate">{member.company || member.organization}</span>
         </p>
       )}
-
       <div className="flex-1" />
-
-      {/* Badge */}
       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mt-auto text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest"
         style={{
           background: theme.badgeBg,
@@ -420,8 +394,6 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
         {theme.tagLabel}
       </span>
     </div>
-
-    {/* bottom bar — revealed on hover */}
     <div className="bottom-bar absolute bottom-0 left-0 right-0 z-10" style={{
       height: 4,
       background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo})`,
@@ -468,7 +440,7 @@ const SpecialTabBtn = ({ tab, isActive, onClick, count }) => (
 )
 
 /* ═══════════════════════════════════════════
-   SIMULATE ASYNC LOAD (replaces API call)
+   SIMULATE ASYNC LOAD
 ═══════════════════════════════════════════ */
 const simulateLoad = (data, page, pageSize) =>
   new Promise(res => setTimeout(() => {
@@ -480,17 +452,20 @@ const simulateLoad = (data, page, pageSize) =>
    MAIN COMPONENT
 ═══════════════════════════════════════════ */
 const MembersData = () => {
-  const navigate  = useNavigate()
-  const location  = useLocation()
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  const isGeneralPath = location.pathname.includes('/general-members')
-  const [mainTab, setMainTab] = useState(isGeneralPath ? 'general' : 'special')
+  // ── Detect which page we're on based on route ──
+  const isSpecialPage  = location.pathname.includes('/special-members')
+  const isGeneralPage  = location.pathname.includes('/general-members')
 
+  // ── Special sub-tab from URL ──
   const specialSub = (() => {
     const seg = location.pathname.split('/').pop()
     return VALID_KEYS.includes(seg) ? seg : 'diamond'
   })()
 
+  // ── General sub-tab local state ──
   const [generalSub, setGeneralSub] = useState('individual')
 
   // ── Cards state ──
@@ -501,15 +476,15 @@ const MembersData = () => {
   const [loadingMore, setLoadingMore]       = useState(false)
 
   // ── Table state ──
-  const [visibleRows, setVisibleRows]       = useState([])
-  const [rowPage, setRowPage]               = useState(1)
-  const [hasMoreRows, setHasMoreRows]       = useState(true)
-  const [tableLoading, setTableLoading]     = useState(true)
+  const [visibleRows, setVisibleRows]         = useState([])
+  const [rowPage, setRowPage]                 = useState(1)
+  const [hasMoreRows, setHasMoreRows]         = useState(true)
+  const [tableLoading, setTableLoading]       = useState(true)
   const [loadingMoreRows, setLoadingMoreRows] = useState(false)
 
   // ── Load cards when specialSub changes ──
   useEffect(() => {
-    if (mainTab !== 'special') return
+    if (!isSpecialPage) return
     setInitialLoading(true)
     setVisibleCards([])
     setCardPage(1)
@@ -520,7 +495,7 @@ const MembersData = () => {
       setHasMoreCards(hasMore)
       setInitialLoading(false)
     })
-  }, [specialSub, mainTab])
+  }, [specialSub, isSpecialPage])
 
   // ── Load more cards ──
   const loadMoreCards = useCallback(() => {
@@ -536,9 +511,9 @@ const MembersData = () => {
     })
   }, [loadingMore, hasMoreCards, specialSub, cardPage])
 
-  // ── Load rows when generalSub/mainTab changes ──
+  // ── Load rows when generalSub changes ──
   useEffect(() => {
-    if (mainTab !== 'general') return
+    if (!isGeneralPage) return
     setTableLoading(true)
     setVisibleRows([])
     setRowPage(1)
@@ -549,7 +524,7 @@ const MembersData = () => {
       setHasMoreRows(hasMore)
       setTableLoading(false)
     })
-  }, [generalSub, mainTab])
+  }, [generalSub, isGeneralPage])
 
   // ── Load more rows ──
   const loadMoreRows = useCallback(() => {
@@ -565,20 +540,14 @@ const MembersData = () => {
     })
   }, [loadingMoreRows, hasMoreRows, generalSub, rowPage])
 
-  // ── Navigate helpers ──
+  // ── Redirect special page if invalid sub-route ──
   useEffect(() => {
-    if (mainTab === 'special' && !VALID_KEYS.includes(location.pathname.split('/').pop())) {
+    if (isSpecialPage && !VALID_KEYS.includes(location.pathname.split('/').pop())) {
       navigate(TAB_ROUTES.diamond, { replace: true })
     }
   }, [])
 
   const switchSpecialTab = (key) => navigate(TAB_ROUTES[key])
-  const switchMainTab = (tab) => {
-    setMainTab(tab)
-    if (tab === 'special') navigate(TAB_ROUTES[specialSub])
-    else navigate('/members/general-members')
-  }
-
   const currentTheme = SPECIAL_TABS.find(t => t.key === specialSub)
 
   return (
@@ -590,26 +559,10 @@ const MembersData = () => {
 
       <div className="max-w-screen-xl mx-auto px-3 sm:px-5 lg:px-8 py-4 sm:py-6 relative z-10">
 
-        {/* ══ MAIN TABS ══ */}
-        <div className="flex justify-center border-b-2 border-slate-200 mb-6 sm:mb-8">
-          {[
-            { key: 'special', label: 'Special Members' },
-            { key: 'general', label: 'General Members' },
-          ].map(t => (
-            <button
-              key={t.key}
-              className={`main-tab-btn relative px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-bold transition-colors duration-200 bg-transparent border-none cursor-pointer ${mainTab === t.key ? 'active text-[#0B1E4B]' : 'text-slate-500'}`}
-              onClick={() => switchMainTab(t.key)}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
         {/* ════════════════════
-            SPECIAL MEMBERS
+            SPECIAL MEMBERS PAGE
         ════════════════════ */}
-        {mainTab === 'special' && (
+        {isSpecialPage && (
           <div className="tab-content">
 
             {/* Sub-tabs */}
@@ -663,14 +616,12 @@ const MembersData = () => {
                   ))}
                 </div>
 
-                {/* Load more skeleton row */}
                 {loadingMore && (
                   <div className="grid gap-3 sm:gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-3 sm:mt-5">
                     {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
                   </div>
                 )}
 
-                {/* Load more button */}
                 {hasMoreCards && !loadingMore && (
                   <div className="flex justify-center mt-6 sm:mt-8">
                     <button
@@ -700,20 +651,20 @@ const MembersData = () => {
         )}
 
         {/* ════════════════════
-            GENERAL MEMBERS
+            GENERAL MEMBERS PAGE
         ════════════════════ */}
-        {mainTab === 'general' && (
+        {isGeneralPage && (
           <div className="tab-content">
 
-            {/* Sub-tabs */}
+            {/* Sub-tabs — renamed */}
             <div className="flex items-center border-b-2 border-slate-200 mb-4 sm:mb-5">
               {[
-                { key: 'individual', label: 'Individual', count: GENERAL_STATIC_DATA.individual.length },
-                { key: 'players',    label: 'Players',    count: GENERAL_STATIC_DATA.players.length },
+                { key: 'individual', label: 'General Members', count: GENERAL_STATIC_DATA.individual.length },
+                { key: 'players',    label: 'Sports Participants', count: GENERAL_STATIC_DATA.players.length },
               ].map(st => (
                 <button
                   key={st.key}
-                  className={`flex items-center gap-1.5 sm:gap-2 pb-2.5 sm:pb-3 pt-2 px-3 sm:px-5 text-xs sm:text-sm font-semibold cursor-pointer bg-transparent border-none transition-colors duration-200 -mb-0.5 ${generalSub === st.key ? 'text-[#0B1E4B] font-extrabold border-b-2 border-[#F05A1A]' : 'text-slate-500'}`}
+                  className={`gen-tab-btn relative flex items-center gap-1.5 sm:gap-2 pb-2.5 sm:pb-3 pt-2 px-3 sm:px-5 text-xs sm:text-sm font-semibold cursor-pointer bg-transparent border-none transition-colors duration-200 -mb-0.5 ${generalSub === st.key ? 'text-[#0B1E4B] font-extrabold active' : 'text-slate-500'}`}
                   style={{ borderBottom: generalSub === st.key ? '3px solid #F05A1A' : '3px solid transparent' }}
                   onClick={() => setGeneralSub(st.key)}
                 >
@@ -727,8 +678,6 @@ const MembersData = () => {
 
             {/* Table */}
             <div className="rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-md">
-
-              {/* Header */}
               <div className="grid gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3"
                 style={{
                   gridTemplateColumns: '40px 1fr 1fr',
@@ -741,7 +690,6 @@ const MembersData = () => {
                 ))}
               </div>
 
-              {/* Rows */}
               {tableLoading ? (
                 Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} i={i} />)
               ) : visibleRows.length === 0 ? (
@@ -763,14 +711,11 @@ const MembersData = () => {
                       <div className="text-[11px] sm:text-xs text-slate-500 truncate">{m.company || m.organization || '-'}</div>
                     </div>
                   ))}
-
-                  {/* skeleton rows while loading more */}
                   {loadingMoreRows && Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} i={visibleRows.length + i} />)}
                 </>
               )}
             </div>
 
-            {/* Load more rows btn */}
             {!tableLoading && hasMoreRows && !loadingMoreRows && (
               <div className="flex justify-center mt-4 sm:mt-6">
                 <button
