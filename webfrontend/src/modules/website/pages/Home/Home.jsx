@@ -13,7 +13,6 @@ const GeneralMembers = lazy(() => import("./GeneralMembers"));
 const SportsCommittee = lazy(() => import("./SportsCommittee"));
 const BlogSection = lazy(() => import("./Blogsection"));
 const ContactUs = lazy(() => import("./ContactUs"));
-// MONGODB_URI=mongodb+srv://info_db_user:qR2mvJBP6qLRXwQl@cluster0.eb3vukj.mongodb.net/
 const DeferredSection = ({ children, minHeight = 320 }) => {
   const holderRef = useRef(null);
   const [visible, setVisible] = useState(false);

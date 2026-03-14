@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken'
 import Admin from '../models/Admin.js'
+import { ENV } from '../config/env.js'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
+const JWT_SECRET = ENV.jwtSecret
 
 export const authMiddleware = async (req, res, next) => {
   try {

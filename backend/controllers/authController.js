@@ -5,8 +5,9 @@ import Admin from '../models/Admin.js'
 import { setResetToken, getResetToken, clearResetToken } from '../utils/resetTokenStore.js'
 import { setResetOtp, verifyResetOtp, clearResetOtp } from '../utils/resetOtpStore.js'
 import { sendOTPEmail, sendResetPasswordEmail } from '../utils/emailService.js'
+import { ENV } from '../config/env.js'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
+const JWT_SECRET = ENV.jwtSecret
 const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '')
 
 const escapeRegex = (value = '') => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
