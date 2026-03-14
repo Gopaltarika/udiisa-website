@@ -127,7 +127,7 @@ export default function IncomingContacts() {
                 ['Email',     selected.email],
                 ['Phone',     selected.phone],
                 ['Gender',     selected.gender],
-                ['Aadhar',     selected.aadhar],
+                ['Aadhaar',    selected.aadhar],
                 ['Age',        selected.age],
                 ['Qualification', selected.qualification],
                 ['Submitted', formatDate(selected.submittedAt)],

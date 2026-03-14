@@ -22,16 +22,16 @@ function loadStyle(href) {
   document.head.appendChild(l)
 }
 
-// isOpen prop: modal ki open state pass karo — pehli baar bhi sahi render hoga
+// Pass modal open state via isOpen so first render initializes correctly.
 export default function QuillEditor({ value = '', onChange, height = 350, isOpen = true }) {
   const containerRef = useRef(null)
   const quillRef     = useRef(null)
   const skipRef      = useRef(false)
 
-  // isOpen change hone par (false→true) quill destroy karke re-init karo
+  // Re-initialize Quill whenever isOpen toggles (false -> true).
   useEffect(() => {
     if (!isOpen) {
-      // Modal band hua — quill instance saaf karo taaki agli baar fresh init ho
+      // Modal closed: clear Quill instance so next open starts fresh.
       if (quillRef.current) {
         quillRef.current = null
       }
@@ -44,7 +44,7 @@ export default function QuillEditor({ value = '', onChange, height = 350, isOpen
       loadStyle(QUILL_CSS)
       await loadScript(QUILL_JS)
 
-      // DOM fully paint hone ka wait — requestAnimationFrame + small timeout
+      // Wait for full DOM paint before editor initialization.
       await new Promise(res => requestAnimationFrame(() => setTimeout(res, 0)))
 
       if (!mounted || !containerRef.current || quillRef.current) return
@@ -52,7 +52,7 @@ export default function QuillEditor({ value = '', onChange, height = 350, isOpen
       const QuillConstructor = window.Quill
       if (!QuillConstructor) return
 
-      // Pehle container saaf karo (stale DOM nodes ho sakte hain)
+      // Clear container first to avoid stale DOM nodes.
       containerRef.current.innerHTML = ''
 
       const quill = new QuillConstructor(containerRef.current, {
@@ -70,7 +70,7 @@ export default function QuillEditor({ value = '', onChange, height = 350, isOpen
         },
       })
 
-      // Initial HTML value set karo
+      // Set initial HTML value.
       if (value) {
         quill.clipboard.dangerouslyPasteHTML(value)
       }
@@ -89,7 +89,7 @@ export default function QuillEditor({ value = '', onChange, height = 350, isOpen
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
-  // External value sync (form reset etc.) — loop se bachao
+  // Sync external value updates (e.g. form reset) while avoiding feedback loops.
   useEffect(() => {
     const quill = quillRef.current
     if (!quill) return

@@ -530,8 +530,8 @@ const ContactForm = () => {
           <Err msg={errors.mobile} />
         </Field>
 
-        {/* ── AADHAR (optional) ── */}
-        <Field label="Aadhar Number" hint="Optional — kept strictly confidential">
+        {/* ── AADHAAR (optional) ── */}
+        <Field label="Aadhaar Number" hint="Optional — kept strictly confidential">
           <div style={{ position:'relative' }}>
             <input type="text" placeholder="XXXX XXXX XXXX" maxLength={14}
               value={form.aadharNumber} className="cf-input"
@@ -646,7 +646,7 @@ export default function ContactUs() {
             <InfoPanel />
           </div>
 
-          {/* Right — Contact Form (pehle mobile pe) */}
+          {/* Right — Contact Form (shown first on mobile) */}
           <div className="form-col" style={{
             background:'#fff', borderRadius:20,
             border:'1.5px solid #f1f5f9',

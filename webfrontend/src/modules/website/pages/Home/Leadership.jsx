@@ -84,7 +84,7 @@ const Leadership = () => {
                   fontSize: "clamp(28px, 5vw, 52px)",
                 }}
               >
-                Mr. sunil jalan
+                Mr. Sunil Jalan
               </h2>
 
               {/* Orange underline */}
@@ -92,7 +92,7 @@ const Leadership = () => {
 
               {/* Description */}
               <p className="text-[rgba(255,255,255,.7)] !m-0 !mb-[0px] w-full leading-[1.8] sm:leading-[1.85] text-[clamp(13px,1.5vw,15.5px)]">
-                   He is also the Co-Founder and Chairman of A-One Steel Group. He is proactive in providing assistance to talented and gifted players in a recognized manner at all levels in the sports mission. He lends his expertise to each significant aspect of managing the Association, including strategy, operations, and finance objectives. He is responsible for the successful leadership and management of the Association, which is registered under Section 8 of the Companies Act. He implements comprehensive industry plans in sports, enhances the organizational culture, and ensures a safe working environment for the Unpleasing Dreams industry, with the aim of creating future champions in sports.
+                   He is also the Co-Founder and Chairman of A-One Steel Group. He is proactive in providing assistance to talented and gifted players in a recognized manner at all levels in the sports mission. He lends his expertise to each significant aspect of managing the Association, including strategy, operations, and finance objectives. He is responsible for the successful leadership and management of the Association, which is registered under Section 8 of the Companies Act. He implements comprehensive plans for sports development, enhances the organizational culture, and ensures a safe working environment within the sports ecosystem, with the aim of creating future champions in sports.
               </p>
 
             </div>
