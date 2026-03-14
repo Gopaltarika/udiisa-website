@@ -8,9 +8,31 @@ const QUILL_JS  = 'https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js'
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return }
+    // If Quill is already available, no need to wait.
+    if (window.Quill) {
+      resolve()
+      return
+    }
+
+    const existing = document.querySelector(`script[src="${src}"]`)
+    if (existing) {
+      // Script tag exists but may still be loading. Wait for load/error.
+      const handleLoad = () => resolve()
+      const handleError = () => reject(new Error(`Failed to load script: ${src}`))
+      existing.addEventListener('load', handleLoad, { once: true })
+      existing.addEventListener('error', handleError, { once: true })
+
+      // If browser already loaded it before listeners were attached.
+      setTimeout(() => {
+        if (window.Quill) resolve()
+      }, 0)
+      return
+    }
+
     const s = document.createElement('script')
-    s.src = src; s.onload = resolve; s.onerror = reject
+    s.src = src
+    s.onload = resolve
+    s.onerror = reject
     document.head.appendChild(s)
   })
 }
@@ -40,7 +62,7 @@ export default function QuillEditor({ value = '', onChange, height = 350, isOpen
 
     let mounted = true
 
-    const init = async () => {
+    const init = async (attempt = 0) => {
       loadStyle(QUILL_CSS)
       await loadScript(QUILL_JS)
 
@@ -50,7 +72,13 @@ export default function QuillEditor({ value = '', onChange, height = 350, isOpen
       if (!mounted || !containerRef.current || quillRef.current) return
 
       const QuillConstructor = window.Quill
-      if (!QuillConstructor) return
+      if (!QuillConstructor) {
+        // Rare race: retry once shortly if script global isn't ready yet.
+        if (attempt < 1) {
+          setTimeout(() => { if (mounted) init(attempt + 1) }, 120)
+        }
+        return
+      }
 
       // Clear container first to avoid stale DOM nodes.
       containerRef.current.innerHTML = ''
