@@ -13,6 +13,19 @@ const GeneralMembers = lazy(() => import("./GeneralMembers"));
 const SportsCommittee = lazy(() => import("./SportsCommittee"));
 const BlogSection = lazy(() => import("./Blogsection"));
 const ContactUs = lazy(() => import("./ContactUs"));
+
+const preloadHomeChunks = () =>
+  Promise.allSettled([
+    import("./ManagingCommitte"),
+    import("./SpecialMember"),
+    import("./Promoters"),
+    import("./Becomeamember"),
+    import("./GeneralMembers"),
+    import("./SportsCommittee"),
+    import("./Blogsection"),
+    import("./ContactUs"),
+  ]);
+
 const DeferredSection = ({ children, minHeight = 320 }) => {
   const holderRef = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -28,7 +41,7 @@ const DeferredSection = ({ children, minHeight = 320 }) => {
           observer.disconnect();
         }
       },
-      { rootMargin: "260px 0px" }
+      { rootMargin: "900px 0px" }
     );
 
     observer.observe(node);
@@ -40,12 +53,33 @@ const DeferredSection = ({ children, minHeight = 320 }) => {
       ref={holderRef}
       style={{ contentVisibility: "auto", containIntrinsicSize: `${minHeight}px` }}
     >
-      {visible ? children : null}
+      {visible ? (
+        <Suspense fallback={<div style={{ minHeight }} aria-hidden="true" />}>
+          {children}
+        </Suspense>
+      ) : (
+        <div style={{ minHeight }} aria-hidden="true" />
+      )}
     </section>
   );
 };
 
 const Home = () => {
+  useEffect(() => {
+    // Prefetch deferred chunks once main thread is relatively free.
+    const load = () => {
+      preloadHomeChunks();
+    };
+
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(load, { timeout: 1200 });
+      return () => window.cancelIdleCallback(id);
+    }
+
+    const t = setTimeout(load, 350);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <>
       <HeroSection />
@@ -54,32 +88,30 @@ const Home = () => {
       <AdvisoryBoard />
       <WhatWeDo />
 
-      <Suspense fallback={null}>
-        <DeferredSection minHeight={460}>
-          <ManagingCommittee />
-        </DeferredSection>
-        <DeferredSection minHeight={500}>
-          <SpecialMembersSection />
-        </DeferredSection>
-        <DeferredSection minHeight={460}>
-          <Promoters />
-        </DeferredSection>
-        <DeferredSection minHeight={420}>
-          <BecomeAMember />
-        </DeferredSection>
-        <DeferredSection minHeight={540}>
-          <GeneralMembers />
-        </DeferredSection>
-        <DeferredSection minHeight={460}>
-          <SportsCommittee />
-        </DeferredSection>
-        <DeferredSection minHeight={520}>
-          <BlogSection />
-        </DeferredSection>
-        <DeferredSection minHeight={520}>
-          <ContactUs />
-        </DeferredSection>
-      </Suspense>
+      <DeferredSection minHeight={460}>
+        <ManagingCommittee />
+      </DeferredSection>
+      <DeferredSection minHeight={500}>
+        <SpecialMembersSection />
+      </DeferredSection>
+      <DeferredSection minHeight={460}>
+        <Promoters />
+      </DeferredSection>
+      <DeferredSection minHeight={420}>
+        <BecomeAMember />
+      </DeferredSection>
+      <DeferredSection minHeight={540}>
+        <GeneralMembers />
+      </DeferredSection>
+      <DeferredSection minHeight={460}>
+        <SportsCommittee />
+      </DeferredSection>
+      <DeferredSection minHeight={520}>
+        <BlogSection />
+      </DeferredSection>
+      <DeferredSection minHeight={520}>
+        <ContactUs />
+      </DeferredSection>
     </>
   );
 };
