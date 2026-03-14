@@ -226,11 +226,12 @@ export default function Blogs() {
           </FormField>
 
           {/* ✅ Quill Editor — no API key, no CDN errors */}
-          <FormField label="Full Blog Content">
+        <FormField label="Full Blog Content">
             <QuillEditor
               value={form.content}
               onChange={(content) => setForm(f => ({ ...f, content }))}
               height={380}
+              isOpen={formOpen}
             />
           </FormField>
 

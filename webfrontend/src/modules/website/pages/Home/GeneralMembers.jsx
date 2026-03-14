@@ -4,19 +4,19 @@ import { useNavigate } from 'react-router-dom'
 import { getPublicGeneralMembers, getPublicPlayers } from '../../../../shared/services/publicApi'
 
 const tabs = [
-  { key: 'individual', label: 'General' },
-  { key: 'players',    label: 'Players' },
+  { key: 'individual',        label: 'General' },
+  { key: 'sportsParticipants', label: 'Sports Participants' },
 ]
 
 const GeneralMembers = () => {
   const [activeTab, setActiveTab] = useState('individual')
   const [individualMembers, setIndividualMembers] = useState([])
-  const [players, setPlayers] = useState([])
+  const [sportsParticipants, setSportsParticipants] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const data = activeTab === 'individual' ? individualMembers : players
+  const data = activeTab === 'individual' ? individualMembers : sportsParticipants
 
   useEffect(() => {
     let cancelled = false
@@ -27,16 +27,16 @@ const GeneralMembers = () => {
       getPublicGeneralMembers('individual'),
       getPublicPlayers(),
     ])
-      .then(([individualData, playersData]) => {
+      .then(([individualData, sportsParticipantsData]) => {
         if (cancelled) return
         setIndividualMembers(Array.isArray(individualData) ? individualData : [])
-        setPlayers(Array.isArray(playersData) ? playersData : [])
+        setSportsParticipants(Array.isArray(sportsParticipantsData) ? sportsParticipantsData : [])
       })
       .catch((err) => {
         if (!cancelled) {
           setError(err?.message || 'Failed to load members')
           setIndividualMembers([])
-          setPlayers([])
+          setSportsParticipants([])
         }
       })
       .finally(() => {
@@ -220,7 +220,7 @@ const GeneralMembers = () => {
                 NAME
               </div>
               <div className="gm-col-company" style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,.7)', letterSpacing: '1.8px', textTransform: 'uppercase' }}>
-                {activeTab === 'players' ? 'SPORT / CATEGORY' : 'COMPANY / ORGANIZATION'}
+                {activeTab === 'sportsParticipants' ? 'SPORT / CATEGORY' : 'COMPANY / ORGANIZATION'}
               </div>
             </div>
 
@@ -236,11 +236,9 @@ const GeneralMembers = () => {
                   borderBottom: index < 7 ? '1px solid #f1f5f9' : 'none',
                 }}
               >
-                {/* SR */}
                 <div>
                   <div className="gm-skel" style={{ width: 22, height: 12 }} />
                 </div>
-                {/* Name */}
                 <div>
                   <div
                     className="gm-skel"
@@ -250,7 +248,6 @@ const GeneralMembers = () => {
                     }}
                   />
                 </div>
-                {/* Company */}
                 <div className="gm-col-company">
                   <div
                     className="gm-skel"
@@ -304,7 +301,7 @@ const GeneralMembers = () => {
                     {member.name}
                   </div>
                   <span className="gm-row-company-sub" style={{ display: 'none' }}>
-                    {activeTab === 'players' ? member.sport || member.category : member.company}
+                    {activeTab === 'sportsParticipants' ? member.sport || member.category : member.company}
                   </span>
                 </div>
 
@@ -312,7 +309,7 @@ const GeneralMembers = () => {
                   className="gm-col-company"
                   style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}
                 >
-                  {activeTab === 'players' ? member.sport || member.category : member.company}
+                  {activeTab === 'sportsParticipants' ? member.sport || member.category : member.company}
                 </div>
               </div>
             ))}
@@ -332,9 +329,9 @@ const GeneralMembers = () => {
                 boxShadow: '0 6px 20px rgba(11,30,75,.25)',
                 letterSpacing: '0.3px',
               }}
-              onClick={() => navigate(activeTab === 'players' ? '/members/players' : '/members/general-members')}
+              onClick={() => navigate(activeTab === 'sportsParticipants' ? '/members/sports-participants' : '/members/general-members')}
             >
-              <span className='text-white'>View All {activeTab === 'players' ? 'Players' : 'Members'}</span>
+              <span className='text-white'>View All {activeTab === 'sportsParticipants' ? 'Sports Participants' : 'Members'}</span>
               <FaArrowRight className="btn-arrow text-white" style={{ fontSize: 12 }} />
             </button>
           </div>
