@@ -329,7 +329,7 @@ const GeneralMembers = () => {
                 boxShadow: '0 6px 20px rgba(11,30,75,.25)',
                 letterSpacing: '0.3px',
               }}
-              onClick={() => navigate(activeTab === 'sportsParticipants' ? '/members/sports-participants' : '/members/general-members')}
+              onClick={() => navigate(activeTab === 'sportsParticipants' ? '/talented-players' : '/members/general-members')}
             >
               <span className='text-white'>View All {activeTab === 'sportsParticipants' ? 'Sports Participants' : 'Members'}</span>
               <FaArrowRight className="btn-arrow text-white" style={{ fontSize: 12 }} />

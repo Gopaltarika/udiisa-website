@@ -267,6 +267,9 @@ export default function BlogDetail () {
                     src={blog.image}
                     alt={blog.title}
                     className="w-full h-full object-cover"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     onError={e => {
                       e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category)}&background=0B1E4B&color=fff&size=800`
                     }}

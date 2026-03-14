@@ -37,6 +37,7 @@ export default function BlogCard ({ blog }) {
           alt={blog.title}
           className="w-full h-full object-cover group-hover:scale-[1.08] transition-transform duration-500"
           loading="lazy"
+          decoding="async"
           onError={e => {
             e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category)}&background=0B1E4B&color=fff&size=300`
           }}
