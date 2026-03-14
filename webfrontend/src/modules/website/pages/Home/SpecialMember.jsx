@@ -75,7 +75,7 @@ const TABS = [
     dotActive: "#7c3aed", dotShadow: "rgba(124,58,237,0.4)",
   },
   {
-    key: "bodyCorporate", label: "Body Corporate", emoji: "🏢",
+    key: "bodyCorporate", label: "Corporate Members", emoji: "🏢",
     tabActiveBg: "linear-gradient(135deg, #064e3b 0%, #059669 100%)",
     tabActiveBorder: "#34d399", tabActiveText: "#fff",
     tabActiveShadow: "0 8px 28px rgba(5,150,105,0.35)",

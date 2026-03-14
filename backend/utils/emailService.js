@@ -9,6 +9,10 @@ import nodemailer from 'nodemailer'
 
 let transporter = null
 
+const ORG_NAME = process.env.SMTP_FROM_NAME || 'UDIISA Sports NGO (India)'
+const FALLBACK_FROM = process.env.SMTP_FROM || (process.env.SMTP_USER ? `"${ORG_NAME}" <${process.env.SMTP_USER}>` : undefined)
+const REPLY_TO = process.env.SMTP_REPLY_TO || process.env.SMTP_USER
+
 function getTransporter() {
   if (transporter) return transporter
   const host = process.env.SMTP_HOST || 'smtp.gmail.com'
@@ -38,29 +42,41 @@ export async function sendOTPEmail(to, otp) {
   }
 
   const html = `
-    <div style="font-family: 'Segoe UI', sans-serif; max-width: 420px; margin: 0 auto; padding: 24px;">
-      <h2 style="color: #0B1E4B; margin: 0 0 16px;">UDI Sports NGO</h2>
-      <p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
-        Your email verification OTP is:
+    <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 20px; color: #1f2937;">
+      <h2 style="color: #0B1E4B; margin: 0 0 12px;">UDIISA Sports NGO (India)</h2>
+      <p style="font-size: 15px; line-height: 1.6; margin: 0 0 14px;">
+        Your one-time verification code is:
       </p>
-      <div style="background: linear-gradient(135deg, #F05A1A, #FF7D42); color: white; font-size: 28px; font-weight: 800; letter-spacing: 8px; padding: 16px 24px; border-radius: 12px; text-align: center; margin: 0 0 24px;">
+      <div style="background: #0B1E4B; color: #ffffff; font-size: 30px; font-weight: 700; letter-spacing: 6px; padding: 14px 18px; border-radius: 8px; text-align: center; margin: 0 0 14px;">
         ${otp}
       </div>
-      <p style="color: #64748b; font-size: 13px; margin: 0;">
-        This OTP is valid for <strong>10 minutes</strong>. Do not share it with anyone.
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 10px;">
+        This code is valid for <strong>10 minutes</strong>. Please do not share it.
       </p>
-      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
-      <p style="color: #94a3b8; font-size: 11px; margin: 0;">
-        If you didn't request this, please ignore this email.
+      <p style="font-size: 12px; color: #6b7280; margin: 0;">
+        If you did not request this, you can safely ignore this message.
       </p>
     </div>
   `
+  const text = [
+    'UDIISA Sports NGO (India)',
+    '',
+    'Your one-time verification code is:',
+    otp,
+    '',
+    'This code is valid for 10 minutes. Please do not share it.',
+    'If you did not request this, you can safely ignore this message.',
+  ].join('\n')
 
   await trans.sendMail({
-    from: process.env.SMTP_FROM || `"UDI Sports NGO" <${process.env.SMTP_USER}>`,
+    from: FALLBACK_FROM,
+    sender: process.env.SMTP_USER,
+    replyTo: REPLY_TO,
     to,
-    subject: 'Your OTP for Contact Form - UDI Sports NGO',
+    subject: 'Your verification code - UDI Sports',
     html,
+    text,
+    headers: { 'X-Auto-Response-Suppress': 'All' },
   })
   return { ok: true }
 }
@@ -74,25 +90,41 @@ export async function sendResetPasswordEmail(to, resetLink) {
   }
 
   const html = `
-    <div style="font-family: 'Segoe UI', sans-serif; max-width: 420px; margin: 0 auto; padding: 24px;">
-      <h2 style="color: #0B1E4B; margin: 0 0 16px;">UDI Sports Admin</h2>
-      <p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
-        You requested a password reset. Click the button below to set a new password:
+    <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 20px; color: #1f2937;">
+      <h2 style="color: #0B1E4B; margin: 0 0 12px;">UDIISA Sports NGO (India) Admin</h2>
+      <p style="font-size: 15px; line-height: 1.6; margin: 0 0 14px;">
+        We received a request to reset your password.
       </p>
-      <p style="margin: 0 0 24px;">
-        <a href="${resetLink}" style="display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #F05A1A, #FF7D42); color: white; text-decoration: none; font-weight: 800; border-radius: 12px;">Reset Password</a>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0 0 12px;">
+        Open the link below to set a new password:
       </p>
-      <p style="color: #64748b; font-size: 13px; margin: 0;">
-        This link is valid for <strong>1 hour</strong>. If you didn't request this, please ignore this email.
+      <p style="margin: 0 0 14px; word-break: break-all;">
+        <a href="${resetLink}" style="color: #0B1E4B;">${resetLink}</a>
+      </p>
+      <p style="font-size: 12px; color: #6b7280; margin: 0;">
+        This link is valid for <strong>1 hour</strong>. If you did not request this, please ignore this email.
       </p>
     </div>
   `
+  const text = [
+    'UDIISA Sports NGO (India) Admin',
+    '',
+    'We received a request to reset your password.',
+    'Open this link to set a new password:',
+    resetLink,
+    '',
+    'This link is valid for 1 hour. If you did not request this, please ignore this email.',
+  ].join('\n')
 
   await trans.sendMail({
-    from: process.env.SMTP_FROM || `"UDI Sports NGO" <${process.env.SMTP_USER}>`,
+    from: FALLBACK_FROM,
+    sender: process.env.SMTP_USER,
+    replyTo: REPLY_TO,
     to,
-    subject: 'Reset your admin password - UDI Sports',
+    subject: 'Password reset request - UDI Sports',
     html,
+    text,
+    headers: { 'X-Auto-Response-Suppress': 'All' },
   })
   return { ok: true }
 }

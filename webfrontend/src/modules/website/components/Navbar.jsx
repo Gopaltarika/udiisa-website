@@ -58,7 +58,7 @@ export default function Navbar() {
     if (pathname.startsWith("/about-us")) return "About Us"
     if (pathname.startsWith("/members/")) return "Members"
     if (pathname.startsWith("/special-members/")) return "Special Member"
-    if (pathname.startsWith("/committee")) return "Committee"
+    if (pathname.startsWith("/committee")) return "Committees"
     if (pathname.startsWith("/blogs")) return "Blogs"
     if (pathname.startsWith("/talented-players")) return "Talented Players"
     return ""
@@ -84,7 +84,7 @@ const specialItems = [
   { label: "Gold Member",     href: "/members/special-members/gold",        icon: <BsStarFill />,    desc: "Top-tier membership",     color: "#FFD700" },
   { label: "Silver Member",   href: "/members/special-members/silver",      icon: <BsStarFill />,    desc: "Distinguished level",     color: "#C0C0C0" },
   { label: "Dignitaries",     href: "/members/special-members/dignitaries", icon: <BsPersonFill />,  desc: "Eminent personalities",   color: "#d8b4fe" },
-  { label: "Body Corporate",  href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members", color: "#6ee7b7" },
+  { label: "Corporate Members",  href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members", color: "#6ee7b7" },
 ]
 
   // Active link colour helper
@@ -214,8 +214,8 @@ const specialItems = [
 
             {/* Committee dropdown */}
             <div className="relative" onMouseEnter={onCEnter} onMouseLeave={onCLeave}>
-              <button className={linkCls("Committee")}>
-                Committee
+              <button className={linkCls("All Committees")}>
+                Committees
                 <FaChevronDown className={`text-[10px] transition-transform duration-200 ${committeeDrop ? "rotate-180 text-[#F05A1A]" : "rotate-0"}`} />
               </button>
 
@@ -399,10 +399,10 @@ const specialItems = [
             {/* Committee accordion */}
             <div>
               <button
-                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "Committee" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
+                className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "All Committees" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
                 onClick={() => { loadCommittees(); setMobileCommitteeDrop(p => !p) }}
               >
-                <span>Committee</span>
+                <span>Committees</span>
                 <FaChevronDown className={`text-[11px] transition-transform duration-200 ${mobileCommitteeDrop ? "rotate-180 text-[#F05A1A]" : "text-slate-400"}`} />
               </button>
               <div className={`acc ${mobileCommitteeDrop ? "open" : ""}`}>

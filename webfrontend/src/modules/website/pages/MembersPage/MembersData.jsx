@@ -170,7 +170,7 @@ const SPECIAL_TABS = [
   },
   {
     key: 'corporate',
-    label: 'Body Corporate',
+    label: 'Corporate Members',
     emoji: '🏢',
     desc: 'Corporate bodies and organizations registered as institutional members.',
     tagLabel: 'Corporate Member',
