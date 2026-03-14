@@ -32,12 +32,18 @@ const MEMBERSHIP_FEE_MAP = {
   'gold (₹75,000)': '₹75,000',
   'diamond (₹1,00,000)': '₹1,00,000',
   'up to ₹1 cr (₹2,50,000)': '₹2,50,000',
-  '₹1 cr – ₹5 cr (₹5,00,000)': '₹5,00,000',
-  '₹5 cr – ₹25 cr (₹10,00,000)': '₹10,00,000',
-  '₹25 cr – ₹50 cr (₹20,00,000)': '₹20,00,000',
-  '₹50 cr – ₹100 cr (₹35,00,000)': '₹35,00,000',
+  '₹1 cr - ₹5 cr (₹5,00,000)': '₹5,00,000',
+  '₹5 cr - ₹25 cr (₹10,00,000)': '₹10,00,000',
+  '₹25 cr - ₹50 cr (₹20,00,000)': '₹20,00,000',
+  '₹50 cr - ₹100 cr (₹35,00,000)': '₹35,00,000',
   'above ₹100 cr (₹50,00,000)': '₹50,00,000',
 }
+const normalizeMembershipKey = (value = '') =>
+  String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[–—]/g, '-')
+    .replace(/\s+/g, ' ')
 
 // ─── Public: Send OTP to email (no auth) ───────
 export const sendOtp = async (req, res) => {
@@ -167,7 +173,7 @@ export const submitMemberForm = async (req, res) => {
     }
 
     const membershipType = String(body.membershipType || body.memberType || '').trim()
-    const normalizedMembershipType = membershipType.toLowerCase()
+    const normalizedMembershipType = normalizeMembershipKey(membershipType)
     const amount = MEMBERSHIP_FEE_MAP[normalizedMembershipType] || ''
 
     const doc = await IncomingMember.create({

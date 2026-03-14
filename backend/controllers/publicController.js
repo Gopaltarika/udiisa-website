@@ -169,7 +169,7 @@ export const getPublicCommittees = async (req, res) => {
             name: m.name,
             role: m.role,
             company: m.company || '',
-            image: m.image || null,
+            image: toPublicMediaUrl(req, m.image),
           }))
         : [],
     }))
