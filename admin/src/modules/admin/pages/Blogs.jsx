@@ -13,7 +13,7 @@ import { useAdminToast } from '../hooks/ToastContext'
 import { useDebounce } from '../hooks/useDebounce'
 import blogService from '../services/blogService'
 import { validateRequired, buildFormData, API_IMG, formatDate } from '../utils/helpers'
-import QuillEditor from './QuillEditor'   // ← replaces TinyMCE
+import QuillEditor from './Quilleditor'   // ← replaces TinyMCE
 
 const PAGE_OPTIONS = ['home', 'events', 'success-stories', 'initiatives', 'partnerships', 'mentorship', 'general']
 
