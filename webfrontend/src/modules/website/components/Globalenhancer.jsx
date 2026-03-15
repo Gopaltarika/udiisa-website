@@ -130,31 +130,49 @@ const INJECTED_STYLES = `
   html { scroll-behavior: smooth; }
 `;
 
+/* ── Loader styles so Preloader works even when used as Suspense fallback (before GlobalEnhancer mounts) ── */
+const PRELOADER_STYLES = `
+  @keyframes ge-bar-bounce{0%,100%{transform:scaleY(0.3);opacity:0.4}50%{transform:scaleY(1);opacity:1}}
+  @keyframes ge-logo-pulse{0%,100%{opacity:0.7;transform:scale(0.97)}50%{opacity:1;transform:scale(1)}}
+  @keyframes ge-shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+  @keyframes ge-ring-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes ge-ring-spin-rev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+  @keyframes ge-fade-out{0%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
+  .ge-bar{animation:ge-bar-bounce .9s ease-in-out infinite;transform-origin:bottom}
+  .ge-bar-1{animation-delay:0s}.ge-bar-2{animation-delay:.15s}.ge-bar-3{animation-delay:.3s}
+  .ge-logo-text{background:linear-gradient(90deg,#F05A1A 0%,#FFAD5C 40%,#F05A1A 80%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ge-shimmer 2s linear infinite,ge-logo-pulse 2.4s ease-in-out infinite;font-family:'Bebas Neue',cursive}
+  .ge-ring-outer{animation:ge-ring-spin 2.4s linear infinite}
+  .ge-ring-inner{animation:ge-ring-spin-rev 1.8s linear infinite}
+  .ge-preloader-exit{animation:ge-fade-out .6s ease forwards}
+`;
+
 /* ══════════════════════════════════════════════
-   SUB-COMPONENT: Preloader
+   SUB-COMPONENT: Preloader (exported for use as route-loading fallback too)
 ══════════════════════════════════════════════ */
-function Preloader({ onDone }) {
+export function Preloader({ onDone, noTimer = false }) {
   const [exiting, setExiting] = useState(false);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    // Start exit animation after 1.6s
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  useEffect(() => {
+    if (noTimer) return;
     const exitTimer = setTimeout(() => setExiting(true), 1600);
-    // Fully unmount after exit animation (0.6s)
     const doneTimer = setTimeout(() => {
       setHidden(true);
       onDone?.();
-    }, 1250);
-
-    return () => {
-      clearTimeout(exitTimer);
-      clearTimeout(doneTimer);
-    };
-  }, [onDone]);
+    }, 2250);
+    return () => { clearTimeout(exitTimer); clearTimeout(doneTimer); };
+  }, [onDone, noTimer]);
 
   if (hidden) return null;
 
   return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: PRELOADER_STYLES }} />
     <div
       className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center ${exiting ? "ge-preloader-exit" : ""}`}
       style={{ background: "linear-gradient(135deg, #0B1E4B 0%, #152B6B 55%, #0d1a3e 100%)" }}
@@ -267,6 +285,7 @@ function Preloader({ onDone }) {
         ))}
       </div>
     </div>
+    </>
   );
 }
 

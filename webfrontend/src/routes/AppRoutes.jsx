@@ -1,5 +1,15 @@
-import { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Preloader } from "../modules/website/components/Globalenhancer";
+
+/** Scroll window to top whenever the route changes (fixes opening new page at footer) */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 const Home = lazy(() => import("../modules/website/pages/Home/Home"));
 const Members = lazy(() => import("../modules/website/pages/MembersPage/Members"));
@@ -13,16 +23,13 @@ const CommitteePage = lazy(() => import("../modules/website/pages/committee/Comm
 const DonateNow = lazy(() => import("../modules/website/pages/donatenow/DonateNow"));
 const TermsAndConditions = lazy(() => import("../modules/website/pages/termscondition/TermsAndConditions"));
 
-const RouteFallback = () => (
-  <div className="min-h-[40vh] flex items-center justify-center text-slate-500 text-[13px] font-semibold">
-    Loading...
-  </div>
-);
+/* When route/chunk is loading, show the same loader (rings, bars, logo) until data is ready */
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-      <Suspense fallback={<RouteFallback />}>
+      <ScrollToTop />
+      <Suspense fallback={<Preloader noTimer />}>
         <Routes>
           {/* WEBSITE */}
           <Route element={<WebsiteLayout />}>

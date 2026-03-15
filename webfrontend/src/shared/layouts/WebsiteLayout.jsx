@@ -9,7 +9,9 @@ const WebsiteLayout = () => {
     <>
       <SeoManager />
       <Navbar />
-      <Outlet />
+      <main className="min-h-screen bg-white">
+        <Outlet />
+      </main>
       <GlobalEnhancer />
       <Footer />
     </>

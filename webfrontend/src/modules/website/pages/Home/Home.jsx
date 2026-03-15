@@ -43,7 +43,13 @@ const DeferredSection = ({ children, minHeight = 320 }) => {
   return (
     <section
       ref={holderRef}
-      style={{ contentVisibility: "auto", containIntrinsicSize: `${minHeight}px` }}
+      style={{
+        containIntrinsicSize: `${minHeight}px`,
+        background: "#fff",
+        border: "none",
+        outline: "none",
+        boxShadow: "none",
+      }}
     >
       {visible ? (
         <Suspense fallback={<div style={{ minHeight }} aria-hidden="true" />}>

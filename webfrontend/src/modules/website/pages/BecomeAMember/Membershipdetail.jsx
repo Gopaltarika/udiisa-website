@@ -255,7 +255,7 @@ function OTPModal({ email, onVerified, onClose }) {
   const filled  = digits.filter(Boolean).length
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center !p-4 bg-[rgba(11,30,75,0.6)] backdrop-blur-[6px]"
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center !p-4 bg-[rgba(11,30,75,0.6)] backdrop-blur-[6px] overflow-hidden"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}>
       <style>{`
         @keyframes modalPop{from{opacity:0;transform:scale(.86) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
@@ -347,6 +347,12 @@ function OTPModal({ email, onVerified, onClose }) {
    QUERY FORM MODAL
 ════════════════════════════════════════════════════════ */
 function QueryFormModal({ tabData, onClose }) {
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [])
+
   const [form, setForm] = useState({
     fullName: '', email: '', emailVerified: false,
     phone: '', gender: '', age: '',
@@ -403,7 +409,7 @@ function QueryFormModal({ tabData, onClose }) {
   const ac = tabData.accentColor
 
   if (success) return (
-    <div className="fixed inset-0 z-[9997] flex items-center justify-center !p-4 bg-[rgba(11,30,75,.6)] backdrop-blur-[6px]">
+    <div className="fixed inset-0 z-[9997] flex items-center justify-center !p-4 bg-[rgba(11,30,75,.6)] backdrop-blur-[6px] overflow-hidden">
       <div className="bg-white rounded-[24px] shadow-2xl !p-8 sm:!p-10 max-w-[380px] w-full text-center flex flex-col items-center !gap-5">
         <div className="w-20 h-20 rounded-full bg-[#f0faf4] border-4 border-[#1a6b3a] flex items-center justify-center">
           <MdVerified className="text-[#1a6b3a] text-[40px]" />
@@ -434,8 +440,10 @@ function QueryFormModal({ tabData, onClose }) {
           onClose={() => setShowOTP(false)}
         />
       )}
-      <div className="fixed inset-0 z-[9997] flex items-center justify-center !p-3 sm:!p-4 bg-[rgba(11,30,75,.6)] backdrop-blur-[6px]"
-        onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <div
+        className="fixed inset-0 z-[9997] flex items-center justify-center !p-3 sm:!p-4 bg-[rgba(11,30,75,.6)] backdrop-blur-[6px] overflow-hidden"
+        onClick={e => { if (e.target === e.currentTarget) onClose() }}
+      >
         <style>{`
           @keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
           .slide-up{animation:slideUp .3s cubic-bezier(.16,1,.3,1) both}

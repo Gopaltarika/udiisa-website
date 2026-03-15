@@ -310,7 +310,7 @@ const ManagingCommittee = () => {
         }
       `}</style>
 
-      <section className="bg-white !py-[48px] sm:!py-[50px] lg:!py-[66px] !px-[16px] sm:!px-[24px] lg:!px-[32px]">
+      <section className="bg-white !py-[48px] sm:!py-[50px] lg:!py-[66px] !px-[16px] sm:!px-[24px] lg:!px-[32px] !border-0">
         <div className="max-w-[1100px] !mx-auto">
 
           {/* ── Header ── */}

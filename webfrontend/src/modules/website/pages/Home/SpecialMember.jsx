@@ -494,6 +494,8 @@ export default function SpecialMembersSection() {
       padding: "clamp(48px, 8vw, 100px) 0 clamp(36px, 6vw, 80px)",
       position: "relative", overflow: "hidden",
       fontFamily: "'Plus Jakarta Sans', sans-serif",
+      border: "none",
+      outline: "none",
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap');
