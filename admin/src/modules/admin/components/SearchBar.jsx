@@ -3,7 +3,7 @@ import { FaSearch, FaTimes } from 'react-icons/fa'
 
 export default function SearchBar({ value, onChange, placeholder = 'Search…' }) {
   return (
-    <div className="relative w-full max-w-[320px]">
+    <div className="relative w-full max-w-[520px]">
       <FaSearch className="absolute left-[13px] top-1/2 -translate-y-1/2 text-slate-400 text-[13px] pointer-events-none" />
       <input
         type="text"

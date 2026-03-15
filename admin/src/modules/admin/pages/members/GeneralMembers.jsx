@@ -29,7 +29,7 @@ const makeEmptyForm = (tab) => ({ type: TYPE_BY_TAB[tab], name: '', companyName:
 
 // ── Serial number cell ─────────────────────────────────────────────────────────
 const Serial = (_, __, i) => (
-  <span className="inline-flex min-w-[28px] h-[22px] items-center justify-center rounded-[6px] bg-slate-100 text-slate-700 text-[11px] font-extrabold">
+  <span className="inline-flex min-w-[24px] sm:min-w-[28px] h-[20px] sm:h-[22px] items-center justify-center rounded-[5px] sm:rounded-[6px] bg-slate-100 text-slate-700 text-[10px] sm:text-[11px] font-extrabold">
     {String(i + 1).padStart(2, '0')}
   </span>
 )
@@ -216,48 +216,53 @@ export default function GeneralMembers() {
 
   // ── JSX ────────────────────────────────────────────────────────────────────
   return (
-    <div>
+    <div className="px-2 sm:px-0">
       <PageHeader
         title="General Members"
         subtitle="Manage General members and Sports Participants"
         action={
           <button
             onClick={openAdd}
-            className="flex items-center gap-[8px] px-[16px] h-[40px] rounded-[10px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[13px] font-extrabold shadow-[0_4px_14px_rgba(240,90,26,0.3)] hover:-translate-y-[1px] transition-all duration-200"
+            className="flex items-center gap-[6px] sm:gap-[8px] px-[10px] sm:px-[16px] h-[34px] sm:h-[40px] rounded-[8px] sm:rounded-[10px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[11px] sm:text-[13px] font-extrabold shadow-[0_4px_14px_rgba(240,90,26,0.3)] hover:-translate-y-[1px] transition-all duration-200"
           >
-            <FaPlus className="text-[11px]" />
-            Add {isSports ? 'Participant' : 'Member'}
+            <FaPlus className="text-[9px] sm:text-[11px]" />
+            <span className="hidden xs:inline">Add </span>
+            {isSports ? 'Participant' : 'Member'}
           </button>
         }
       />
 
-      {/* Tabs */}
-      <div className="flex gap-[4px] bg-white rounded-[12px] p-[4px] border border-slate-100 shadow-[0_2px_8px_rgba(11,30,75,0.05)] mb-[20px] w-fit">
-        {TABS.map(tab => (
-          <button
-            key={tab}
-            onClick={() => { setActiveTab(tab); setSearch('') }}
-            className={`px-[20px] h-[36px] rounded-[10px] text-[13px] font-extrabold transition-all duration-200 ${
-              activeTab === tab
-                ? 'bg-gradient-to-r from-[#0B1E4B] to-[#152B6B] text-white shadow-[0_4px_12px_rgba(11,30,75,0.25)]'
-                : 'text-slate-500 hover:text-[#0B1E4B]'
-            }`}
-          >
-            {tab}
-            <span className={`ml-[6px] text-[10px] px-[6px] py-[1px] rounded-full font-extrabold ${activeTab === tab ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
-              {data[tab]?.length || 0}
-            </span>
-          </button>
-        ))}
-      </div>
+      {/* ── Tabs + Search row ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[10px] sm:gap-[16px] mb-[16px] sm:mb-[20px]">
 
-      {/* Search */}
-      <div className="mb-[16px]">
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder={isSports ? 'Search sports participants…' : 'Search general members…'}
-        />
+        {/* Tabs */}
+        <div className="flex gap-[3px] sm:gap-[4px] bg-white rounded-[10px] sm:rounded-[12px] p-[3px] sm:p-[4px] border border-slate-100 shadow-[0_2px_8px_rgba(11,30,75,0.05)] w-full sm:w-fit overflow-x-auto">
+          {TABS.map(tab => (
+            <button
+              key={tab}
+              onClick={() => { setActiveTab(tab); setSearch('') }}
+              className={`flex-1 sm:flex-none px-[10px] sm:px-[20px] h-[32px] sm:h-[36px] rounded-[8px] sm:rounded-[10px] text-[11px] sm:text-[13px] font-extrabold transition-all duration-200 whitespace-nowrap ${
+                activeTab === tab
+                  ? 'bg-gradient-to-r from-[#0B1E4B] to-[#152B6B] text-white shadow-[0_4px_12px_rgba(11,30,75,0.25)]'
+                  : 'text-slate-500 hover:text-[#0B1E4B]'
+              }`}
+            >
+              {tab}
+              <span className={`ml-[4px] sm:ml-[6px] text-[9px] sm:text-[10px] px-[5px] sm:px-[6px] py-[1px] rounded-full font-extrabold ${activeTab === tab ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                {data[tab]?.length || 0}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Search */}
+        <div className="w-full sm:w-[33%]">
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder={isSports ? 'Search sports participants…' : 'Search general members…'}
+          />
+        </div>
       </div>
 
       {/* Table */}
@@ -270,14 +275,14 @@ export default function GeneralMembers() {
         title={`${selected ? 'Edit' : 'Add'} ${modalTypeLabel}`}
         size="sm"
       >
-        <div className="flex flex-col gap-[14px]">
+        <div className="flex flex-col gap-[10px] sm:gap-[14px] px-1 sm:px-0">
 
           {/* Category */}
           <FormField label="Category" required error={errors.type}>
             <select
               value={form.type || TYPE_BY_TAB[activeTab]}
               onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
-              className={`h-[38px] w-full rounded-[10px] border px-[12px] text-[13px] font-semibold text-slate-700 outline-none transition-all ${
+              className={`h-[34px] sm:h-[38px] w-full rounded-[8px] sm:rounded-[10px] border px-[10px] sm:px-[12px] text-[12px] sm:text-[13px] font-semibold text-slate-700 outline-none transition-all ${
                 errors.type ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-[#F05A1A]'
               }`}
             >
@@ -317,7 +322,7 @@ export default function GeneralMembers() {
             />
           </FormField>
 
-          <div className="flex gap-[10px] justify-end pt-[6px]">
+          <div className="flex gap-[8px] sm:gap-[10px] justify-end pt-[4px] sm:pt-[6px]">
             <CancelBtn onClick={() => setFormOpen(false)} />
             <SubmitBtn loading={saving} onClick={handleSave}>
               {selected ? 'Update' : (form.type === 'players' ? 'Add Participant' : 'Add Member')}

@@ -124,7 +124,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           <img src={logo} alt="logo" className='w-full max-w-[45px]' />
           {!collapsed && (
             <div>
-              <p className="text-white font-extrabold text-[14px] m-0 leading-none">UDI Sports</p>
+              <p className="text-white font-extrabold text-[14px] m-0 leading-none">UDIISA</p>
               <p className="text-white/40 text-[10px] m-0 mt-[2px]">Admin Panel</p>
             </div>
           )}

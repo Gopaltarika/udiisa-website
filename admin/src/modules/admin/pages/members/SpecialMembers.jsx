@@ -311,7 +311,10 @@ export default function SpecialMembers() {
           </button>
         }
       />
-
+  {/* Search */}
+      <div className="mb-[16px]">
+        <SearchBar value={search} onChange={setSearch} placeholder="Search special members…" />
+      </div>
       {/* ── Category Filter Tabs ── */}
       <div className="flex flex-wrap gap-[6px] mb-[20px]">
         {FILTER_TABS.map(tab => {
@@ -360,10 +363,7 @@ export default function SpecialMembers() {
         })}
       </div>
 
-      {/* Search */}
-      <div className="mb-[16px]">
-        <SearchBar value={search} onChange={setSearch} placeholder="Search special members…" />
-      </div>
+    
 
       {/* Table */}
       <Table columns={columns} data={filteredMembers} loading={loading} emptyText="No special members found" />

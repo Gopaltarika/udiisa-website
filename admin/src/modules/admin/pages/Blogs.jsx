@@ -191,7 +191,7 @@ export default function Blogs() {
           </button>
         }
       />
-      <div className="mb-[16px]"><SearchBar value={search} onChange={setSearch} placeholder="Search blogs…" /></div>
+      <div className="mb-[16px] w-full"><SearchBar value={search} onChange={setSearch} placeholder="Search blogs…" /></div>
       <Table columns={columns} data={blogs} loading={loading} emptyText="No blogs found" />
 
       {/* Form Modal */}

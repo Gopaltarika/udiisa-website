@@ -93,7 +93,7 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-[32px] flex justify-center flex-col items-center gap-[4px]">
           <img src={logo} alt="logo" className="w-full max-w-[45px]" />
-          <h1 className="text-white text-[26px] font-extrabold m-0 leading-tight">UDI Sports</h1>
+          <h1 className="text-white text-[26px] font-extrabold m-0 leading-tight">UDIISA</h1>
           <p className="text-white/50 text-[13px] m-0 mt-[4px]">Admin Panel</p>
         </div>
 
