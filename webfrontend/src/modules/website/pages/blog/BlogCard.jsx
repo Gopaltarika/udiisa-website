@@ -35,6 +35,7 @@ export default function BlogCard ({ blog }) {
         <img
           src={blog.image}
           alt={blog.title}
+          loading="lazy"
           className="w-full h-full object-cover group-hover:scale-[1.08] transition-transform duration-500"
           decoding="async"
           onError={e => {

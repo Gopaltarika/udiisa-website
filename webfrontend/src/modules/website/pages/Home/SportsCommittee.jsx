@@ -228,6 +228,7 @@ const SportsCommittee = () => {
                     <img
                       src={member.img}
                       alt={member.name}
+                      loading="lazy"
                       draggable={false}
                       className="sc-photo !w-full !h-full !object-cover !object-top"
                       style={{ userSelect: 'none', WebkitUserDrag: 'none', pointerEvents: 'none' }}

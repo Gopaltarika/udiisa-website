@@ -241,6 +241,7 @@ function MemberCard({ member, isCenter, theme }) {
               <img
                 src={member.photo}
                 alt={member.name}
+                loading="lazy"
                 draggable={false}
                 style={{
                   width: "100%", height: "100%", objectFit: "cover",

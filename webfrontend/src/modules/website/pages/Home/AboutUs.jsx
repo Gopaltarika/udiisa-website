@@ -161,6 +161,7 @@ const AboutUs = () => {
                     <img
                       src={CRICKET_IMG}
                       alt="Cricket player"
+                      loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover"
                     />
@@ -179,6 +180,7 @@ const AboutUs = () => {
                     <img
                       src={FOOTBALL_IMG}
                       alt="Football player"
+                      loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover"
                     />
@@ -200,6 +202,7 @@ const AboutUs = () => {
                     <img
                       src={aboutImage}
                       alt="UDIISA team"
+                      loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover  object-top"
                     />

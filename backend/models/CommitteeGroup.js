@@ -24,4 +24,6 @@ const committeeGroupSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+committeeGroupSchema.index({ createdAt: -1 })
+
 export default mongoose.model('CommitteeGroup', committeeGroupSchema)

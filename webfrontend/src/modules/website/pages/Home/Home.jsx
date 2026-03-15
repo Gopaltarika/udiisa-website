@@ -4,6 +4,7 @@ import AdvisoryBoard from "./AdvisoryBoard";
 import HeroSection from "./HeroSection";
 import Leadership from "./Leadership";
 import WhatWeDo from "./WhatWeDo";
+import { getPublicCommittees } from "@/shared/services/publicApi";
 
 const ManagingCommittee = lazy(() => import("./ManagingCommitte"));
 const Promoters = lazy(() => import("./Promoters"));
@@ -14,17 +15,8 @@ const SportsCommittee = lazy(() => import("./SportsCommittee"));
 const BlogSection = lazy(() => import("./Blogsection"));
 const ContactUs = lazy(() => import("./ContactUs"));
 
-const preloadHomeChunks = () =>
-  Promise.allSettled([
-    import("./ManagingCommitte"),
-    import("./SpecialMember"),
-    import("./Promoters"),
-    import("./Becomeamember"),
-    import("./GeneralMembers"),
-    import("./SportsCommittee"),
-    import("./Blogsection"),
-    import("./ContactUs"),
-  ]);
+const preloadAboveFoldDeferredChunks = () =>
+  Promise.allSettled([import("./ManagingCommitte"), import("./SpecialMember")]);
 
 const DeferredSection = ({ children, minHeight = 320 }) => {
   const holderRef = useRef(null);
@@ -41,7 +33,7 @@ const DeferredSection = ({ children, minHeight = 320 }) => {
           observer.disconnect();
         }
       },
-      { rootMargin: "900px 0px" }
+      { rootMargin: "420px 0px" }
     );
 
     observer.observe(node);
@@ -66,17 +58,18 @@ const DeferredSection = ({ children, minHeight = 320 }) => {
 
 const Home = () => {
   useEffect(() => {
-    // Prefetch deferred chunks once main thread is relatively free.
+    // Warm up first deferred sections and committee API cache in idle time.
     const load = () => {
-      preloadHomeChunks();
+      preloadAboveFoldDeferredChunks();
+      getPublicCommittees().catch(() => {});
     };
 
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      const id = window.requestIdleCallback(load, { timeout: 1200 });
+      const id = window.requestIdleCallback(load, { timeout: 2500 });
       return () => window.cancelIdleCallback(id);
     }
 
-    const t = setTimeout(load, 350);
+    const t = setTimeout(load, 900);
     return () => clearTimeout(t);
   }, []);
 

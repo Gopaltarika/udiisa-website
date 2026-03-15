@@ -55,6 +55,7 @@ const Leadership = () => {
                 <img
                   src={suniljalan}
                   alt="Sunil Jalan"
+                  loading="lazy"
                   className="w-full h-full object-cover object-top"
                 />
 

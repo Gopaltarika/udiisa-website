@@ -20,6 +20,7 @@ const app = express()
 const PORT = process.env.PORT || 5000
 const UPLOADS = process.env.UPLOADS_DIR || 'uploads'
 const AUTH_LIMIT_WINDOW_MS = 15 * 60 * 1000
+const REQUEST_TIMEOUT_MS = 30 * 1000
 
 assertRequiredEnv()
 
@@ -50,6 +51,12 @@ const authLimiter = rateLimit({
 
 app.use(helmet())
 app.use(cors(corsOptions))
+app.use((req, res, next) => {
+  res.setTimeout(REQUEST_TIMEOUT_MS, () => {
+    if (!res.headersSent) res.status(504).json({ message: 'Request timeout' })
+  })
+  next()
+})
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
@@ -71,7 +78,10 @@ app.use((err, req, res, next) => {
 
 async function start() {
   try {
-    await mongoose.connect(ENV.mongodbUri)
+    await mongoose.connect(ENV.mongodbUri, {
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000,
+    })
     console.log('MongoDB connected')
   } catch (e) {
     console.error('MongoDB connection failed:', e.message)

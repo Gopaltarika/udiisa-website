@@ -130,6 +130,7 @@ const AdvisoryBoard = () => {
                     <img
                       src={c.img}
                       alt={c.name}
+                      loading="lazy"
                       className="w-full h-full object-cover object-top"
                     />
                   </div>
@@ -197,6 +198,7 @@ const AdvisoryBoard = () => {
                   <img
                     src={selected.img}
                     alt={selected.name}
+                    loading="lazy"
                     className="w-full h-full object-cover object-top"
                   />
                 </div>

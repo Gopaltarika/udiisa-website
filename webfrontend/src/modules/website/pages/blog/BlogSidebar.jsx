@@ -90,6 +90,7 @@ export default function BlogSidebar ({ activeCategory = 'All', onCategoryChange,
                   <img
                     src={post.image}
                     alt={post.title}
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-[1.07] transition-transform duration-300"
                     decoding="async"
                     onError={e => { e.target.src = 'https://ui-avatars.com/api/?name=Blog&background=F05A1A&color=fff&size=100' }}

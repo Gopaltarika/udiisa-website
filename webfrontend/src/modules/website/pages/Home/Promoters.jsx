@@ -114,6 +114,7 @@ const Promoters = () => {
                   <img
                     src={p.img}
                     alt={p.name}
+                    loading="lazy"
                     className="promo-photo w-full h-full object-cover object-top"
                   />
 

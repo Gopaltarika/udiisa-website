@@ -11,4 +11,7 @@ const specialMemberSchema = new mongoose.Schema({
   photo:       { type: String, default: null },
 }, { timestamps: true })
 
+specialMemberSchema.index({ membershipCategory: 1, createdAt: -1 })
+specialMemberSchema.index({ createdAt: -1 })
+
 export default mongoose.model('SpecialMember', specialMemberSchema)

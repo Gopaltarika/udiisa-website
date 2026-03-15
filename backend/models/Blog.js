@@ -12,4 +12,8 @@ const blogSchema = new mongoose.Schema({
   tags:         [{ type: String }],
 }, { timestamps: true })
 
+blogSchema.index({ createdAt: -1 })
+blogSchema.index({ category: 1, createdAt: -1 })
+blogSchema.index({ pageName: 1, createdAt: -1 })
+
 export default mongoose.model('Blog', blogSchema)

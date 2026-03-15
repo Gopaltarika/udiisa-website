@@ -48,23 +48,35 @@ export const getPublicBlogs = async (req, res) => {
   try {
     const { search, category, page = 1, limit = 10 } = req.query
     const filter = {}
+    const textConditions = []
+
     if (search && search.trim()) {
-      filter.$or = [
+      textConditions.push(
         { heading: new RegExp(search, 'i') },
         { pageName: new RegExp(search, 'i') },
         { shortContent: new RegExp(search, 'i') },
         { content: new RegExp(search, 'i') },
-      ]
+      )
     }
+
     if (category && category.trim() && category !== 'All') {
       const normalized = normalizeCategory(category)
       const mappedPageName = CATEGORY_TO_PAGE[normalized]
-      filter.$or = [
+      const categoryConditions = [
         { category: category.trim() },
         { category: new RegExp(`^${category.trim()}$`, 'i') },
         ...(mappedPageName ? [{ pageName: mappedPageName }] : []),
       ]
+
+      if (textConditions.length) {
+        filter.$and = [{ $or: textConditions }, { $or: categoryConditions }]
+      } else {
+        filter.$or = categoryConditions
+      }
+    } else if (textConditions.length) {
+      filter.$or = textConditions
     }
+
     const skip = (Math.max(1, parseInt(page, 10)) - 1) * Math.min(50, Math.max(1, parseInt(limit, 10)))
     const limitNum = Math.min(50, Math.max(1, parseInt(limit, 10)))
     const [list, total] = await Promise.all([
@@ -87,7 +99,6 @@ export const getPublicBlogs = async (req, res) => {
         dateISO: iso,
         readTime: b.readTime || '2 min read',
         tags: Array.isArray(b.tags) ? b.tags : [],
-        content: b.content || '',
       }
     })
     return res.json({ blogs, total })

@@ -144,6 +144,7 @@ export default function AboutUs() {
                 <img
                   src={aboutimg}
                   alt="UDI Sports Players"
+                  loading="lazy"
                   className="w-full h-full"
                   onError={e => { e.target.style.display = 'none' }}
                 />

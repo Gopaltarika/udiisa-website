@@ -357,6 +357,7 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
             <img
               src={member.img || member.photo}
               alt={member.name}
+              loading="lazy"
               className="absolute inset-0 w-full h-full object-cover object-top block"
               onError={e => {
                 e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=${theme.ringTo.replace('#','')}&color=fff&size=400&bold=true&length=2`

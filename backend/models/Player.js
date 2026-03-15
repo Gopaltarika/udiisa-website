@@ -8,4 +8,7 @@ const playerSchema = new mongoose.Schema({
   photo:       { type: String, default: null },
 }, { timestamps: true })
 
+playerSchema.index({ createdAt: -1 })
+playerSchema.index({ sportsName: 1, createdAt: -1 })
+
 export default mongoose.model('Player', playerSchema)

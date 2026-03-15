@@ -3,6 +3,18 @@ import { FaArrowRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { getPublicCommittees } from '@/shared/services/publicApi'
 
+const getInitials = (name = 'Member') => {
+  const parts = String(name || 'Member').trim().split(/\s+/).filter(Boolean)
+  if (parts.length <= 1) return (parts[0] || 'M').slice(0, 2).toUpperCase()
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+}
+
+const toInlineAvatar = (name = 'Member') => {
+  const initials = getInitials(name)
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="360" viewBox="0 0 300 360"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F05A1A"/><stop offset="100%" stop-color="#FF7D42"/></linearGradient></defs><rect width="300" height="360" fill="url(#g)"/><text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="92" font-weight="700" fill="#ffffff">${initials}</text></svg>`
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+}
+
 /* ── Skeleton Card ── */
 const SkeletonCard = ({ size }) => {
   const isLg = size === 'lg'
@@ -60,9 +72,12 @@ const MemberCard = ({ m, size }) => {
           <img
             src={m.img}
             alt={m.name}
+            loading="lazy"
             className="mc-photo w-full h-full object-cover object-top"
             onError={(e) => {
-              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=F05A1A&color=fff&size=300`
+              if (e.currentTarget.dataset.fallbackApplied === '1') return
+              e.currentTarget.dataset.fallbackApplied = '1'
+              e.currentTarget.src = toInlineAvatar(m.name)
             }}
           />
         </div>

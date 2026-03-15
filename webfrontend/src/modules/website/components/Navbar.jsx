@@ -32,14 +32,15 @@ export default function Navbar() {
 
   const loadCommittees = () => {
     if (committeesLoaded) return
-    setCommitteesLoaded(true)
     getPublicCommittees()
       .then((list) => {
         const items = Array.isArray(list) ? list : []
         setCommittees(items)
+        setCommitteesLoaded(true)
       })
       .catch(() => {
         setCommittees([])
+        setCommitteesLoaded(false)
       })
   }
 

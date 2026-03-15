@@ -1,8 +1,10 @@
 export const isAbsoluteUrl = (value) => /^https?:\/\//i.test(String(value || ''))
+export const isDataUrl = (value) => /^data:/i.test(String(value || ''))
 
 export const toPublicMediaUrl = (req, value) => {
   if (!value) return null
   if (isAbsoluteUrl(value)) return value
+  if (isDataUrl(value)) return value
 
   const normalizedPath = String(value).startsWith('/') ? String(value) : `/${value}`
   const fromEnv = String(process.env.PUBLIC_BASE_URL || process.env.MEDIA_BASE_URL || '').trim().replace(/\/$/, '')

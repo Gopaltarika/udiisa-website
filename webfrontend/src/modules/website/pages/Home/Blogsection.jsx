@@ -258,6 +258,7 @@ const BlogSection = () => {
                       <img
                         src={blog.image}
                         alt={blog.title}
+                        loading="lazy"
                         draggable={false}
                         className="blog-img !w-full !h-full !object-cover"
                         style={{ userSelect: 'none', WebkitUserDrag: 'none' }}

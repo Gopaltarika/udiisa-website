@@ -138,6 +138,7 @@ const BecomeAMember = () => {
                 <img
                   src={becomeMemberImgMobile}
                   alt="Become a Member"
+                  loading="lazy"
                   className="w-full"
                 />
               </div>
@@ -270,6 +271,7 @@ const BecomeAMember = () => {
                 <img
                   src={becomeMemberImg}
                   alt="Member"
+                  loading="lazy"
                   className="person-img w-full max-h-[432px] !-mb-4 h-[104%]"
                 />
               </div>

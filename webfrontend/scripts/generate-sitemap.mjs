@@ -2,8 +2,8 @@ import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
-const SITE_URL = "https://udisports.in";
-const DEFAULT_API_URL = "http://localhost:5000/api";
+const SITE_URL = String(process.env.SITE_URL || "https://udisports.in").replace(/\/$/, "");
+const DEFAULT_API_URL = `${SITE_URL}/api`;
 
 const STATIC_ROUTES = [
   { path: "/", changefreq: "daily", priority: "1.0" },
@@ -25,6 +25,7 @@ const normalizeApiBaseUrl = (rawUrl = "") => {
   const raw = String(rawUrl || "").trim();
   if (!raw) return DEFAULT_API_URL;
   if (raw.startsWith("http://") || raw.startsWith("https://")) return raw.replace(/\/$/, "");
+  if (raw.startsWith("/")) return `${SITE_URL}${raw}`.replace(/\/$/, "");
   if (raw.startsWith(":")) return `http://localhost${raw}`.replace(/\/$/, "");
   if (raw.startsWith("localhost") || raw.startsWith("127.0.0.1")) return `http://${raw}`.replace(/\/$/, "");
   return DEFAULT_API_URL;
@@ -41,7 +42,7 @@ const escapeXml = (value = "") =>
 async function getBlogSlugs(apiBaseUrl) {
   try {
     const url = `${apiBaseUrl}/public/blogs?page=1&limit=200`;
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
     if (!res.ok) return [];
     const data = await res.json();
     const blogs = Array.isArray(data?.blogs) ? data.blogs : [];
@@ -76,7 +77,7 @@ async function main() {
   const webfrontendRoot = process.cwd();
   const publicDir = path.join(webfrontendRoot, "public");
   const outputFile = path.join(publicDir, "sitemap.xml");
-  const apiBaseUrl = normalizeApiBaseUrl(process.env.VITE_API_URL);
+  const apiBaseUrl = normalizeApiBaseUrl(process.env.SITEMAP_API_URL || process.env.VITE_API_URL);
 
   const blogRoutes = await getBlogSlugs(apiBaseUrl);
   const routeMap = new Map();

@@ -9,6 +9,12 @@ const getInitials = (name) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
+const toInlineAvatar = (name = "Member") => {
+  const initials = getInitials(String(name || "Member"))
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F05A1A"/><stop offset="100%" stop-color="#FF7D42"/></linearGradient></defs><rect width="320" height="320" fill="url(#g)"/><text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="110" font-weight="700" fill="#ffffff">${initials}</text></svg>`
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+}
+
 const AVATAR_GRAD = {
   orange: "from-[#F05A1A] to-[#FF7D42]",
   purple: "from-[#7C3AED] to-[#A855F7]",
@@ -100,7 +106,13 @@ export default function CommitteeMemberCard({ member, variant = "orange", index 
               <img
                 src={member.image}
                 alt={member.name}
+                loading="lazy"
                 className="mc-img w-full h-full object-cover object-top"
+                onError={(e) => {
+                  if (e.currentTarget.dataset.fallbackApplied === "1") return
+                  e.currentTarget.dataset.fallbackApplied = "1"
+                  e.currentTarget.src = toInlineAvatar(member.name)
+                }}
               />
             ) : (
               <div className={`mc-img w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br ${grad}`}>

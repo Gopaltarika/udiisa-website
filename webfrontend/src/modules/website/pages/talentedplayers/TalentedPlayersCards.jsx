@@ -65,6 +65,7 @@ const PlayerCard = ({ player }) => {
         <img
           src={player.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=F05A1A&color=fff&size=400`}
           alt={player.name}
+          loading="lazy"
           className="w-full h-full object-cover object-[35%_20%] group-hover:scale-[1.06] transition-transform duration-500"
           onError={e => {
             e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=0B1E4B&color=fff&size=400`
