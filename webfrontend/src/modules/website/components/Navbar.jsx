@@ -57,8 +57,8 @@ export default function Navbar() {
   const getActiveKey = (pathname) => {
     if (pathname === "/") return "Home"
     if (pathname.startsWith("/about-us")) return "About Us"
+    if (pathname.startsWith("/members/special-members")) return "Special Member"
     if (pathname.startsWith("/members/")) return "Members"
-    if (pathname.startsWith("/special-members/")) return "Special Member"
     if (pathname.startsWith("/committee")) return "Committees"
     if (pathname.startsWith("/blogs")) return "Blogs"
     if (pathname.startsWith("/talented-players")) return "Talented Players"

@@ -49,6 +49,14 @@ const authLimiter = rateLimit({
   message: { message: 'Too many authentication attempts. Please try again later.' },
 })
 
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: ENV.isProduction ? 120 : 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many requests. Please try again later.' },
+})
+
 app.use(helmet())
 app.use(cors(corsOptions))
 app.use((req, res, next) => {
@@ -62,6 +70,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 app.use('/uploads', express.static(path.join(__dirname, UPLOADS)))
 
+app.use('/api', apiLimiter)
 app.use('/api/auth', authLimiter, authRoutes)
 app.use('/api/blogs', blogRoutes)
 app.use('/api/members', memberRoutes)
@@ -71,9 +80,16 @@ app.use('/api/public', publicRoutes)
 
 app.get('/api/health', (req, res) => res.json({ ok: true, message: 'UDI API running' }))
 
+// 404 for unmatched API routes
+app.use('/api', (req, res) => {
+  res.status(404).json({ message: 'Not found' })
+})
+
 app.use((err, req, res, next) => {
   console.error(err)
-  res.status(err.status || 500).json({ message: err.message || 'Server error' })
+  const status = err.status || 500
+  const message = ENV.isProduction && status === 500 ? 'Server error' : (err.message || 'Server error')
+  res.status(status).json({ message })
 })
 
 async function start() {

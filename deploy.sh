@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Production deploy for UDIISA (backend + webfrontend + admin)
+# Prereqs: Node, PM2, nginx, backend .env and NODE_ENV=production set (e.g. in PM2 env)
 set -euo pipefail
 
 APP_ROOT="/var/www/udiisa-website"
@@ -10,32 +12,31 @@ cd "$APP_ROOT"
 echo "==> Pulling latest code..."
 git pull
 
-echo "==> Installing backend dependencies..."
+echo "==> Backend..."
 cd "$APP_ROOT/backend"
-npm install
-
-echo "==> Restarting backend (PM2)..."
+npm ci --omit=dev
 pm2 restart "$BACKEND_NAME"
 pm2 save
 
-echo "==> Building web frontend..."
+echo "==> Building webfrontend (production)..."
 cd "$APP_ROOT/webfrontend"
-npm install
+npm ci
+# Uses .env.production if present (copy from .env.production.example and set VITE_API_URL)
 npm run build
 
-echo "==> Building admin frontend..."
+echo "==> Building admin (production)..."
 cd "$APP_ROOT/admin"
-npm install
+npm ci
+# Uses .env.production if present
 npm run build
 
-echo "==> Validating and reloading Nginx..."
+echo "==> Nginx..."
 nginx -t
 systemctl reload nginx
 
-echo "==> Running health checks..."
-curl -s http://localhost:5000/api/health
-echo
-curl -I --max-time 15 https://udisports.in/ | sed -n '1p'
-curl -I --max-time 15 https://udisports.in/admin/login | sed -n '1p'
+echo "==> Health checks..."
+curl -sf http://localhost:5000/api/health && echo " OK" || { echo "Backend health check failed"; exit 1; }
+curl -sI -o /dev/null -w "%{http_code}" --max-time 10 https://udisports.in/ | grep -q 200 && echo "Website OK" || echo "Warning: website returned non-200"
+curl -sI -o /dev/null -w "%{http_code}" --max-time 10 https://udisports.in/admin/ | grep -qE '200|301' && echo "Admin OK" || echo "Warning: admin returned non-200"
 
 echo "==> Deployment completed successfully."

@@ -8,7 +8,8 @@ import { sendOTPEmail, sendResetPasswordEmail } from '../utils/emailService.js'
 import { ENV } from '../config/env.js'
 
 const JWT_SECRET = ENV.jwtSecret
-const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '')
+// Admin reset link must point to admin app (use ADMIN_URL when admin is on separate domain)
+const ADMIN_BASE_URL = (process.env.ADMIN_URL || process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '')
 
 const escapeRegex = (value = '') => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const generateOtp = () => String(Math.floor(100000 + Math.random() * 900000))
@@ -120,7 +121,7 @@ export const forgotPassword = async (req, res) => {
 
     const token = crypto.randomBytes(32).toString('hex')
     setResetToken(token, em)
-    const resetLink = `${FRONTEND_URL}/admin/reset-password?token=${token}`
+    const resetLink = `${ADMIN_BASE_URL}/admin/reset-password?token=${token}`
     await sendResetPasswordEmail(em, resetLink)
 
     return res.json({ message: 'If this email is registered, you will receive reset instructions.' })

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { FaBuilding } from 'react-icons/fa'
 import { MdVerified } from 'react-icons/md'
+import { getPublicGeneralMembers, getPublicSpecialMembers } from '../../../../shared/services/publicApi'
 
 /* ═══════════════════════════════════════════
    STATIC DATA
@@ -199,6 +200,20 @@ const TAB_ROUTES = {
 const VALID_KEYS = Object.keys(TAB_ROUTES)
 const PAGE_SIZE = 6
 
+// Map backend membershipCategory to frontend tab key
+const CATEGORY_TO_TAB = {
+  diamond: 'diamond',
+  gold: 'gold',
+  silver: 'silver',
+  dignitaries: 'dignitaries',
+  'body corporate': 'corporate',
+}
+function normalizeCategoryToTab(cat) {
+  if (!cat) return 'silver'
+  const key = String(cat).trim().toLowerCase()
+  return CATEGORY_TO_TAB[key] || 'silver'
+}
+
 /* ═══════════════════════════════════════════
    GLOBAL KEYFRAME STYLES
 ═══════════════════════════════════════════ */
@@ -355,12 +370,12 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
             paddingTop: '100%', background: theme.accentLight,
           }}>
             <img
-              src={member.img || member.photo}
+              src={member.img || member.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name || '')}&background=F05A1A&color=fff&size=400&bold=true&length=2`}
               alt={member.name}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover object-top block"
               onError={e => {
-                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=${theme.ringTo.replace('#','')}&color=fff&size=400&bold=true&length=2`
+                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name || '')}&background=${(theme.ringTo || '#F05A1A').replace('#', '')}&color=fff&size=400&bold=true&length=2`
               }}
             />
           </div>
@@ -466,8 +481,12 @@ const MembersData = () => {
     return VALID_KEYS.includes(seg) ? seg : 'diamond'
   })()
 
+  // ── Special members from backend: { diamond: [], gold: [], ... } (empty until fetched)
+  const [specialMembersByTab, setSpecialMembersByTab] = useState(null)
+
   // ── General sub-tab local state ──
   const [generalSub, setGeneralSub] = useState('individual')
+  const [generalMembersData, setGeneralMembersData] = useState(null) // { individual: [], players: [] } from API
 
   // ── Cards state ──
   const [visibleCards, setVisibleCards]     = useState([])
@@ -483,26 +502,56 @@ const MembersData = () => {
   const [tableLoading, setTableLoading]       = useState(true)
   const [loadingMoreRows, setLoadingMoreRows] = useState(false)
 
-  // ── Load cards when specialSub changes ──
+  // ── Fetch special members from backend when on special page ──
+  useEffect(() => {
+    if (!isSpecialPage) return
+    getPublicSpecialMembers()
+      .then((list) => {
+        const arr = Array.isArray(list) ? list : []
+        const byTab = { diamond: [], gold: [], silver: [], dignitaries: [], corporate: [] }
+        arr.forEach((m) => {
+          const tab = normalizeCategoryToTab(m.membershipCategory || m.membershipType)
+          if (byTab[tab]) {
+            byTab[tab].push({
+              id: m.id,
+              name: m.name,
+              company: m.companyName || m.company || '',
+              img: m.img || m.photo || null,
+            })
+          }
+        })
+        setSpecialMembersByTab(byTab)
+      })
+      .catch(() => { /* keep specialMembersByTab null so static data is used as fallback */ })
+  }, [isSpecialPage])
+
+  // ── Source for special cards: API data if loaded, else static ──
+  const specialDataSource = specialMembersByTab
+    ? Object.fromEntries(VALID_KEYS.map(k => [k, specialMembersByTab[k] || []]))
+    : ALL_STATIC_DATA
+
+  // ── Load cards when specialSub or source data changes ──
   useEffect(() => {
     if (!isSpecialPage) return
     setInitialLoading(true)
     setVisibleCards([])
     setCardPage(1)
     setHasMoreCards(true)
-    const allData = ALL_STATIC_DATA[specialSub] || []
+    const allData = specialDataSource[specialSub] || []
     simulateLoad(allData, 1, PAGE_SIZE).then(({ items, hasMore }) => {
       setVisibleCards(items)
       setHasMoreCards(hasMore)
       setInitialLoading(false)
     })
-  }, [specialSub, isSpecialPage])
+  }, [specialSub, isSpecialPage, specialMembersByTab])
 
   // ── Load more cards ──
   const loadMoreCards = useCallback(() => {
     if (loadingMore || !hasMoreCards) return
     setLoadingMore(true)
-    const allData = ALL_STATIC_DATA[specialSub] || []
+    const allData = specialMembersByTab
+      ? (specialMembersByTab[specialSub] || [])
+      : (ALL_STATIC_DATA[specialSub] || [])
     const nextPage = cardPage + 1
     simulateLoad(allData, nextPage, PAGE_SIZE).then(({ items, hasMore }) => {
       setVisibleCards(items)
@@ -510,28 +559,46 @@ const MembersData = () => {
       setCardPage(nextPage)
       setLoadingMore(false)
     })
-  }, [loadingMore, hasMoreCards, specialSub, cardPage])
+  }, [loadingMore, hasMoreCards, specialSub, cardPage, specialMembersByTab])
 
-  // ── Load rows when generalSub changes ──
+  // ── Fetch general members from backend when on general page ──
   useEffect(() => {
     if (!isGeneralPage) return
     setTableLoading(true)
-    setVisibleRows([])
+    Promise.all([
+      getPublicGeneralMembers('individual'),
+      getPublicGeneralMembers('players'),
+    ])
+      .then(([individual, players]) => {
+        setGeneralMembersData({
+          individual: Array.isArray(individual) ? individual : [],
+          players: Array.isArray(players) ? players : [],
+        })
+      })
+      .catch(() => {
+        setGeneralMembersData({
+          individual: GENERAL_STATIC_DATA.individual,
+          players: GENERAL_STATIC_DATA.players,
+        })
+      })
+      .finally(() => setTableLoading(false))
+  }, [isGeneralPage])
+
+  // ── Set visible rows when general data or tab changes ──
+  useEffect(() => {
+    if (!isGeneralPage || generalMembersData === null) return
+    const allData = generalMembersData[generalSub] || []
+    const slice = allData.slice(0, PAGE_SIZE)
+    setVisibleRows(slice)
     setRowPage(1)
-    setHasMoreRows(true)
-    const allData = GENERAL_STATIC_DATA[generalSub] || []
-    simulateLoad(allData, 1, PAGE_SIZE).then(({ items, hasMore }) => {
-      setVisibleRows(items)
-      setHasMoreRows(hasMore)
-      setTableLoading(false)
-    })
-  }, [generalSub, isGeneralPage])
+    setHasMoreRows(slice.length < allData.length)
+  }, [isGeneralPage, generalSub, generalMembersData])
 
   // ── Load more rows ──
   const loadMoreRows = useCallback(() => {
-    if (loadingMoreRows || !hasMoreRows) return
+    if (loadingMoreRows || !hasMoreRows || generalMembersData === null) return
     setLoadingMoreRows(true)
-    const allData = GENERAL_STATIC_DATA[generalSub] || []
+    const allData = generalMembersData[generalSub] || []
     const nextPage = rowPage + 1
     simulateLoad(allData, nextPage, PAGE_SIZE).then(({ items, hasMore }) => {
       setVisibleRows(items)
@@ -539,7 +606,7 @@ const MembersData = () => {
       setRowPage(nextPage)
       setLoadingMoreRows(false)
     })
-  }, [loadingMoreRows, hasMoreRows, generalSub, rowPage])
+  }, [loadingMoreRows, hasMoreRows, generalSub, rowPage, generalMembersData])
 
   // ── Redirect special page if invalid sub-route ──
   useEffect(() => {
@@ -574,7 +641,7 @@ const MembersData = () => {
                   tab={tab}
                   isActive={specialSub === tab.key}
                   onClick={() => switchSpecialTab(tab.key)}
-                  count={ALL_STATIC_DATA[tab.key]?.length ?? 0}
+                  count={(specialDataSource[tab.key] || []).length}
                 />
               ))}
             </div>
@@ -595,7 +662,7 @@ const MembersData = () => {
                 </div>
               </div>
               <div className="text-xs sm:text-sm font-extrabold shrink-0" style={{ color: currentTheme.accentColor }}>
-                {ALL_STATIC_DATA[specialSub]?.length} Members
+                {(specialDataSource[specialSub] || []).length} Members
               </div>
             </div>
 
@@ -660,8 +727,8 @@ const MembersData = () => {
             {/* Sub-tabs — renamed */}
             <div className="flex items-center border-b-2 border-slate-200 mb-4 sm:mb-5">
               {[
-                { key: 'individual', label: 'General Members', count: GENERAL_STATIC_DATA.individual.length },
-                { key: 'players',    label: 'Sports Participants', count: GENERAL_STATIC_DATA.players.length },
+                { key: 'individual', label: 'General Members', count: generalMembersData?.individual?.length ?? 0 },
+                { key: 'players',    label: 'Sports Participants', count: generalMembersData?.players?.length ?? 0 },
               ].map(st => (
                 <button
                   key={st.key}

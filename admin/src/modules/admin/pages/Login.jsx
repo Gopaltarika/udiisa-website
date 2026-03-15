@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaLock, FaEnvelope, FaEye, FaEyeSlash } from 'react-icons/fa'
 import authService from '../services/authService'
-import logo from '../../../../public/white-short-logo.webp'
+// Vite: public assets are served from root
+const logo = '/white-short-logo.webp'
 
 // ── Field MUST be outside Login component ─────────────────────────────────────
 // Defining it inside causes re-mount on every keystroke → input loses focus

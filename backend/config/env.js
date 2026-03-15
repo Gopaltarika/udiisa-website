@@ -30,6 +30,9 @@ export function assertRequiredEnv() {
   if (IS_PRODUCTION && ENV.corsOrigins.size === 0) {
     missing.push('CORS_ORIGINS or FRONTEND_URL/ADMIN_URL')
   }
+  if (IS_PRODUCTION && ENV.jwtSecret.length < 32) {
+    throw new Error('JWT_SECRET must be at least 32 characters in production')
+  }
 
   if (missing.length > 0) {
     throw new Error(`Missing required environment variables: ${missing.join(', ')}`)

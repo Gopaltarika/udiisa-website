@@ -350,7 +350,7 @@ function QueryFormModal({ tabData, onClose }) {
   const [form, setForm] = useState({
     fullName: '', email: '', emailVerified: false,
     phone: '', gender: '', age: '',
-    address: '', membershipType: '', message: '', terms: false,
+    address: '', membershipType: '', message: '',
   })
   const [errors,  setErrors]  = useState({})
   const [showOTP, setShowOTP] = useState(false)
@@ -373,7 +373,6 @@ function QueryFormModal({ tabData, onClose }) {
     if (!form.address.trim())   e.address        = 'Address is required'
     if (!form.membershipType || form.membershipType.startsWith('—'))
                                 e.membershipType = 'Please select membership type'
-    if (!form.terms)            e.terms          = 'Please accept the terms & conditions'
     return e
   }
 
@@ -393,7 +392,7 @@ function QueryFormModal({ tabData, onClose }) {
       payload.append('address', form.address.trim())
       payload.append('membershipType', form.membershipType)
       payload.append('message', form.message.trim())
-      payload.append('termsAccepted', form.terms ? 'true' : 'false')
+      payload.append('termsAccepted', 'true')
       await submitMemberForm(payload)
       setSuccess(true)
     } catch (e) {
@@ -534,17 +533,6 @@ function QueryFormModal({ tabData, onClose }) {
                 value={form.message} onChange={e => set('message', e.target.value)}
                 className="w-full !px-3 sm:!px-3.5 !py-2.5 rounded-xl border-[1.5px] border-slate-200 bg-white resize-none text-[12.5px] sm:text-[13.5px] font-medium text-[#0B1E4B] placeholder:text-slate-300 placeholder:font-normal focus:outline-none focus:border-[#F05A1A] focus:ring-2 focus:ring-[#F05A1A]/10 transition-all" />
             </QField>
-            <div>
-              <label className="flex items-start !gap-2.5 cursor-pointer">
-                <input type="checkbox" checked={form.terms} onChange={e => set('terms', e.target.checked)}
-                  className="!mt-1 w-4 h-4 accent-[#F05A1A] flex-shrink-0 cursor-pointer" />
-                <span className="text-[11.5px] sm:text-[12.5px] text-slate-600 leading-relaxed">
-                  I accept the{' '}<a href="#" className="text-[#F05A1A] font-bold underline">Terms &amp; Conditions</a>{' '}and{' '}
-                  <a href="#" className="text-[#F05A1A] font-bold underline">Privacy Policy</a>{' '}of UDIISA. I confirm all information provided is accurate.
-                </span>
-              </label>
-              {errors.terms && <p className="text-[11px] sm:text-[11.5px] text-red-500 font-semibold !mt-1 !ml-6">{errors.terms}</p>}
-            </div>
             {errors.submit && (
               <div className="flex items-center !gap-2 !px-3 !py-2.5 rounded-xl bg-red-50 border border-red-200">
                 <FaTimesCircle className="text-red-400 text-[13px]" />
