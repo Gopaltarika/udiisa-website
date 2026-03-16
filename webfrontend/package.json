@@ -9,6 +9,7 @@
     "seo:generate-static-pages": "node scripts/generate-static-seo.mjs",
     "prebuild": "npm run seo:generate-sitemap",
     "seo:verify": "node scripts/verify-seo-build.mjs",
+    "seo:check-live": "node scripts/check-live-seo.mjs",
     "postbuild": "npm run seo:generate-static-pages && npm run seo:verify",
     "build": "node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build",
     "lint": "eslint .",

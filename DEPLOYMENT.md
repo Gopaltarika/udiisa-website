@@ -139,6 +139,19 @@ After deploy:
 - Submit sitemap URL: `https://udisports.in/sitemap.xml`
 - Request indexing for top pages and latest blog URLs
 
+### If `sitemap.xml` returns 500 (emergency fix)
+
+Use this order:
+- Ensure `webfrontend/dist/sitemap.xml` exists after build.
+- Ensure website root points to `webfrontend/dist` (not backend folder).
+- If Nginx is used, apply `ops/nginx/udisports.in.conf` and reload Nginx.
+- Confirm `/sitemap.xml` is not proxied to Node API.
+- Run:
+  ```bash
+  cd webfrontend
+  npm run seo:check-live
+  ```
+
 ## 6) Final smoke tests
 
 - Website navigation and hard refresh on inner routes works
