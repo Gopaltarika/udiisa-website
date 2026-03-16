@@ -295,7 +295,7 @@ const AboutUs = () => {
                 talent and provide structured support including coaching, mentorship,
                 financial assistance, and academy placements. Our mission is to
                 bridge the gap between talent and opportunity, ensuring that no
-                athlete's dream goes unnoticed or unsupported.
+                player's dream goes unnoticed or unsupported.
               </p>
 
               {/* Feature Cards */}

@@ -36,7 +36,7 @@ const SEO_BY_PATH = [
     match: /^\/members\/general-members\/?$/,
     title: "General Members | UDIISA",
     description:
-      "Explore UDIISA general members and the growing sports community supporting athlete development in India.",
+      "Explore UDIISA general members and the growing sports community supporting player development in India.",
   },
   {
     match: /^\/members\/special-members(\/.*)?$/,
@@ -54,7 +54,7 @@ const SEO_BY_PATH = [
     match: /^\/membership\/individual-player\/?$/,
     title: "Individual Players Membership | UDIISA",
     description:
-      "Apply for UDIISA Individual Players Membership and access structured programs, events, and athlete support opportunities.",
+      "Apply for UDIISA Individual Players Membership and access structured programs, events, and player support opportunities.",
   },
   {
     match: /^\/membership\/individual-patron\/?$/,

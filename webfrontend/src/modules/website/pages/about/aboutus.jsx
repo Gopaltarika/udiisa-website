@@ -81,11 +81,11 @@ const ROADMAP = [
   },
 ]
 const VALUES = [
-  { icon: <FaHeart className="text-[18px]" />,        label: 'Compassion',   desc: 'Every athlete is a person first. We lead with empathy.' },
+  { icon: <FaHeart className="text-[18px]" />,        label: 'Compassion',   desc: 'Every player is a person first. We lead with empathy.' },
   { icon: <MdVerified className="text-[18px]" />,     label: 'Integrity',    desc: 'Transparent in governance, honest in our impact.' },
   { icon: <HiSparkles className="text-[18px]" />,     label: 'Excellence',   desc: 'We set the highest bar in everything we do.' },
   { icon: <FaUsers className="text-[18px]" />,        label: 'Inclusivity',  desc: 'Sport for all — no barriers of gender, class, or region.' },
-  { icon: <FaCheckCircle className="text-[18px]" />,  label: 'Accountability', desc: 'We measure our success through athlete outcomes.' },
+  { icon: <FaCheckCircle className="text-[18px]" />,  label: 'Accountability', desc: 'We measure our success through player outcomes.' },
   { icon: <MdSportsCricket className="text-[18px]" />, label: 'Passion',     desc: 'Sport is our language, progress is our game.' },
 ]
 

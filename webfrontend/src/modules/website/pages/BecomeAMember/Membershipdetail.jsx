@@ -118,7 +118,7 @@ const MEMBERSHIP_DATA = {
     description: 'Lifetime Corporate Membership is available to companies and organisations whose objectives align with sports promotion. Each higher tier includes all privileges of preceding tiers. Valid till 31 March 2027 on first-cum-first-served basis.',
     eligibility: [
       'Registered company, LLP, partnership firm, trust, NGO, or association in India',
-      'Aims & objectives aligned with sports development or athlete welfare',
+      'Aims & objectives aligned with sports development or player welfare',
       'Minimum 2 years of existence (date of incorporation)',
       'Membership is subject to approval by Governing Body',
     ],
