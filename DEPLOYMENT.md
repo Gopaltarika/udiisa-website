@@ -121,43 +121,11 @@ server {
 }
 ```
 
-## 5) SEO go-live checklist
-
-- `https://udisports.in/robots.txt` opens correctly
-- `https://udisports.in/sitemap.xml` opens and has all routes
-- View source of:
-  - `/`
-  - `/about-us`
-  - `/blogs`
-  - one `/blogs/<slug>`
-  and confirm title/description/canonical/OG tags are correct
-- Redirect check:
-  - `/Contribute-now` should 301 to `/donate-now`
-
-After deploy:
-- Add and verify domain in Google Search Console
-- Submit sitemap URL: `https://udisports.in/sitemap.xml`
-- Request indexing for top pages and latest blog URLs
-
-### If `sitemap.xml` returns 500 (emergency fix)
-
-Use this order:
-- Ensure `webfrontend/dist/sitemap.xml` exists after build.
-- Ensure website root points to `webfrontend/dist` (not backend folder).
-- If Nginx is used, apply `ops/nginx/udisports.in.conf` and reload Nginx.
-- Confirm `/sitemap.xml` is not proxied to Node API.
-- Run:
-  ```bash
-  cd webfrontend
-  npm run seo:check-live
-  ```
-
-## 6) Final smoke tests
+## 5) Final smoke tests
 
 - Website navigation and hard refresh on inner routes works
 - Admin login works
 - API health endpoint works: `/api/health`
 - Contact and OTP flows work
-- Blog list and blog detail pages load with correct SEO tags
 
-If all above pass, deployment is production-ready and SEO-safe.
+If all above pass, deployment is production-ready.
