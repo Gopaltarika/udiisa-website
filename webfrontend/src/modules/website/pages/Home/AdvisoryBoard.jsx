@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { FaArrowRight, FaTimes } from 'react-icons/fa'
 import suniljalan from "@/assets/images/satishkumarjain.webp"
-import sureshjindal from "@/assets/images/suresh-jindal.webp"
 import sanjaybhardwaj from "@/assets/images/sanjay-bhardwaj.webp"
+import santParkash from "@/assets/images/sant prakash.webp"
 
 const chairmen = [
   {
@@ -17,14 +17,14 @@ const chairmen = [
     ],
   },
   {
-    name: 'Mr. Suresh Jindal',
-    role: 'Advisory Board Vice Chairman',
-    roleBadge: 'Vice Chairman',
-    desc: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
-    img: sureshjindal,
-    modalTitle: 'Whole time Vice Chairman, Advisory Board. UDIISA.',
+    name: 'Mr. Justice Sant Parkash',
+    role: 'Advisory Board Vice Chair Person',
+    roleBadge: 'Vice Chair Person',
+    desc: 'Whole time Vice Chair Person, Advisory Board. UDIISA.',
+    img: santParkash,
+    modalTitle: 'Whole time Vice Chair Person, Advisory Board. UDIISA.',
     modalContent: [
-      'Shri Suresh Jindal Ji remained as prominent and proactive Industrialist. He started serving for talented and gifted players after handing over the business activities to his children. He is noble and kindhearted person in contributing his best for creating future champions. UDIISA is thankful for his support of mission.',
+      'UDIISA\'s initiatives in identifying and nurturing sporting talent across India are highly commendable. With passion, dedication, and integrity, the team is providing valuable support to deserving players, especially from underprivileged backgrounds. Their efforts are strengthening the sports ecosystem and creating equal opportunities for growth. With a forward-looking vision aligned with national development, UDIISA is playing a vital role in shaping future champions and bringing pride to the nation.',
     ],
   },
   {
