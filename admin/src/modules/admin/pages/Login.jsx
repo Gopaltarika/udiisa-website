@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaLock, FaEnvelope, FaEye, FaEyeSlash } from 'react-icons/fa'
 import authService from '../services/authService'
-// Vite: public assets are served from root
-const logo = '/white-short-logo.webp'
+// In production admin runs under /admin/, so use base-aware public asset paths.
+const logo = `${import.meta.env.BASE_URL}white-short-logo.webp`
+const fallbackLogo = `${import.meta.env.BASE_URL}short-logo.webp`
 
 // ── Field MUST be outside Login component ─────────────────────────────────────
 // Defining it inside causes re-mount on every keystroke → input loses focus
@@ -93,7 +94,15 @@ export default function Login() {
 
         {/* Logo */}
         <div className="text-center mb-[32px] flex justify-center flex-col items-center gap-[4px]">
-          <img src={logo} alt="logo" className="w-full max-w-[45px]" />
+          <img
+            src={logo}
+            alt="logo"
+            className="w-full max-w-[45px]"
+            onError={(e) => {
+              // Fallback for deployments where white logo is unavailable.
+              e.currentTarget.src = fallbackLogo
+            }}
+          />
           <h1 className="text-white text-[26px] font-extrabold m-0 leading-tight">UDIISA</h1>
           <p className="text-white/50 text-[13px] m-0 mt-[4px]">Admin Panel</p>
         </div>

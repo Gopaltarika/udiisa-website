@@ -1,12 +1,14 @@
 // admin/layout/Sidebar.jsx
 import { NavLink } from 'react-router-dom'
-import logo from '../../../../public/white-short-logo.webp'
 import {
   MdDashboard, MdPeople, MdStar, MdEmail,
   MdArticle, MdSettings, MdSportsCricket,
 } from 'react-icons/md'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { useState } from 'react'
+
+const logo = `${import.meta.env.BASE_URL}white-short-logo.webp`
+const fallbackLogo = `${import.meta.env.BASE_URL}short-logo.webp`
 
 const NAV = [
   {
@@ -121,7 +123,15 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           border-b border-white/10 flex-shrink-0
           ${collapsed ? 'justify-center' : ''}
         `}>
-          <img src={logo} alt="logo" className='w-full max-w-[45px]' />
+          <img
+            src={logo}
+            alt="logo"
+            className="w-full max-w-[45px]"
+            onError={(e) => {
+              // Fallback for environments where white logo is missing.
+              e.currentTarget.src = fallbackLogo
+            }}
+          />
           {!collapsed && (
             <div>
               <p className="text-white font-extrabold text-[14px] m-0 leading-none">UDIISA</p>
