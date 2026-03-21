@@ -7,6 +7,7 @@ import { FaTrophy, FaChevronDown, FaUsers } from "react-icons/fa"
 import { BsStarFill, BsDiamondFill, BsPersonFill, BsBuildingsFill } from "react-icons/bs"
 import { GiLaurelsTrophy } from "react-icons/gi"
 import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md"
+import { RiVipCrownFill } from "react-icons/ri"
 import { getPublicCommittees } from "../../../shared/services/publicApi"
 
 export default function Navbar() {
@@ -75,18 +76,19 @@ export default function Navbar() {
 
   // Members dropdown: General Member + Talented Players
   const memberItems = [
-    { label: "General Member",   href: "/members/general-members",   icon: <FaUsers />,    desc: "Open for everyone"      },
-    { label: "Talented Players", href: "/talented-players",          icon: <GiLaurelsTrophy />, desc: "Our star performers" },
+    { label: "General Member",   href: "/members/general-members",   icon: <FaUsers />,         desc: "Open for everyone"       },
+    { label: "Talented Players", href: "/talented-players",          icon: <GiLaurelsTrophy />, desc: "Our star performers"     },
   ]
 
-  // Special Member dropdown: Diamond, Gold, Silver
-const specialItems = [
-  { label: "Diamond Member",  href: "/members/special-members/diamond",     icon: <BsDiamondFill />, desc: "Premium elite tier",      color: "#a0d8ef" },
-  { label: "Gold Member",     href: "/members/special-members/gold",        icon: <BsStarFill />,    desc: "Top-tier membership",     color: "#FFD700" },
-  { label: "Silver Member",   href: "/members/special-members/silver",      icon: <BsStarFill />,    desc: "Distinguished level",     color: "#C0C0C0" },
-  { label: "Dignitaries",     href: "/members/special-members/dignitaries", icon: <BsPersonFill />,  desc: "Eminent personalities",   color: "#d8b4fe" },
-  { label: "Corporate Members",  href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members", color: "#6ee7b7" },
-]
+  // Special Member dropdown
+  const specialItems = [
+    { label: "Diamond Member",    href: "/members/special-members/diamond",     icon: <BsDiamondFill />,   desc: "Premium elite tier",      color: "#a0d8ef" },
+    { label: "Gold Member",       href: "/members/special-members/gold",        icon: <BsStarFill />,      desc: "Top-tier membership",     color: "#FFD700" },
+    { label: "Silver Member",     href: "/members/special-members/silver",      icon: <BsStarFill />,      desc: "Distinguished level",     color: "#C0C0C0" },
+    { label: "Dignitaries",       href: "/members/special-members/dignitaries", icon: <BsPersonFill />,    desc: "Eminent personalities",   color: "#d8b4fe" },
+    { label: "Celebrity",         href: "/members/special-members/celebrity",   icon: <RiVipCrownFill />,  desc: "Stars & public figures",  color: "#f9a8d4" },
+    { label: "Corporate Members", href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members",   color: "#6ee7b7" },
+  ]
 
   // Active link colour helper
   const linkCls = (label) =>
@@ -143,7 +145,7 @@ const specialItems = [
               Home
             </a>
 
-            {/* Members dropdown — General Member + Talented Players */}
+            {/* Members dropdown */}
             <div className="relative" onMouseEnter={onMEnter} onMouseLeave={onMLeave}>
               <button className={linkCls("Members")}>
                 Community
@@ -155,9 +157,7 @@ const specialItems = [
                   className="drop-anim absolute z-[200] bg-white rounded-[18px] !p-2 min-w-[240px] shadow-[0_24px_60px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-[150%] -translate-x-1/2"
                   onMouseEnter={onMEnter} onMouseLeave={onMLeave}
                 >
-                  {/* Arrow */}
                   <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rotate-45 w-3 h-3 bg-white border-l border-t border-[#eef2f8]" />
-
                   {memberItems.map(item => (
                     <a
                       key={item.label} href={item.href}
@@ -177,7 +177,7 @@ const specialItems = [
               )}
             </div>
 
-            {/* Special Member dropdown — Diamond, Gold, Silver */}
+            {/* Special Member dropdown */}
             <div className="relative" onMouseEnter={onSEnter} onMouseLeave={onSLeave}>
               <button className={linkCls("Special Member")}>
                 Special Member
@@ -186,12 +186,10 @@ const specialItems = [
 
               {specialDrop && (
                 <div
-                  className="drop-anim absolute z-[200] bg-white rounded-[18px] !p-2 min-w-[240px] shadow-[0_24px_60px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-[150%] -translate-x-1/2"
+                  className="drop-anim absolute z-[200] bg-white rounded-[18px] !p-2 min-w-[250px] shadow-[0_24px_60px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-[150%] -translate-x-1/2"
                   onMouseEnter={onSEnter} onMouseLeave={onSLeave}
                 >
-                  {/* Arrow */}
                   <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rotate-45 w-3 h-3 bg-white border-l border-t border-[#eef2f8]" />
-
                   {specialItems.map(item => (
                     <a
                       key={item.label} href={item.href}
@@ -227,8 +225,6 @@ const specialItems = [
                   onMouseEnter={onCEnter} onMouseLeave={onCLeave}
                 >
                   <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rotate-45 w-3 h-3 bg-white border-l border-t border-[#eef2f8]" />
-
-                  {/* All committees link */}
                   <a
                     href="/committee"
                     className="flex items-center gap-3 !px-3 !py-2.5 rounded-xl no-underline text-[#0B1E4B] transition-all duration-150 hover:bg-[#EFF6FF] !mb-1 border-b border-slate-100"
@@ -242,8 +238,6 @@ const specialItems = [
                       <div className="text-[10px] text-slate-400 !mt-0.5">View full overview</div>
                     </div>
                   </a>
-
-                  {/* Each committee */}
                   {committees.map(c => (
                     <a
                       key={c.slug}
@@ -280,7 +274,6 @@ const specialItems = [
               <MdVolunteerActivism className="text-[16px]" />
               Become a Member
             </a>
-
             <a
               href="/contact-us"
               className="flex items-center gap-1.5 !px-5 !py-2.5 rounded-[10px] no-underline text-[13px] font-bold font-[Plus_Jakarta_Sans] whitespace-nowrap text-white bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] shadow-[0_4px_18px_rgba(240,90,26,.36)] transition-all duration-200 hover:shadow-[0_10px_28px_rgba(240,90,26,.50)] hover:-translate-y-0.5"
@@ -348,7 +341,7 @@ const specialItems = [
               Home
             </a>
 
-            {/* Members accordion — General Member + Talented Players */}
+            {/* Members accordion */}
             <div>
               <button
                 className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "Members" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}
@@ -373,7 +366,7 @@ const specialItems = [
               </div>
             </div>
 
-            {/* Special Member accordion — Diamond, Gold, Silver */}
+            {/* Special Member accordion */}
             <div>
               <button
                 className={`flex items-center justify-between w-full !px-[15px] !py-[13px] rounded-xl text-[14px] font-semibold font-[Plus_Jakarta_Sans] border-0 cursor-pointer transition-all duration-150 ${activeKey === "Special Member" ? "text-[#F05A1A] bg-[#FFF3EC]" : "text-slate-600 bg-transparent hover:bg-[#FFF3EC] hover:text-[#F05A1A]"}`}

@@ -10,7 +10,14 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { getPublicSpecialMembers } from "../../../../shared/services/publicApi";
 
-const EMPTY_GROUPS = { diamond: [], gold: [], silver: [], dignitaries: [], bodyCorporate: [] };
+const EMPTY_GROUPS = {
+  diamond: [],
+  gold: [],
+  silver: [],
+  dignitaries: [],
+  celebrity: [],
+  bodyCorporate: [],
+};
 
 // ─── Themes ───────────────────────────────────────────────────────────────────
 const TABS = [
@@ -73,6 +80,24 @@ const TABS = [
     badgeBg: "linear-gradient(135deg, #ede9fe, #f5f3ff)", badgeBorder: "#c4b5fd", badgeText: "#4c1d95",
     verifiedBg: "linear-gradient(135deg, #4c1d95, #7c3aed)", companyColor: "#7c3aed",
     dotActive: "#7c3aed", dotShadow: "rgba(124,58,237,0.4)",
+  },
+  {
+    // ── NEW: Celebrity tab ─────────────────────────────────────────────────
+    key: "celebrity", label: "Celebrity", emoji: "🌟",
+    tabActiveBg: "linear-gradient(135deg, #831843 0%, #db2777 100%)",
+    tabActiveBorder: "#f9a8d4", tabActiveText: "#fff",
+    tabActiveShadow: "0 8px 28px rgba(219,39,119,0.38)",
+    cardBg: "linear-gradient(145deg, #ffffff 0%, #fdf2f8 60%, #fce7f3 100%)",
+    cardBorder: "#f9a8d4",
+    cardShadow: "0 20px 60px rgba(219,39,119,0.14), 0 4px 20px rgba(219,39,119,0.08)",
+    cardTopBar: "linear-gradient(90deg, #831843, #db2777, #f472b6)",
+    ringGrad: "conic-gradient(from 0deg, #831843, #f472b6, #fce7f3, #f472b6, #831843)",
+    accentColor: "#db2777", accentLight: "#fce7f3",
+    badgeBg: "linear-gradient(135deg, #fce7f3, #fdf2f8)", badgeBorder: "#f9a8d4", badgeText: "#831843",
+    verifiedBg: "linear-gradient(135deg, #831843, #db2777)", companyColor: "#db2777",
+    dotActive: "#db2777", dotShadow: "rgba(219,39,119,0.42)",
+    // extra celebrity-specific
+    spotlight: true,
   },
   {
     key: "bodyCorporate", label: "Corporate Members", emoji: "🏢",
@@ -174,6 +199,9 @@ function TabButton({ tab, isActive, onClick }) {
 // ─── Member Card ───────────────────────────────────────────────────────────────
 function MemberCard({ member, isCenter, theme }) {
   if (!member) return null;
+
+  const isCelebrity = theme.key === "celebrity";
+
   return (
     <div style={{
       background: isCenter ? theme.cardBg : "#fff",
@@ -196,10 +224,21 @@ function MemberCard({ member, isCenter, theme }) {
         background: isCenter ? theme.cardTopBar : "#f1f5f9",
       }} />
 
+      {/* Celebrity spotlight glow behind card */}
+      {isCelebrity && isCenter && (
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "55%",
+          background: "linear-gradient(180deg, rgba(249,168,212,0.18) 0%, transparent 100%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }} />
+      )}
+
       <div style={{
         padding: isCenter ? "20px 16px 18px" : "14px 12px 14px",
         display: "flex", flexDirection: "column", alignItems: "center",
         width: "100%", flex: 1, boxSizing: "border-box",
+        position: "relative", zIndex: 1,
       }}>
         {isCenter && (
           <div style={{
@@ -227,6 +266,26 @@ function MemberCard({ member, isCenter, theme }) {
 
         {/* PHOTO */}
         <div style={{ position: "relative", marginBottom: 12, zIndex: 1 }}>
+          {/* Celebrity: star sparkles around ring */}
+          {isCelebrity && isCenter && (
+            <>
+              {[0, 72, 144, 216, 288].map((deg, idx) => (
+                <div key={idx} style={{
+                  position: "absolute",
+                  top: "50%", left: "50%",
+                  width: 8, height: 8,
+                  marginTop: -4, marginLeft: -4,
+                  transform: `rotate(${deg}deg) translateY(-58px)`,
+                  fontSize: 10,
+                  lineHeight: 1,
+                  animation: `starPulse ${1.6 + idx * 0.18}s ease-in-out infinite alternate`,
+                  pointerEvents: "none",
+                  zIndex: 3,
+                }}>⭐</div>
+              ))}
+            </>
+          )}
+
           <div style={{
             width: isCenter ? 90 : 74,
             height: isCenter ? 90 : 74,
@@ -263,6 +322,7 @@ function MemberCard({ member, isCenter, theme }) {
             }} />
           )}
 
+          {/* Verified badge — star icon for celebrity */}
           {isCenter && (
             <div style={{
               position: "absolute", bottom: 2, right: 2,
@@ -270,12 +330,17 @@ function MemberCard({ member, isCenter, theme }) {
               background: theme.verifiedBg, border: "2px solid #fff",
               display: "flex", alignItems: "center", justifyContent: "center",
               boxShadow: `0 2px 8px ${theme.accentColor}50`,
+              fontSize: isCelebrity ? 10 : undefined,
             }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  stroke="#fff" strokeWidth="2.5" fill="none"
-                  strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              {isCelebrity ? (
+                <span style={{ lineHeight: 1 }}>⭐</span>
+              ) : (
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    stroke="#fff" strokeWidth="2.5" fill="none"
+                    strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
             </div>
           )}
         </div>
@@ -448,21 +513,28 @@ export default function SpecialMembersSection() {
     getPublicSpecialMembers()
       .then((list) => {
         if (cancelled) return;
-        const groups = { diamond: [], gold: [], silver: [], dignitaries: [], bodyCorporate: [] };
+        const groups = {
+          diamond: [], gold: [], silver: [],
+          dignitaries: [], celebrity: [], bodyCorporate: [],
+        };
         const items = Array.isArray(list) ? list : [];
         items.forEach((item) => {
-          const categoryRaw = String(item.membershipCategory || item.membershipType || "").toLowerCase();
+          const categoryRaw = String(
+            item.membershipCategory || item.membershipType || ""
+          ).toLowerCase();
           let key = "silver";
-          if (categoryRaw.includes("diamond"))                                    key = "diamond";
-          else if (categoryRaw.includes("gold"))                                  key = "gold";
-          else if (categoryRaw.includes("dignitar"))                              key = "dignitaries";
-          else if (categoryRaw.includes("corporate") || categoryRaw.includes("body")) key = "bodyCorporate";
+          if      (categoryRaw.includes("diamond"))                                       key = "diamond";
+          else if (categoryRaw.includes("gold"))                                          key = "gold";
+          else if (categoryRaw.includes("dignitar"))                                      key = "dignitaries";
+          else if (categoryRaw.includes("celebrit"))                                      key = "celebrity";
+          else if (categoryRaw.includes("corporate") || categoryRaw.includes("body"))    key = "bodyCorporate";
+
           groups[key].push({
-            id: item.id || `${key}-${Math.random()}`,
-            name: item.name || "Member",
+            id:      item.id || `${key}-${Math.random()}`,
+            name:    item.name || "Member",
             company: item.companyName || "",
-            role: item.designation || "Member",
-            photo: item.img ||
+            role:    item.designation || "Member",
+            photo:   item.img ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name || "Member")}&background=f1f5f9&color=475569&size=200&bold=true`,
           });
         });
@@ -494,8 +566,7 @@ export default function SpecialMembersSection() {
       padding: "clamp(48px, 8vw, 100px) 0 clamp(36px, 6vw, 80px)",
       position: "relative", overflow: "hidden",
       fontFamily: "'Plus Jakarta Sans', sans-serif",
-      border: "none",
-      outline: "none",
+      border: "none", outline: "none",
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap');
@@ -515,6 +586,10 @@ export default function SpecialMembersSection() {
         @keyframes skelShimmer {
           0%   { background-position: -600px 0; }
           100% { background-position:  600px 0; }
+        }
+        @keyframes starPulse {
+          from { opacity: 0.4; transform: rotate(var(--r, 0deg)) translateY(-58px) scale(0.85); }
+          to   { opacity: 1;   transform: rotate(var(--r, 0deg)) translateY(-58px) scale(1.2); }
         }
         .skel-shine {
           background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
@@ -671,23 +746,18 @@ export default function SpecialMembersSection() {
         {/* ── SKELETON ── */}
         {loading && (
           <div className="skel-row">
-            {/* far-left */}
             <div className="skel-item skel-hide-far" style={{ width: 170, height: 235 }}>
               <SkeletonCard isCenter={false} />
             </div>
-            {/* side-left */}
             <div className="skel-item skel-hide-side" style={{ width: 190, height: 245 }}>
               <SkeletonCard isCenter={false} />
             </div>
-            {/* center */}
             <div className="skel-item" style={{ width: 220, height: 272 }}>
               <SkeletonCard isCenter />
             </div>
-            {/* side-right */}
             <div className="skel-item skel-hide-side" style={{ width: 190, height: 245 }}>
               <SkeletonCard isCenter={false} />
             </div>
-            {/* far-right */}
             <div className="skel-item skel-hide-far" style={{ width: 170, height: 235 }}>
               <SkeletonCard isCenter={false} />
             </div>

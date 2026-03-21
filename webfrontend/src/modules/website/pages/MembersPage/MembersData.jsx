@@ -46,7 +46,15 @@ const ALL_STATIC_DATA = {
     { id: 3,  name: 'Dr. Meena Agarwal',     company: 'SAI',                    city: 'Delhi' },
     { id: 4,  name: 'Brig. A.K. Chauhan',    company: 'Indian Army',            city: 'Dehradun' },
     { id: 5,  name: 'Prof. R.N. Tripathi',   company: 'Lucknow University',     city: 'Lucknow' },
-    { id: 6,  name: 'IAS Rohini Srivastav',  company: 'UP Government',          city: 'Lucknow' },
+    { id: 6,  name: 'IAS Rohini Srivastava', company: 'UP Government',          city: 'Lucknow' },
+  ],
+  celebrity: [
+    { id: 1,  name: 'Arjun Kapoor',          company: 'Bollywood / Entertainment', city: 'Mumbai' },
+    { id: 2,  name: 'Sania Mirza',           company: 'Tennis / Sports',           city: 'Hyderabad' },
+    { id: 3,  name: 'Milind Soman',          company: 'Fitness / Modelling',       city: 'Mumbai' },
+    { id: 4,  name: 'Geeta Phogat',          company: 'Wrestling / Sports',        city: 'Haryana' },
+    { id: 5,  name: 'Rannvijay Singha',      company: 'Television / Media',        city: 'Delhi' },
+    { id: 6,  name: 'Mary Kom',              company: 'Boxing / Sports',           city: 'Manipur' },
   ],
   corporate: [
     { id: 1,  name: 'Mahendra Singh',        company: 'MS Steel Pvt Ltd',       city: 'Raipur' },
@@ -70,7 +78,7 @@ const GENERAL_STATIC_DATA = {
     { id: 6,  name: 'Sunita Yadav',          company: 'Yadav Foundation' },
     { id: 7,  name: 'Vikram Mehta',          company: 'Mehta Constructions' },
     { id: 8,  name: 'Kavita Reddy',          company: 'Reddy Exports' },
-    { id: 9,  name: 'Mohit Srivastav',       company: 'Srivastav Group' },
+    { id: 9,  name: 'Mohit Srivastava',      company: 'Srivastava Group' },
     { id: 10, name: 'Aarti Bhatt',           company: 'Bhatt Enterprises' },
     { id: 11, name: 'Sandeep Tomar',         company: 'Tomar Agro' },
     { id: 12, name: 'Reema Jain',            company: 'Jain Jewellers' },
@@ -170,6 +178,26 @@ const SPECIAL_TABS = [
     cardGradTop: 'linear-gradient(160deg,#f3e8ff 0%,#fdf4ff 60%,#fff 100%)',
   },
   {
+    // ── NEW: Celebrity ────────────────────────────────────────────────────────
+    key: 'celebrity',
+    label: 'Celebrity',
+    emoji: '🌟',
+    desc: 'Famous personalities from sports, entertainment and media who support UDIISA.',
+    tagLabel: 'Celebrity Member',
+    activeBg: 'linear-gradient(135deg,#fdf2f8,#fce7f3)',
+    activeBorder: '#ec4899',
+    activeColor: '#831843',
+    activeShadow: '0 6px 28px rgba(236,72,153,0.28)',
+    accentColor: '#9d174d',
+    accentLight: '#fdf2f8',
+    accentBorder: 'rgba(236,72,153,0.22)',
+    accentGlow: 'rgba(236,72,153,0.13)',
+    ringFrom: '#f9a8d4', ringTo: '#ec4899',
+    badgeBg: '#fce7f3', badgeColor: '#831843', badgeBorder: 'rgba(131,24,67,0.22)',
+    stripFrom: '#ec4899', stripTo: '#f9a8d4',
+    cardGradTop: 'linear-gradient(160deg,#fce7f3 0%,#fdf2f8 60%,#fff 100%)',
+  },
+  {
     key: 'corporate',
     label: 'Corporate Members',
     emoji: '🏢',
@@ -195,23 +223,31 @@ const TAB_ROUTES = {
   gold:        '/members/special-members/gold',
   silver:      '/members/special-members/silver',
   dignitaries: '/members/special-members/dignitaries',
+  celebrity:   '/members/special-members/celebrity',
   corporate:   '/members/special-members/corporate',
 }
 const VALID_KEYS = Object.keys(TAB_ROUTES)
 const PAGE_SIZE = 6
 
-// Map backend membershipCategory to frontend tab key
+// Map backend membershipCategory → frontend tab key
 const CATEGORY_TO_TAB = {
-  diamond: 'diamond',
-  gold: 'gold',
-  silver: 'silver',
-  dignitaries: 'dignitaries',
+  diamond:          'diamond',
+  gold:             'gold',
+  silver:           'silver',
+  dignitaries:      'dignitaries',
+  dignitary:        'dignitaries',
+  celebrity:        'celebrity',
   'body corporate': 'corporate',
+  corporate:        'corporate',
 }
 function normalizeCategoryToTab(cat) {
   if (!cat) return 'silver'
   const key = String(cat).trim().toLowerCase()
-  return CATEGORY_TO_TAB[key] || 'silver'
+  // prefix match for safety (e.g. "celebrity member" → celebrity)
+  for (const [k, v] of Object.entries(CATEGORY_TO_TAB)) {
+    if (key.includes(k)) return v
+  }
+  return 'silver'
 }
 
 /* ═══════════════════════════════════════════
@@ -360,6 +396,16 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
       height: 4,
       background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo}, ${theme.stripFrom})`,
     }} />
+
+    {/* Celebrity sparkle dots */}
+    {theme.key === 'celebrity' && (
+      <>
+        <div className="absolute top-3 right-6 text-[10px] pointer-events-none z-10 opacity-60">⭐</div>
+        <div className="absolute top-8 right-3 text-[8px] pointer-events-none z-10 opacity-40">✨</div>
+        <div className="absolute top-5 left-5 text-[8px] pointer-events-none z-10 opacity-40">⭐</div>
+      </>
+    )}
+
     <div className="relative z-10 flex flex-col items-center w-full flex-1 px-3 sm:px-4 pt-4 sm:pt-5 pb-4 sm:pb-5">
       <div className="avatar-wrap relative mb-3 sm:mb-4 w-full">
         <div className="ring-anim rounded-2xl sm:rounded-3xl p-[3px]" style={{
@@ -380,15 +426,18 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
             />
           </div>
         </div>
-        <div className="absolute -bottom-2 -right-2 w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl border-2 border-white flex items-center justify-center z-10"
+        <div
+          className="absolute -bottom-2 -right-2 w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl border-2 border-white flex items-center justify-center z-10"
           style={{
             background: `linear-gradient(135deg, ${theme.ringFrom}, ${theme.ringTo})`,
-            fontSize: 14,
+            fontSize: theme.key === 'celebrity' ? 13 : 14,
             boxShadow: `0 4px 12px ${theme.accentGlow}`,
-          }}>
-          {theme.emoji}
+          }}
+        >
+          {theme.key === 'celebrity' ? '⭐' : theme.emoji}
         </div>
       </div>
+
       <h3 className="m-0 mb-1 text-sm sm:text-base font-black text-[#0B1E4B] leading-tight tracking-tight line-clamp-2">
         {member.name}
       </h3>
@@ -399,17 +448,23 @@ const PremiumMemberCard = ({ member, theme, idx }) => (
         </p>
       )}
       <div className="flex-1" />
-      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mt-auto text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest"
+      <span
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mt-auto text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest"
         style={{
           background: theme.badgeBg,
           border: `1.5px solid ${theme.badgeBorder}`,
           color: theme.badgeColor,
           letterSpacing: '1.6px',
-        }}>
-        <MdVerified style={{ fontSize: 11 }} />
+        }}
+      >
+        {theme.key === 'celebrity'
+          ? <span style={{ fontSize: 11 }}>🌟</span>
+          : <MdVerified style={{ fontSize: 11 }} />
+        }
         {theme.tagLabel}
       </span>
     </div>
+
     <div className="bottom-bar absolute bottom-0 left-0 right-0 z-10" style={{
       height: 4,
       background: `linear-gradient(90deg, ${theme.stripFrom}, ${theme.stripTo})`,
@@ -471,66 +526,58 @@ const MembersData = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // ── Detect which page we're on based on route ──
-  const isSpecialPage  = location.pathname.includes('/special-members')
-  const isGeneralPage  = location.pathname.includes('/general-members')
+  const isSpecialPage = location.pathname.includes('/special-members')
+  const isGeneralPage = location.pathname.includes('/general-members')
 
-  // ── Special sub-tab from URL ──
   const specialSub = (() => {
     const seg = location.pathname.split('/').pop()
     return VALID_KEYS.includes(seg) ? seg : 'diamond'
   })()
 
-  // ── Special members from backend: { diamond: [], gold: [], ... } (empty until fetched)
   const [specialMembersByTab, setSpecialMembersByTab] = useState(null)
-
-  // ── General sub-tab local state ──
   const [generalSub, setGeneralSub] = useState('individual')
-  const [generalMembersData, setGeneralMembersData] = useState(null) // { individual: [], players: [] } from API
+  const [generalMembersData, setGeneralMembersData] = useState(null)
 
-  // ── Cards state ──
   const [visibleCards, setVisibleCards]     = useState([])
   const [cardPage, setCardPage]             = useState(1)
   const [hasMoreCards, setHasMoreCards]     = useState(true)
   const [initialLoading, setInitialLoading] = useState(true)
   const [loadingMore, setLoadingMore]       = useState(false)
 
-  // ── Table state ──
   const [visibleRows, setVisibleRows]         = useState([])
   const [rowPage, setRowPage]                 = useState(1)
   const [hasMoreRows, setHasMoreRows]         = useState(true)
   const [tableLoading, setTableLoading]       = useState(true)
   const [loadingMoreRows, setLoadingMoreRows] = useState(false)
 
-  // ── Fetch special members from backend when on special page ──
+  // ── Fetch special members ──
   useEffect(() => {
     if (!isSpecialPage) return
     getPublicSpecialMembers()
       .then((list) => {
         const arr = Array.isArray(list) ? list : []
-        const byTab = { diamond: [], gold: [], silver: [], dignitaries: [], corporate: [] }
+        const byTab = { diamond: [], gold: [], silver: [], dignitaries: [], celebrity: [], corporate: [] }
         arr.forEach((m) => {
           const tab = normalizeCategoryToTab(m.membershipCategory || m.membershipType)
           if (byTab[tab]) {
             byTab[tab].push({
-              id: m.id,
-              name: m.name,
+              id:      m.id,
+              name:    m.name,
               company: m.companyName || m.company || '',
-              img: m.img || m.photo || null,
+              img:     m.img || m.photo || null,
             })
           }
         })
         setSpecialMembersByTab(byTab)
       })
-      .catch(() => { /* keep specialMembersByTab null so static data is used as fallback */ })
+      .catch(() => { /* keep null → static fallback */ })
   }, [isSpecialPage])
 
-  // ── Source for special cards: API data if loaded, else static ──
   const specialDataSource = specialMembersByTab
     ? Object.fromEntries(VALID_KEYS.map(k => [k, specialMembersByTab[k] || []]))
     : ALL_STATIC_DATA
 
-  // ── Load cards when specialSub or source data changes ──
+  // ── Load cards on tab / source change ──
   useEffect(() => {
     if (!isSpecialPage) return
     setInitialLoading(true)
@@ -545,7 +592,6 @@ const MembersData = () => {
     })
   }, [specialSub, isSpecialPage, specialMembersByTab])
 
-  // ── Load more cards ──
   const loadMoreCards = useCallback(() => {
     if (loadingMore || !hasMoreCards) return
     setLoadingMore(true)
@@ -561,7 +607,7 @@ const MembersData = () => {
     })
   }, [loadingMore, hasMoreCards, specialSub, cardPage, specialMembersByTab])
 
-  // ── Fetch general members from backend when on general page ──
+  // ── Fetch general members ──
   useEffect(() => {
     if (!isGeneralPage) return
     setTableLoading(true)
@@ -572,19 +618,18 @@ const MembersData = () => {
       .then(([individual, players]) => {
         setGeneralMembersData({
           individual: Array.isArray(individual) ? individual : [],
-          players: Array.isArray(players) ? players : [],
+          players:    Array.isArray(players)    ? players    : [],
         })
       })
       .catch(() => {
         setGeneralMembersData({
           individual: GENERAL_STATIC_DATA.individual,
-          players: GENERAL_STATIC_DATA.players,
+          players:    GENERAL_STATIC_DATA.players,
         })
       })
       .finally(() => setTableLoading(false))
   }, [isGeneralPage])
 
-  // ── Set visible rows when general data or tab changes ──
   useEffect(() => {
     if (!isGeneralPage || generalMembersData === null) return
     const allData = generalMembersData[generalSub] || []
@@ -594,7 +639,6 @@ const MembersData = () => {
     setHasMoreRows(slice.length < allData.length)
   }, [isGeneralPage, generalSub, generalMembersData])
 
-  // ── Load more rows ──
   const loadMoreRows = useCallback(() => {
     if (loadingMoreRows || !hasMoreRows || generalMembersData === null) return
     setLoadingMoreRows(true)
@@ -608,7 +652,7 @@ const MembersData = () => {
     })
   }, [loadingMoreRows, hasMoreRows, generalSub, rowPage, generalMembersData])
 
-  // ── Redirect special page if invalid sub-route ──
+  // ── Redirect if invalid sub-route ──
   useEffect(() => {
     if (isSpecialPage && !VALID_KEYS.includes(location.pathname.split('/').pop())) {
       navigate(TAB_ROUTES.diamond, { replace: true })
@@ -622,7 +666,6 @@ const MembersData = () => {
     <div className="min-h-screen bg-[#F4F6FB] relative">
       <style>{GLOBAL_STYLES}</style>
 
-      {/* dot bg */}
       <div className="dot-bg fixed inset-0 pointer-events-none opacity-60 z-0" />
 
       <div className="max-w-screen-xl mx-auto px-3 sm:px-5 lg:px-8 py-4 sm:py-6 relative z-10">
@@ -647,11 +690,13 @@ const MembersData = () => {
             </div>
 
             {/* Banner */}
-            <div className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl mb-5 sm:mb-7 border transition-all duration-300"
+            <div
+              className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl mb-5 sm:mb-7 border transition-all duration-300"
               style={{
                 background: `linear-gradient(90deg, ${currentTheme.accentLight}, rgba(255,255,255,0))`,
                 borderColor: currentTheme.accentBorder,
-              }}>
+              }}
+            >
               <span className="text-lg sm:text-xl shrink-0">{currentTheme.emoji}</span>
               <div className="min-w-0 flex-1">
                 <div className="text-xs sm:text-sm font-extrabold mb-0.5" style={{ color: currentTheme.accentColor }}>
@@ -724,11 +769,10 @@ const MembersData = () => {
         {isGeneralPage && (
           <div className="tab-content">
 
-            {/* Sub-tabs — renamed */}
             <div className="flex items-center border-b-2 border-slate-200 mb-4 sm:mb-5">
               {[
-                { key: 'individual', label: 'General Members', count: generalMembersData?.individual?.length ?? 0 },
-                { key: 'players',    label: 'Sports Participants', count: generalMembersData?.players?.length ?? 0 },
+                { key: 'individual', label: 'General Members',    count: generalMembersData?.individual?.length ?? 0 },
+                { key: 'players',    label: 'Sports Participants', count: generalMembersData?.players?.length    ?? 0 },
               ].map(st => (
                 <button
                   key={st.key}
@@ -744,7 +788,6 @@ const MembersData = () => {
               ))}
             </div>
 
-            {/* Table */}
             <div className="rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-md">
               <div className="grid gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3"
                 style={{
