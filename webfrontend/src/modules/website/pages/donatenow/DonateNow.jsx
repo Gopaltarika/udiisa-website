@@ -17,7 +17,55 @@ export default function DonateNow() {
             and opportunities to become future champions.
           </p>
         </div>
+{/* Bank Details */}
+        <div className="bg-white rounded-xl shadow-sm p-8">
 
+          <h2 className="text-xl font-semibold text-[#0B1E4B] mb-6">
+            Donation Bank Details
+          </h2>
+
+          {/* SBI Account */}
+          <div className="grid md:grid-cols-2 gap-6 text-slate-600 mb-8">
+            <div>
+              <p><strong>Account Holder:</strong> UDI International Sports Association</p>
+              <p><strong>Account Number:</strong> 44888264603</p>
+              <p><strong>Bank Name:</strong> State Bank of India</p>
+              <p><strong>IFSC Code:</strong> SBIN0011864</p>
+            </div>
+
+            <div>
+              <p><strong>Email:</strong> info@udisports.in</p>
+              <p><strong>Accounts Email:</strong> accounts@udisports.in</p>
+              <p><strong>Phone:</strong> +91-8307598050</p>
+              <p>
+                <strong>Office Address:</strong> 5091, 9th Floor Tower-5 Parkar
+                Residency, GT Road, Tehsil Rai, District Sonipat
+              </p>
+            </div>
+          </div>
+
+          {/* HDFC Account (new card) */}
+          <div className="grid md:grid-cols-2 gap-6 text-slate-600 border-t border-slate-200 pt-8">
+            <div>
+              <p><strong>Account Holder:</strong> UDI INTERNATIONALSPORTS ASSOCIATION (Regd)</p>
+              <p><strong>Account Number:</strong> 50200119285680</p>
+              <p><strong>Bank Name:</strong> HDFC Bank</p>
+              <p><strong>MICR Code:</strong> 127240002</p>
+              <p><strong>IFSC Code:</strong> HDFC0000479</p>
+            </div>
+
+            <div>
+              <p><strong>Email:</strong> info@udisports.in</p>
+              <p><strong>Accounts Email:</strong> accounts@udisports.in</p>
+              <p><strong>Phone:</strong> +91-8307598050</p>
+              <p>
+                <strong>Office Address:</strong> 5091, 9th Floor Tower-5 Parkar
+                Residency, GT Road, Tehsil Rai, District Sonipat
+              </p>
+            </div>
+          </div>
+
+        </div>
         {/* Organization Mission */}
         <div className="bg-white rounded-xl shadow-sm p-8 mb-10">
           <h2 className="text-xl font-semibold text-[#0B1E4B] mb-4">
@@ -162,55 +210,7 @@ export default function DonateNow() {
 
         </div>
 
-        {/* Bank Details */}
-        <div className="bg-white rounded-xl shadow-sm p-8">
-
-          <h2 className="text-xl font-semibold text-[#0B1E4B] mb-6">
-            Donation Bank Details
-          </h2>
-
-          {/* SBI Account */}
-          <div className="grid md:grid-cols-2 gap-6 text-slate-600 mb-8">
-            <div>
-              <p><strong>Account Holder:</strong> UDI International Sports Association</p>
-              <p><strong>Account Number:</strong> 44888264603</p>
-              <p><strong>Bank Name:</strong> State Bank of India</p>
-              <p><strong>IFSC Code:</strong> SBIN0011864</p>
-            </div>
-
-            <div>
-              <p><strong>Email:</strong> info@udisports.in</p>
-              <p><strong>Accounts Email:</strong> accounts@udisports.in</p>
-              <p><strong>Phone:</strong> +91-8307598050</p>
-              <p>
-                <strong>Office Address:</strong> 5091, 9th Floor Tower-5 Parkar
-                Residency, GT Road, Tehsil Rai, District Sonipat
-              </p>
-            </div>
-          </div>
-
-          {/* HDFC Account (new card) */}
-          <div className="grid md:grid-cols-2 gap-6 text-slate-600 border-t border-slate-200 pt-8">
-            <div>
-              <p><strong>Account Holder:</strong> UDI INTERNATIONALSPORTS ASSOCIATION (Regd)</p>
-              <p><strong>Account Number:</strong> 50200119285680</p>
-              <p><strong>Bank Name:</strong> HDFC Bank</p>
-              <p><strong>MICR Code:</strong> 127240002</p>
-              <p><strong>IFSC Code:</strong> HDFC0000479</p>
-            </div>
-
-            <div>
-              <p><strong>Email:</strong> info@udisports.in</p>
-              <p><strong>Accounts Email:</strong> accounts@udisports.in</p>
-              <p><strong>Phone:</strong> +91-8307598050</p>
-              <p>
-                <strong>Office Address:</strong> 5091, 9th Floor Tower-5 Parkar
-                Residency, GT Road, Tehsil Rai, District Sonipat
-              </p>
-            </div>
-          </div>
-
-        </div>
+        
 
       </div>
     </div>

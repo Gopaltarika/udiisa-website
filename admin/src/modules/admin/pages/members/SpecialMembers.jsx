@@ -50,6 +50,14 @@ const CATEGORIES = [
     dot: '#a855f7',
   },
   {
+    value: 'Celebrity',
+    label: '🌟 Celebrity',
+    bg: '#fdf2f8',
+    color: '#9d174d',
+    border: '#f9a8d4',
+    dot: '#ec4899',
+  },
+  {
     value: 'Body Corporate',
     label: '🏢 Body Corporate',
     bg: '#ecfdf5',
@@ -136,7 +144,6 @@ export default function SpecialMembers() {
   const [preview,  setPreview]  = useState(null)
   const [errors,   setErrors]   = useState({})
 
-  // Active filter tab
   const [activeFilter, setActiveFilter] = useState('All')
   const FILTER_TABS = ['All', ...CATEGORIES.map(c => c.value)]
 
@@ -260,7 +267,6 @@ export default function SpecialMembers() {
     }
   }
 
-  // Filtered list based on active filter tab
   const filteredMembers = activeFilter === 'All'
     ? members
     : members.filter(m => m.membershipCategory === activeFilter)
@@ -298,72 +304,75 @@ export default function SpecialMembers() {
   ]
 
   return (
-    <div>
+    <div className="px-2 sm:px-0">
       <PageHeader
         title="Special Members"
-        subtitle="Manage Diamond, Gold, Silver, Dignitaries and Body Corporate members"
+        subtitle="Manage Diamond, Gold, Silver, Dignitaries, Celebrity and Body Corporate members"
         action={
           <button
             onClick={openAdd}
-            className="flex items-center gap-[8px] px-[16px] h-[40px] rounded-[10px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[13px] font-extrabold shadow-[0_4px_14px_rgba(240,90,26,0.3)] hover:-translate-y-[1px] transition-all"
+            className="flex items-center gap-[6px] sm:gap-[8px] px-[10px] sm:px-[16px] h-[34px] sm:h-[40px] rounded-[8px] sm:rounded-[10px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[11px] sm:text-[13px] font-extrabold shadow-[0_4px_14px_rgba(240,90,26,0.3)] hover:-translate-y-[1px] transition-all"
           >
-            <FaPlus className="text-[11px]" /> Add Member
+            <FaPlus className="text-[9px] sm:text-[11px]" /> Add Member
           </button>
         }
       />
-  {/* Search */}
-      <div className="mb-[16px]">
-        <SearchBar value={search} onChange={setSearch} placeholder="Search special members…" />
-      </div>
-      {/* ── Category Filter Tabs ── */}
-      <div className="flex flex-wrap gap-[6px] mb-[20px]">
-        {FILTER_TABS.map(tab => {
-          const cat = tab === 'All' ? null : getCat(tab)
-          const isActive = activeFilter === tab
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveFilter(tab)}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '6px 16px', borderRadius: 10,
-                fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                fontFamily: 'inherit', transition: 'all .2s ease',
-                background: isActive
-                  ? (cat ? cat.bg : 'linear-gradient(135deg,#0B1E4B,#1e3a8a)')
-                  : '#fff',
-                color: isActive
-                  ? (cat ? cat.color : '#fff')
-                  : '#64748b',
-                border: `1.5px solid ${isActive ? (cat ? cat.border : '#0B1E4B') : '#e2e8f0'}`,
-                boxShadow: isActive
-                  ? `0 4px 14px ${cat ? cat.border : 'rgba(11,30,75,0.2)'}`
-                  : '0 1px 4px rgba(0,0,0,0.04)',
-              }}
-            >
-              {tab !== 'All' && (
-                <span style={{ width: 7, height: 7, borderRadius: '50%', background: cat.dot, flexShrink: 0 }} />
-              )}
-              {tab}
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                minWidth: 18, height: 18, borderRadius: 999, padding: '0 5px',
-                background: isActive
-                  ? (cat ? `${cat.dot}22` : 'rgba(255,255,255,0.2)')
-                  : '#f1f5f9',
-                color: isActive ? (cat ? cat.color : '#fff') : '#94a3b8',
-                fontSize: 10, fontWeight: 800,
-              }}>
-                {tab === 'All'
-                  ? members.length
-                  : members.filter(m => m.membershipCategory === tab).length}
-              </span>
-            </button>
-          )
-        })}
-      </div>
 
-    
+      {/* Search + Filter row */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[10px] sm:gap-[16px] mb-[16px] sm:mb-[20px]">
+
+        {/* Filter tabs — scrollable on mobile */}
+        <div className="flex gap-[5px] sm:gap-[6px] overflow-x-auto pb-1 flex-nowrap sm:flex-wrap"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {FILTER_TABS.map(tab => {
+            const cat = tab === 'All' ? null : getCat(tab)
+            const isActive = activeFilter === tab
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveFilter(tab)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  padding: '5px 12px', borderRadius: 9,
+                  fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                  fontFamily: 'inherit', transition: 'all .2s ease',
+                  flexShrink: 0, whiteSpace: 'nowrap',
+                  background: isActive
+                    ? (cat ? cat.bg : 'linear-gradient(135deg,#0B1E4B,#1e3a8a)')
+                    : '#fff',
+                  color: isActive ? (cat ? cat.color : '#fff') : '#64748b',
+                  border: `1.5px solid ${isActive ? (cat ? cat.border : '#0B1E4B') : '#e2e8f0'}`,
+                  boxShadow: isActive
+                    ? `0 4px 12px ${cat ? cat.border : 'rgba(11,30,75,0.2)'}`
+                    : '0 1px 4px rgba(0,0,0,0.04)',
+                }}
+              >
+                {tab !== 'All' && (
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: cat.dot, flexShrink: 0 }} />
+                )}
+                {tab}
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  minWidth: 16, height: 16, borderRadius: 999, padding: '0 4px',
+                  background: isActive ? (cat ? `${cat.dot}22` : 'rgba(255,255,255,0.2)') : '#f1f5f9',
+                  color: isActive ? (cat ? cat.color : '#fff') : '#94a3b8',
+                  fontSize: 9, fontWeight: 800,
+                }}>
+                  {tab === 'All'
+                    ? members.length
+                    : members.filter(m => m.membershipCategory === tab).length}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Search */}
+        <div className="w-full sm:w-[33%]">
+          <SearchBar value={search} onChange={setSearch} placeholder="Search special members…" />
+        </div>
+      </div>
 
       {/* Table */}
       <Table columns={columns} data={filteredMembers} loading={loading} emptyText="No special members found" />
@@ -375,7 +384,7 @@ export default function SpecialMembers() {
         title={`${selected ? 'Edit' : 'Add'} Special Member`}
         size="sm"
       >
-        <div className="flex flex-col gap-[14px]">
+        <div className="flex flex-col gap-[10px] sm:gap-[14px] px-1 sm:px-0">
           <PhotoUpload preview={preview} onChange={handlePhoto} />
 
           <FormField label="Name" required error={errors.name}>
@@ -402,7 +411,7 @@ export default function SpecialMembers() {
             />
           </FormField>
 
-          <div className="flex gap-[10px] justify-end pt-[6px]">
+          <div className="flex gap-[8px] sm:gap-[10px] justify-end pt-[4px] sm:pt-[6px]">
             <CancelBtn onClick={() => setFormOpen(false)} />
             <SubmitBtn loading={saving} onClick={handleSave}>
               {selected ? 'Update' : 'Add Member'}
@@ -419,21 +428,19 @@ export default function SpecialMembers() {
         size="sm"
       >
         {selected && (
-          <div className="flex flex-col items-center gap-[16px] text-center">
+          <div className="flex flex-col items-center gap-[14px] sm:gap-[16px] text-center px-1 sm:px-0">
             {selected.photo
-              ? <img src={API_IMG(selected.photo)} className="w-[90px] h-[90px] rounded-[16px] object-cover shadow-lg" alt="" />
-              : <div className="w-[90px] h-[90px] rounded-[16px] bg-gradient-to-br from-[#F05A1A] to-[#0B1E4B] flex items-center justify-center text-white text-[30px] font-extrabold shadow-lg">{selected.name?.[0]}</div>
+              ? <img src={API_IMG(selected.photo)} className="w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] rounded-[14px] sm:rounded-[16px] object-cover shadow-lg" alt="" />
+              : <div className="w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] rounded-[14px] sm:rounded-[16px] bg-gradient-to-br from-[#F05A1A] to-[#0B1E4B] flex items-center justify-center text-white text-[26px] sm:text-[30px] font-extrabold shadow-lg">{selected.name?.[0]}</div>
             }
             <div>
-              <h3 className="text-[18px] font-extrabold text-[#0B1E4B] m-0">{selected.name}</h3>
-              <p className="text-[14px] text-slate-500 m-0">{selected.companyName || '—'}</p>
+              <h3 className="text-[16px] sm:text-[18px] font-extrabold text-[#0B1E4B] m-0">{selected.name}</h3>
+              <p className="text-[13px] sm:text-[14px] text-slate-500 m-0">{selected.companyName || '—'}</p>
             </div>
-
             <CategoryBadge value={selected.membershipCategory || 'Silver'} />
-
-            <div className="w-full bg-slate-50 rounded-[12px] p-[14px] text-left">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Joined</p>
-              <p className="text-[13px] font-semibold text-slate-700 m-0 mt-[2px]">{formatDate(selected.createdAt)}</p>
+            <div className="w-full bg-slate-50 rounded-[10px] sm:rounded-[12px] p-[12px] sm:p-[14px] text-left">
+              <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-[0.8px] m-0">Joined</p>
+              <p className="text-[12px] sm:text-[13px] font-semibold text-slate-700 m-0 mt-[2px]">{formatDate(selected.createdAt)}</p>
             </div>
           </div>
         )}
