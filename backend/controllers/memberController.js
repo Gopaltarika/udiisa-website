@@ -26,7 +26,9 @@ const normalizeSpecialMembershipCategory = (raw) => {
   const value = String(raw || '').trim().toLowerCase()
   if (value === 'diamond') return 'Diamond'
   if (value === 'gold') return 'Gold'
+  if (value === 'silver') return 'Silver'
   if (value === 'dignitaries' || value === 'dignitary') return 'Dignitaries'
+  if (value === 'celebrity' || value === 'celebrities') return 'Celebrity'
   if (value === 'body corporate' || value === 'body-corporate' || value === 'corporate') return 'Body Corporate'
   return 'Silver'
 }

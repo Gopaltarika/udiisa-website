@@ -5,69 +5,8 @@ import { MdVerified } from 'react-icons/md'
 import { getPublicGeneralMembers, getPublicSpecialMembers } from '../../../../shared/services/publicApi'
 
 /* ═══════════════════════════════════════════
-   STATIC DATA
+   STATIC FALLBACK (general members only — API error)
 ═══════════════════════════════════════════ */
-const ALL_STATIC_DATA = {
-  diamond: [
-    { id: 1,  name: 'Rajesh Kumar Singh',    company: 'RK Industries Ltd',      city: 'Delhi' },
-    { id: 2,  name: 'Priya Sharma',          company: 'Sharma Enterprises',     city: 'Mumbai' },
-    { id: 3,  name: 'Anil Mehta',            company: 'Mehta Group',            city: 'Pune' },
-    { id: 4,  name: 'Sunita Verma',          company: 'Verma Foundation',       city: 'Jaipur' },
-    { id: 5,  name: 'Vikram Patel',          company: 'Patel Corp',             city: 'Ahmedabad' },
-    { id: 6,  name: 'Neha Gupta',            company: 'Gupta Welfare Trust',    city: 'Lucknow' },
-    { id: 7,  name: 'Ramesh Agarwal',        company: 'Agarwal Holdings',       city: 'Delhi' },
-    { id: 8,  name: 'Sneha Bose',            company: 'Bose Technologies',      city: 'Kolkata' },
-    { id: 9,  name: 'Tarun Khanna',          company: 'Khanna Exports',         city: 'Amritsar' },
-    { id: 10, name: 'Divya Pillai',          company: 'Pillai Associates',      city: 'Kochi' },
-    { id: 11, name: 'Harshit Singhania',     company: 'Singhania Group',        city: 'Kolkata' },
-    { id: 12, name: 'Meera Iyer',            company: 'Iyer Consultants',       city: 'Chennai' },
-  ],
-  gold: [
-    { id: 1,  name: 'Amit Joshi',            company: 'Joshi Traders',          city: 'Nagpur' },
-    { id: 2,  name: 'Rekha Nair',            company: 'Nair Exports',           city: 'Kochi' },
-    { id: 3,  name: 'Suresh Yadav',          company: 'Yadav Sports Club',      city: 'Kanpur' },
-    { id: 4,  name: 'Pooja Reddy',           company: 'Reddy Foundation',       city: 'Hyderabad' },
-    { id: 5,  name: 'Manish Tiwari',         company: 'Tiwari & Sons',          city: 'Bhopal' },
-    { id: 6,  name: 'Sanjay Malviya',        company: 'Malviya Enterprises',    city: 'Indore' },
-    { id: 7,  name: 'Priyanka Saxena',       company: 'Saxena Realty',          city: 'Noida' },
-    { id: 8,  name: 'Girish Soni',           company: 'Soni Pharma',            city: 'Ahmedabad' },
-  ],
-  silver: [
-    { id: 1,  name: 'Kavita Sharma',         company: 'Sharma Textiles',        city: 'Surat' },
-    { id: 2,  name: 'Deepak Rao',            company: 'Rao Sports Academy',     city: 'Bangalore' },
-    { id: 3,  name: 'Anita Desai',           company: 'Desai NGO',              city: 'Vadodara' },
-    { id: 4,  name: 'Rahul Chandra',         company: 'Chandra Associates',     city: 'Chennai' },
-    { id: 5,  name: 'Simran Kapoor',         company: 'Kapoor Foundation',      city: 'Chandigarh' },
-    { id: 6,  name: 'Yash Tripathi',         company: 'Tripathi Infra',         city: 'Varanasi' },
-  ],
-  dignitaries: [
-    { id: 1,  name: 'Dr. S.K. Mishra',       company: 'Govt. of India',         city: 'Delhi' },
-    { id: 2,  name: 'Justice R.P. Saxena',   company: 'Allahabad High Court',   city: 'Allahabad' },
-    { id: 3,  name: 'Dr. Meena Agarwal',     company: 'SAI',                    city: 'Delhi' },
-    { id: 4,  name: 'Brig. A.K. Chauhan',    company: 'Indian Army',            city: 'Dehradun' },
-    { id: 5,  name: 'Prof. R.N. Tripathi',   company: 'Lucknow University',     city: 'Lucknow' },
-    { id: 6,  name: 'IAS Rohini Srivastava', company: 'UP Government',          city: 'Lucknow' },
-  ],
-  celebrity: [
-    { id: 1,  name: 'Arjun Kapoor',          company: 'Bollywood / Entertainment', city: 'Mumbai' },
-    { id: 2,  name: 'Sania Mirza',           company: 'Tennis / Sports',           city: 'Hyderabad' },
-    { id: 3,  name: 'Milind Soman',          company: 'Fitness / Modelling',       city: 'Mumbai' },
-    { id: 4,  name: 'Geeta Phogat',          company: 'Wrestling / Sports',        city: 'Haryana' },
-    { id: 5,  name: 'Rannvijay Singha',      company: 'Television / Media',        city: 'Delhi' },
-    { id: 6,  name: 'Mary Kom',              company: 'Boxing / Sports',           city: 'Manipur' },
-  ],
-  corporate: [
-    { id: 1,  name: 'Mahendra Singh',        company: 'MS Steel Pvt Ltd',       city: 'Raipur' },
-    { id: 2,  name: 'Lata Kapoor',           company: 'Kapoor Industries',      city: 'Noida' },
-    { id: 3,  name: 'Rajiv Bansal',          company: 'Bansal Infra Ltd',       city: 'Gurgaon' },
-    { id: 4,  name: 'Sonia Malhotra',        company: 'Malhotra & Associates',  city: 'Chandigarh' },
-    { id: 5,  name: 'Harish Dubey',          company: 'Dubey Constructions',    city: 'Indore' },
-    { id: 6,  name: 'Nisha Pandey',          company: 'Pandey Welfare Group',   city: 'Varanasi' },
-    { id: 7,  name: 'Vikrant Chaudhary',     company: 'Chaudhary Logistics',    city: 'Delhi' },
-    { id: 8,  name: 'Roshni Bajaj',          company: 'Bajaj Retail Ltd',       city: 'Pune' },
-  ],
-}
-
 const GENERAL_STATIC_DATA = {
   individual: [
     { id: 1,  name: 'Arjun Sharma',          company: 'Sharma & Sons Pvt Ltd' },
@@ -227,25 +166,36 @@ const TAB_ROUTES = {
   corporate:   '/members/special-members/corporate',
 }
 const VALID_KEYS = Object.keys(TAB_ROUTES)
+const EMPTY_SPECIAL_BY_TAB = Object.fromEntries(VALID_KEYS.map((k) => [k, []]))
 const PAGE_SIZE = 6
 
-// Map backend membershipCategory → frontend tab key
-const CATEGORY_TO_TAB = {
-  diamond:          'diamond',
-  gold:             'gold',
-  silver:           'silver',
-  dignitaries:      'dignitaries',
-  dignitary:        'dignitaries',
-  celebrity:        'celebrity',
+// Backend SpecialMember.membershipCategory values → Members page tab slug
+const BACKEND_CATEGORY_TO_TAB = {
+  diamond: 'diamond',
+  gold: 'gold',
+  silver: 'silver',
+  dignitaries: 'dignitaries',
+  dignitary: 'dignitaries',
+  celebrity: 'celebrity',
   'body corporate': 'corporate',
-  corporate:        'corporate',
+  corporate: 'corporate',
 }
+// Loose substring fallbacks (legacy / free text)
+const CATEGORY_SUBSTRING_TO_TAB = [
+  ['body corporate', 'corporate'],
+  ['dignitar', 'dignitaries'],
+  ['celebrit', 'celebrity'],
+  ['diamond', 'diamond'],
+  ['gold', 'gold'],
+  ['silver', 'silver'],
+  ['corporate', 'corporate'],
+]
 function normalizeCategoryToTab(cat) {
   if (!cat) return 'silver'
   const key = String(cat).trim().toLowerCase()
-  // prefix match for safety (e.g. "celebrity member" → celebrity)
-  for (const [k, v] of Object.entries(CATEGORY_TO_TAB)) {
-    if (key.includes(k)) return v
+  if (BACKEND_CATEGORY_TO_TAB[key]) return BACKEND_CATEGORY_TO_TAB[key]
+  for (const [needle, tab] of CATEGORY_SUBSTRING_TO_TAB) {
+    if (key.includes(needle)) return tab
   }
   return 'silver'
 }
@@ -550,11 +500,14 @@ const MembersData = () => {
   const [tableLoading, setTableLoading]       = useState(true)
   const [loadingMoreRows, setLoadingMoreRows] = useState(false)
 
-  // ── Fetch special members ──
+  // ── Fetch special members (always from API; no demo static list) ──
   useEffect(() => {
     if (!isSpecialPage) return
+    let cancelled = false
+    setSpecialMembersByTab(null)
     getPublicSpecialMembers()
       .then((list) => {
+        if (cancelled) return
         const arr = Array.isArray(list) ? list : []
         const byTab = { diamond: [], gold: [], silver: [], dignitaries: [], celebrity: [], corporate: [] }
         arr.forEach((m) => {
@@ -570,16 +523,24 @@ const MembersData = () => {
         })
         setSpecialMembersByTab(byTab)
       })
-      .catch(() => { /* keep null → static fallback */ })
+      .catch(() => {
+        if (!cancelled) setSpecialMembersByTab({ ...EMPTY_SPECIAL_BY_TAB })
+      })
+    return () => { cancelled = true }
   }, [isSpecialPage])
 
-  const specialDataSource = specialMembersByTab
+  const specialDataSource = specialMembersByTab != null
     ? Object.fromEntries(VALID_KEYS.map(k => [k, specialMembersByTab[k] || []]))
-    : ALL_STATIC_DATA
+    : EMPTY_SPECIAL_BY_TAB
 
   // ── Load cards on tab / source change ──
   useEffect(() => {
     if (!isSpecialPage) return
+    if (specialMembersByTab === null) {
+      setInitialLoading(true)
+      setVisibleCards([])
+      return
+    }
     setInitialLoading(true)
     setVisibleCards([])
     setCardPage(1)
@@ -593,11 +554,9 @@ const MembersData = () => {
   }, [specialSub, isSpecialPage, specialMembersByTab])
 
   const loadMoreCards = useCallback(() => {
-    if (loadingMore || !hasMoreCards) return
+    if (loadingMore || !hasMoreCards || specialMembersByTab === null) return
     setLoadingMore(true)
-    const allData = specialMembersByTab
-      ? (specialMembersByTab[specialSub] || [])
-      : (ALL_STATIC_DATA[specialSub] || [])
+    const allData = specialMembersByTab[specialSub] || []
     const nextPage = cardPage + 1
     simulateLoad(allData, nextPage, PAGE_SIZE).then(({ items, hasMore }) => {
       setVisibleCards(items)
@@ -712,7 +671,7 @@ const MembersData = () => {
             </div>
 
             {/* Cards grid */}
-            {initialLoading ? (
+            {specialMembersByTab === null || initialLoading ? (
               <div className="grid gap-3 sm:gap-5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
                 {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
               </div>

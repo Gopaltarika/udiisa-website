@@ -5,7 +5,7 @@ const specialMemberSchema = new mongoose.Schema({
   companyName: { type: String, default: '' },
   membershipCategory: {
     type: String,
-    enum: ['Diamond', 'Gold', 'Silver', 'Dignitaries', 'Body Corporate'],
+    enum: ['Diamond', 'Gold', 'Silver', 'Dignitaries', 'Celebrity', 'Body Corporate'],
     default: 'Silver',
   },
   photo:       { type: String, default: null },
