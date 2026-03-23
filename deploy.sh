@@ -21,7 +21,7 @@ pm2 save
 echo "==> Building webfrontend (production)..."
 cd "$APP_ROOT/webfrontend"
 npm ci
-# Uses .env.production if present (copy from .env.production.example and set VITE_API_URL)
+# Uses webfrontend/.env.production if present (set VITE_API_URL there)
 npm run build
 
 echo "==> Building admin (production)..."

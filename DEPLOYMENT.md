@@ -18,7 +18,7 @@ Alternative (current app supports this too):
 ## 2) Environment variables (mandatory)
 
 ### Backend (`backend/.env`)
-Use `backend/.env.example` as template.
+Create `backend/.env` on the server with at least:
 
 Required:
 - `NODE_ENV=production`
@@ -32,12 +32,12 @@ Required:
 Email/Cloudinary variables are required for OTP and media.
 
 ### Web frontend (`webfrontend/.env.production`)
-Use `webfrontend/.env.production.example` and set:
+Create `webfrontend/.env.production` before `npm run build`, for example:
 - if API on subdomain: `VITE_API_URL=https://api.udisports.in/api`
 - if API behind same domain: `VITE_API_URL=https://udisports.in/api`
 
 ### Admin (`admin/.env.production`)
-Use `admin/.env.production.example`:
+Create `admin/.env.production` before build, for example:
 - `VITE_API_URL=https://api.udisports.in/api` (or same-domain `/api` endpoint)
 
 ## 3) Build commands

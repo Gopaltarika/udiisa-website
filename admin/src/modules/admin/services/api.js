@@ -1,13 +1,23 @@
 // admin/services/api.js
 import axios from 'axios'
 
-const DEFAULT_API_URL = 'http://localhost:5000/api'
+// Match webfrontend publicApi: production build without VITE_API_URL should use same-origin /api.
+const DEFAULT_API_URL = (() => {
+  if (typeof window === 'undefined') return 'http://localhost:5000/api'
+  const host = String(window.location.hostname || '').toLowerCase()
+  if (host === 'localhost' || host === '127.0.0.1') return 'http://localhost:5000/api'
+  return `${window.location.origin.replace(/\/$/, '')}/api`
+})()
 
 const normalizeApiBaseUrl = (rawUrl) => {
   const raw = (rawUrl || '').trim()
   if (!raw) return DEFAULT_API_URL
 
   if (raw.startsWith('http://') || raw.startsWith('https://')) return raw.replace(/\/$/, '')
+  if (raw.startsWith('/')) {
+    if (typeof window === 'undefined') return DEFAULT_API_URL
+    return `${window.location.origin.replace(/\/$/, '')}${raw}`.replace(/\/$/, '')
+  }
   if (raw.startsWith(':')) return `http://localhost${raw}`
   if (raw.startsWith('localhost') || raw.startsWith('127.0.0.1')) return `http://${raw}`
 
