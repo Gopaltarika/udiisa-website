@@ -146,16 +146,238 @@ const PRELOADER_STYLES = `
   .ge-preloader-exit{animation:ge-fade-out .6s ease forwards}
 `;
 
+/**
+ * Full-page preloader: one theme per full page load (shared by Suspense fallback + GlobalEnhancer).
+ * Module singleton avoids (a) two different random picks for two Preloader instances and
+ * (b) React Strict Mode remount picking a second color.
+ */
+const PRELOADER_THEMES = [
+  {
+    background: "linear-gradient(135deg, #0B1E4B 0%, #152B6B 55%, #0d1a3e 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.04,
+    glow: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,173,92,0.08) 35%, transparent 70%)",
+    ringOuter: ["#F05A1A", "rgba(240,90,26,0.3)"],
+    ringInner: ["#FFAD5C", "rgba(255,173,92,0.3)"],
+    barCenter: "linear-gradient(to top, #F05A1A, #FF9D42)",
+    barSide: "linear-gradient(to top, rgba(240,90,26,0.55), rgba(255,157,66,0.55))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(255,255,255,0.42)",
+    dots: "rgba(240,90,26,0.65)",
+  },
+  {
+    background: "linear-gradient(160deg, #0B1E4B 0%, #0d2258 50%, #0B1E4B 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.04,
+    glow: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,173,92,0.07) 40%, transparent 72%)",
+    ringOuter: ["#F05A1A", "rgba(240,90,26,0.3)"],
+    ringInner: ["#FFAD5C", "rgba(255,173,92,0.3)"],
+    barCenter: "linear-gradient(to top, #F05A1A, #FF9D42)",
+    barSide: "linear-gradient(to top, rgba(240,90,26,0.5), rgba(255,157,66,0.5))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(255,255,255,0.42)",
+    dots: "rgba(240,90,26,0.65)",
+  },
+  {
+    background: "linear-gradient(135deg, #1e3a6e 0%, #0B1E4B 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.045,
+    glow: "radial-gradient(circle, rgba(249,168,212,0.08) 0%, transparent 65%)",
+    ringOuter: ["#F05A1A", "rgba(240,90,26,0.28)"],
+    ringInner: ["#FFAD5C", "rgba(255,173,92,0.28)"],
+    barCenter: "linear-gradient(to top, #F05A1A, #FF9D42)",
+    barSide: "linear-gradient(to top, rgba(240,90,26,0.48), rgba(255,157,66,0.48))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(255,255,255,0.42)",
+    dots: "rgba(240,90,26,0.65)",
+  },
+  {
+    background: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.055,
+    glow: "radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(96,165,250,0.12) 45%, transparent 70%)",
+    ringOuter: ["#F05A1A", "rgba(240,90,26,0.32)"],
+    ringInner: ["#FFAD5C", "rgba(255,173,92,0.32)"],
+    barCenter: "linear-gradient(to top, #F05A1A, #FF9D42)",
+    barSide: "linear-gradient(to top, rgba(240,90,26,0.45), rgba(255,157,66,0.45))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(255,255,255,0.48)",
+    dots: "rgba(255,255,255,0.5)",
+  },
+  {
+    background: "linear-gradient(90deg, #2563eb 0%, #3b82f6 45%, #60a5fa 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.07,
+    glow: "radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 65%)",
+    ringOuter: ["#ffffff", "rgba(255,255,255,0.38)"],
+    ringInner: ["#0B1E4B", "rgba(11,30,75,0.35)"],
+    barCenter: "linear-gradient(to top, #0B1E4B, #1e3a8a)",
+    barSide: "linear-gradient(to top, rgba(11,30,75,0.45), rgba(30,58,138,0.45))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(255,255,255,0.9)",
+    dots: "rgba(11,30,75,0.55)",
+  },
+  {
+    background: "linear-gradient(135deg, #F05A1A 0%, #FF7D42 100%)",
+    gridLine: "rgba(11,30,75,1)",
+    gridOpacity: 0.06,
+    glow: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 68%)",
+    ringOuter: ["#0B1E4B", "rgba(11,30,75,0.35)"],
+    ringInner: ["#ffffff", "rgba(255,255,255,0.4)"],
+    barCenter: "linear-gradient(to top, #ffffff, #fef3c7)",
+    barSide: "linear-gradient(to top, rgba(255,255,255,0.45), rgba(254,243,199,0.5))",
+    titleUseOrangeGradient: false,
+    titleGradient: "linear-gradient(90deg, #ffffff 0%, #fff7ed 45%, #ffffff 80%)",
+    taglineColor: "rgba(11,30,75,0.72)",
+    dots: "rgba(11,30,75,0.45)",
+  },
+  {
+    background: "linear-gradient(90deg, #F05A1A 0%, #FF9D42 100%)",
+    gridLine: "rgba(11,30,75,1)",
+    gridOpacity: 0.055,
+    glow: "radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 68%)",
+    ringOuter: ["#0B1E4B", "rgba(11,30,75,0.32)"],
+    ringInner: ["#ffffff", "rgba(255,255,255,0.38)"],
+    barCenter: "linear-gradient(to top, #ffffff, #fffbeb)",
+    barSide: "linear-gradient(to top, rgba(255,255,255,0.42), rgba(255,251,235,0.5))",
+    titleUseOrangeGradient: false,
+    titleGradient: "linear-gradient(90deg, #ffffff 0%, #fffbeb 45%, #ffffff 80%)",
+    taglineColor: "rgba(11,30,75,0.7)",
+    dots: "rgba(11,30,75,0.42)",
+  },
+  {
+    background: "linear-gradient(135deg, #92400e 0%, #d97706 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.05,
+    glow: "radial-gradient(circle, rgba(251,191,36,0.2) 0%, transparent 70%)",
+    ringOuter: ["#fef3c7", "rgba(254,243,199,0.35)"],
+    ringInner: ["#ffffff", "rgba(255,255,255,0.35)"],
+    barCenter: "linear-gradient(to top, #fbbf24, #fef3c7)",
+    barSide: "linear-gradient(to top, rgba(251,191,36,0.6), rgba(254,243,199,0.55))",
+    titleUseOrangeGradient: false,
+    titleGradient: "linear-gradient(90deg, #fffbeb 0%, #ffffff 40%, #fffbeb 80%)",
+    taglineColor: "rgba(255,255,255,0.55)",
+    dots: "rgba(255,255,255,0.7)",
+  },
+  {
+    background: "linear-gradient(135deg, #334155 0%, #64748b 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.04,
+    glow: "radial-gradient(circle, rgba(240,90,26,0.1) 0%, transparent 70%)",
+    ringOuter: ["#F05A1A", "rgba(240,90,26,0.28)"],
+    ringInner: ["#FFAD5C", "rgba(255,173,92,0.28)"],
+    barCenter: "linear-gradient(to top, #F05A1A, #FF9D42)",
+    barSide: "linear-gradient(to top, rgba(240,90,26,0.48), rgba(255,157,66,0.48))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(255,255,255,0.42)",
+    dots: "rgba(240,90,26,0.62)",
+  },
+  {
+    background: "linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.045,
+    glow: "radial-gradient(circle, rgba(196,181,253,0.15) 0%, transparent 68%)",
+    ringOuter: ["#F05A1A", "rgba(240,90,26,0.28)"],
+    ringInner: ["#fcd34d", "rgba(252,211,77,0.35)"],
+    barCenter: "linear-gradient(to top, #F05A1A, #fbbf24)",
+    barSide: "linear-gradient(to top, rgba(240,90,26,0.45), rgba(251,191,36,0.4))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(237,233,254,0.55)",
+    dots: "rgba(252,211,77,0.75)",
+  },
+  {
+    background: "linear-gradient(135deg, #831843 0%, #db2777 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.05,
+    glow: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(249,168,212,0.14) 40%, transparent 70%)",
+    ringOuter: ["#ffffff", "rgba(255,255,255,0.35)"],
+    ringInner: ["#FBBF24", "rgba(251,191,36,0.4)"],
+    barCenter: "linear-gradient(to top, #fce7f3, #ffffff)",
+    barSide: "linear-gradient(to top, rgba(252,231,243,0.55), rgba(255,255,255,0.45))",
+    titleUseOrangeGradient: false,
+    titleGradient: "linear-gradient(90deg, #ffffff 0%, #ffe4e6 45%, #ffffff 82%)",
+    taglineColor: "rgba(255,255,255,0.58)",
+    dots: "rgba(255,255,255,0.65)",
+  },
+  {
+    background: "linear-gradient(135deg, #064e3b 0%, #059669 100%)",
+    gridLine: "rgba(255,255,255,1)",
+    gridOpacity: 0.045,
+    glow: "radial-gradient(circle, rgba(167,243,208,0.14) 0%, transparent 70%)",
+    ringOuter: ["#F05A1A", "rgba(240,90,26,0.28)"],
+    ringInner: ["#a7f3d0", "rgba(167,243,208,0.35)"],
+    barCenter: "linear-gradient(to top, #F05A1A, #34d399)",
+    barSide: "linear-gradient(to top, rgba(240,90,26,0.48), rgba(52,211,153,0.42))",
+    titleUseOrangeGradient: true,
+    taglineColor: "rgba(236,253,245,0.55)",
+    dots: "rgba(167,243,208,0.8)",
+  },
+];
+
+let preloaderThemeResolved = null;
+
+function getPreloaderTheme() {
+  if (preloaderThemeResolved !== null) return preloaderThemeResolved;
+  const n = PRELOADER_THEMES.length;
+  let idx;
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    const buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    idx = buf[0] % n;
+  } else {
+    idx = Math.floor(Math.random() * n);
+  }
+  preloaderThemeResolved = PRELOADER_THEMES[idx];
+  return preloaderThemeResolved;
+}
+
+/**
+ * Ref-counted scroll lock for the full-screen preloader (Suspense + main instance).
+ * - Locks `<html>` + `<body>` overflow so the classic scrollbar disappears (no white track strip).
+ * - `paddingRight` on `body` only, measured before lock, prevents layout jump when the lock is released.
+ */
+let preloaderScrollLockDepth = 0;
+let savedHtmlOverflow = "";
+let savedBodyOverflow = "";
+let savedBodyPaddingRight = "";
+
+function acquirePreloaderScrollLock() {
+  if (preloaderScrollLockDepth === 0) {
+    const gap = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+    savedHtmlOverflow = document.documentElement.style.overflow;
+    savedBodyOverflow = document.body.style.overflow;
+    savedBodyPaddingRight = document.body.style.paddingRight;
+
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    if (gap > 0) document.body.style.paddingRight = `${gap}px`;
+  }
+  preloaderScrollLockDepth += 1;
+}
+
+function releasePreloaderScrollLock() {
+  preloaderScrollLockDepth = Math.max(0, preloaderScrollLockDepth - 1);
+  if (preloaderScrollLockDepth === 0) {
+    document.documentElement.style.overflow = savedHtmlOverflow;
+    document.body.style.overflow = savedBodyOverflow;
+    document.body.style.paddingRight = savedBodyPaddingRight;
+    savedHtmlOverflow = "";
+    savedBodyOverflow = "";
+    savedBodyPaddingRight = "";
+  }
+}
+
 /* ══════════════════════════════════════════════
    SUB-COMPONENT: Preloader (exported for use as route-loading fallback too)
 ══════════════════════════════════════════════ */
 export function Preloader({ onDone, noTimer = false }) {
+  const theme = getPreloaderTheme();
   const [exiting, setExiting] = useState(false);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    acquirePreloaderScrollLock();
+    return () => releasePreloaderScrollLock();
   }, []);
 
   useEffect(() => {
@@ -175,17 +397,23 @@ export function Preloader({ onDone, noTimer = false }) {
       <style dangerouslySetInnerHTML={{ __html: PRELOADER_STYLES }} />
     <div
       className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center ${exiting ? "ge-preloader-exit" : ""}`}
-      style={{ background: "linear-gradient(135deg, #0B1E4B 0%, #152B6B 55%, #0d1a3e 100%)" }}
+      style={{
+        background: theme.background,
+        overscrollBehavior: "none",
+        width: "100%",
+        minHeight: "100%",
+      }}
       aria-label="Loading"
       role="status"
     >
       {/* Background subtle grid */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        className="absolute inset-0 pointer-events-none"
         style={{
+          opacity: theme.gridOpacity,
           backgroundImage:
-            "repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,1) 40px,rgba(255,255,255,1) 41px)," +
-            "repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,1) 40px,rgba(255,255,255,1) 41px)",
+            `repeating-linear-gradient(0deg,transparent,transparent 40px,${theme.gridLine} 40px,${theme.gridLine} 41px),` +
+            `repeating-linear-gradient(90deg,transparent,transparent 40px,${theme.gridLine} 40px,${theme.gridLine} 41px)`,
         }}
       />
 
@@ -195,7 +423,7 @@ export function Preloader({ onDone, noTimer = false }) {
         style={{
           top: "20%", left: "50%", transform: "translateX(-50%)",
           width: 400, height: 400, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(240,90,26,0.12) 0%, transparent 70%)",
+          background: theme.glow,
         }}
       />
 
@@ -207,8 +435,8 @@ export function Preloader({ onDone, noTimer = false }) {
           style={{
             width: 100, height: 100, borderRadius: "50%",
             border: "2.5px solid transparent",
-            borderTopColor: "#F05A1A",
-            borderRightColor: "rgba(240,90,26,0.3)",
+            borderTopColor: theme.ringOuter[0],
+            borderRightColor: theme.ringOuter[1],
           }}
         />
         {/* Inner ring */}
@@ -217,8 +445,8 @@ export function Preloader({ onDone, noTimer = false }) {
           style={{
             width: 72, height: 72, borderRadius: "50%",
             border: "2px solid transparent",
-            borderTopColor: "#FFAD5C",
-            borderLeftColor: "rgba(255,173,92,0.3)",
+            borderTopColor: theme.ringInner[0],
+            borderLeftColor: theme.ringInner[1],
           }}
         />
         {/* Center icon */}
@@ -243,9 +471,7 @@ export function Preloader({ onDone, noTimer = false }) {
               width: 6,
               height: 28,
               borderRadius: 4,
-              background: i === 1
-                ? "linear-gradient(to top, #F05A1A, #FF9D42)"
-                : "linear-gradient(to top, rgba(240,90,26,0.5), rgba(255,157,66,0.5))",
+              background: i === 1 ? theme.barCenter : theme.barSide,
             }}
           />
         ))}
@@ -254,15 +480,30 @@ export function Preloader({ onDone, noTimer = false }) {
       {/* ── BRAND TEXT ── */}
       <div className="text-center">
         <div
-          className="ge-logo-text"
-          style={{ fontSize: 38, letterSpacing: 4 }}
+          className={theme.titleUseOrangeGradient ? "ge-logo-text" : undefined}
+          style={{
+            fontSize: 38,
+            letterSpacing: 4,
+            ...(theme.titleUseOrangeGradient
+              ? {}
+              : {
+                  fontFamily: "'Bebas Neue', cursive",
+                  background: theme.titleGradient,
+                  backgroundSize: "200% auto",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  animation:
+                    "ge-shimmer 2s linear infinite, ge-logo-pulse 2.4s ease-in-out infinite",
+                }),
+          }}
         >
           UDI SPORTS
         </div>
         <div
           style={{
             fontSize: 11, fontWeight: 700,
-            color: "rgba(255,255,255,0.4)",
+            color: theme.taglineColor,
             letterSpacing: "4px", textTransform: "uppercase",
             marginTop: 4, fontFamily: "'Plus Jakarta Sans', sans-serif",
           }}
@@ -278,7 +519,7 @@ export function Preloader({ onDone, noTimer = false }) {
             key={i}
             style={{
               width: 4, height: 4, borderRadius: "50%",
-              background: "rgba(240,90,26,0.6)",
+              background: theme.dots,
               animation: `ge-bar-bounce 1s ease-in-out ${i * 0.15}s infinite`,
             }}
           />
