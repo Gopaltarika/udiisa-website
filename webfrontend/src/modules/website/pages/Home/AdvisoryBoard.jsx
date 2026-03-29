@@ -29,8 +29,8 @@ const chairmen = [
   },
   {
     name: 'Mr. Sanjay Bhardwaj',
-    role: 'Sports Member',
-    roleBadge: 'Member',
+    role: 'Sports Chancellor',
+    roleBadge: 'Chancellor',
     desc: 'Sports Development, Program Coordination, and Grassroots Sports Initiatives',
     img: sanjaybhardwaj,
     modalTitle: 'Sports Development, Program Coordination, and Grassroots Sports Initiatives',

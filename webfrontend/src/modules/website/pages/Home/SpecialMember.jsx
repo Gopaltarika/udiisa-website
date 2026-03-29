@@ -392,6 +392,9 @@ function MemberCard({ member, isCenter, theme }) {
   );
 }
 
+// Tallest card slot (center / active). Side cards scale down inside this — fixed height avoids layout shift on autoplay.
+const SLIDER_CARD_SLOT_PX = 280;
+
 // ─── Swiper Slider Section ─────────────────────────────────────────────────────
 function SwiperSliderSection({ members, theme, activeTab }) {
   const total = members.length;
@@ -419,7 +422,7 @@ function SwiperSliderSection({ members, theme, activeTab }) {
           autoplay={
             total > 1
               ? {
-                  delay: 4500,
+                  delay: 2500,
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true,
                 }
@@ -443,11 +446,17 @@ function SwiperSliderSection({ members, theme, activeTab }) {
               {({ isActive }) => (
                 <div style={{
                   width: "100%",
-                  height: isActive ? 280 : 245,
-                  transition: "all 0.45s cubic-bezier(0.34,1.2,0.64,1)",
+                  height: SLIDER_CARD_SLOT_PX,
+                  minHeight: SLIDER_CARD_SLOT_PX,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxSizing: "border-box",
                   margin: "0 auto",
                 }}>
-                  <MemberCard member={member} isCenter={isActive} theme={theme} />
+                  <div style={{ width: "100%", transition: "all 0.45s cubic-bezier(0.34,1.2,0.64,1)" }}>
+                    <MemberCard member={member} isCenter={isActive} theme={theme} />
+                  </div>
                 </div>
               )}
             </SwiperSlide>
@@ -636,9 +645,11 @@ export default function SpecialMembersSection() {
         .sms-swiper .swiper-slide {
           transition: all 0.45s cubic-bezier(0.34,1.2,0.64,1);
           height: auto;
+          min-height: ${SLIDER_CARD_SLOT_PX}px;
           display: flex;
           align-items: center;
           justify-content: center;
+          box-sizing: border-box;
         }
         .sms-swiper .swiper-slide-active { z-index: 2; }
         .sms-swiper .swiper-pagination   { bottom: 10px !important; }
