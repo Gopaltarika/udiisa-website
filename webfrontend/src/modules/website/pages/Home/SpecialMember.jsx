@@ -395,6 +395,63 @@ function MemberCard({ member, isCenter, theme }) {
 // Tallest card slot (center / active). Side cards scale down inside this — fixed height avoids layout shift on autoplay.
 const SLIDER_CARD_SLOT_PX = 280;
 
+// Nav chevrons (text glyphs sit off-center in many fonts; SVG + flex centers reliably)
+function NavChevronLeft({ size = 18 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      style={{ display: "block" }}
+    >
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  );
+}
+function NavChevronRight({ size = 18 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      style={{ display: "block" }}
+    >
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  );
+}
+
+const navArrowBtnBase = {
+  width: 40,
+  height: 40,
+  borderRadius: 12,
+  border: "1.5px solid #e2e8f0",
+  background: "#fff",
+  color: "#64748b",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+  transition: "all 0.25s ease",
+  userSelect: "none",
+  padding: 0,
+  lineHeight: 0,
+  flexShrink: 0,
+};
+
 // ─── Swiper Slider Section ─────────────────────────────────────────────────────
 function SwiperSliderSection({ members, theme, activeTab }) {
   const total = members.length;
@@ -470,48 +527,54 @@ function SwiperSliderSection({ members, theme, activeTab }) {
             gap: 12, marginTop: 2, marginBottom: 6,
           }}>
             <button
-              style={{
-                width: 40, height: 40, borderRadius: 12,
-                border: "1.5px solid #e2e8f0",
-                background: "#fff", color: "#64748b",
-                fontSize: 20, fontWeight: 700,
-                cursor: "pointer", display: "flex",
-                alignItems: "center", justifyContent: "center",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
-                transition: "all 0.25s ease",
-                userSelect: "none",
+              type="button"
+              aria-label="Previous slide"
+              style={navArrowBtnBase}
+              onMouseEnter={(e) => {
+                const t = e.currentTarget;
+                t.style.background = theme.tabActiveBg;
+                t.style.color = "#fff";
+                t.style.borderColor = theme.tabActiveBorder;
+                t.style.boxShadow = theme.tabActiveShadow;
+                t.style.transform = "scale(1.08)";
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = "#0B1E4B";
-                e.currentTarget.style.color = "#fff";
-                e.currentTarget.style.borderColor = "#0B1E4B";
-                e.currentTarget.style.transform = "scale(1.08)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = "#fff";
-                e.currentTarget.style.color = "#64748b";
-                e.currentTarget.style.borderColor = "#e2e8f0";
-                e.currentTarget.style.transform = "scale(1)";
+              onMouseLeave={(e) => {
+                const t = e.currentTarget;
+                t.style.background = "#fff";
+                t.style.color = "#64748b";
+                t.style.borderColor = "#e2e8f0";
+                t.style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)";
+                t.style.transform = "scale(1)";
               }}
               onClick={() => swiper?.slidePrev()}
-            >‹</button>
+            >
+              <NavChevronLeft />
+            </button>
 
             <button
-              style={{
-                width: 40, height: 40, borderRadius: 12,
-                border: "none",
-                background: theme.tabActiveBg, color: "#fff",
-                fontSize: 20, fontWeight: 700,
-                cursor: "pointer", display: "flex",
-                alignItems: "center", justifyContent: "center",
-                boxShadow: theme.tabActiveShadow,
-                transition: "all 0.25s ease",
-                userSelect: "none",
+              type="button"
+              aria-label="Next slide"
+              style={navArrowBtnBase}
+              onMouseEnter={(e) => {
+                const t = e.currentTarget;
+                t.style.background = theme.tabActiveBg;
+                t.style.color = "#fff";
+                t.style.borderColor = theme.tabActiveBorder;
+                t.style.boxShadow = theme.tabActiveShadow;
+                t.style.transform = "scale(1.08)";
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+              onMouseLeave={(e) => {
+                const t = e.currentTarget;
+                t.style.background = "#fff";
+                t.style.color = "#64748b";
+                t.style.borderColor = "#e2e8f0";
+                t.style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)";
+                t.style.transform = "scale(1)";
+              }}
               onClick={() => swiper?.slideNext()}
-            >›</button>
+            >
+              <NavChevronRight />
+            </button>
           </div>
         )}
       </div>
