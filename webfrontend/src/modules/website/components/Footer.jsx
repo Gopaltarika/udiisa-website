@@ -89,7 +89,7 @@ const Footer = () => {
             <div className="sm:col-span-2 lg:!col-span-1">
               <a href="/" className="flex items-center gap-3 no-underline" style={{ textDecoration: 'none' }}>
                 <img
-                  src="/white-logo.webp"
+                  src="/white-logo.svg"
                   alt="UDIISA logo"
                   className="w-full max-w-[180px] sm:max-w-[200px]"
                   decoding="async"

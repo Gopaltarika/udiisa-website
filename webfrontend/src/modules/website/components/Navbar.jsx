@@ -124,12 +124,12 @@ export default function Navbar() {
       <nav className="sticky top-0 left-0 right-0 z-[100] bg-white/[.97] transition-all duration-300">
         <div className="accent" />
 
-        <div className="flex items-center justify-between max-w-[1280px] !mx-auto !px-7 h-[70px]">
+        <div className="flex items-center justify-between max-w-7xl mx-auto! !px-7 h-17.5">
 
           {/* LOGO */}
           <a href="/" className="no-underline" onClick={closeAll}>
             <img
-              src="/Logo.webp"
+              src="/Logo.svg"
               alt="UDIISA logo"
               className="max-h-12 w-auto"
               fetchPriority="high"
@@ -164,7 +164,7 @@ export default function Navbar() {
                       className="flex items-center gap-3 !px-3 !py-[11px] rounded-xl no-underline text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
                       onClick={closeAll}
                     >
-                      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[#FFF3EC] text-[#F05A1A] text-[15px]">
+                      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 bg-[#FFF3EC] text-[#F05A1A] text-[15px]">
                         {item.icon}
                       </div>
                       <div>

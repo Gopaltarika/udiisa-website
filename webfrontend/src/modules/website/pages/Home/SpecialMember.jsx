@@ -4,7 +4,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Keyboard, A11y } from "swiper/modules";
+import { Navigation, Pagination, Keyboard, A11y, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -409,12 +409,22 @@ function SwiperSliderSection({ members, theme, activeTab }) {
       <style>{paginationStyle}</style>
       <div style={{ position: "relative" }}>
         <Swiper
-          modules={[Navigation, Pagination, Keyboard, A11y]}
+          modules={[Navigation, Pagination, Keyboard, A11y, Autoplay]}
           className={`sms-swiper sms-swiper-${activeTab}`}
           centeredSlides
           loop={total > 3}
+          rewind={total > 1 && total <= 3}
           keyboard={{ enabled: true }}
           pagination={{ clickable: true }}
+          autoplay={
+            total > 1
+              ? {
+                  delay: 4500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }
+              : false
+          }
           grabCursor={false}
           simulateTouch
           onSwiper={setSwiper}
