@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 export const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
   // Different devices/browsers may send inconsistent file MIME metadata.
   // Do not block here based on type; keep only size constraint at middleware level.
   fileFilter: (req, file, cb) => cb(null, true),

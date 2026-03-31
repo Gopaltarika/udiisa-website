@@ -81,7 +81,7 @@ export default function Blogs() {
   const handlePhoto = (e) => {
     const file = e.target.files[0]
     if (!file) return
-    if (file.size > 5 * 1024 * 1024) { toast.error('Image must be under 5MB'); return }
+    if (file.size > 10 * 1024 * 1024) { toast.error('Image must be under 10MB'); return }
     setForm(f => ({ ...f, image: file }))
     setPreview(URL.createObjectURL(file))
   }

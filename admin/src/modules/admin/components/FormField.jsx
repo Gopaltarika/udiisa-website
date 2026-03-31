@@ -83,7 +83,7 @@ export function PhotoUpload({ label = 'Upload Photo', value, onChange, preview, 
             </div>
             <p className="text-[12.5px] text-slate-500 font-medium text-center">
               Click to upload photo<br />
-              <span className="text-[11px] text-slate-400">PNG, JPG, WEBP — max 5MB</span>
+              <span className="text-[11px] text-slate-400">All image formats — max 10MB</span>
             </p>
           </>
         )}
