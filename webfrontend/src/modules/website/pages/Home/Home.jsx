@@ -5,6 +5,7 @@ import HeroSection from "./HeroSection";
 import Leadership from "./Leadership";
 import WhatWeDo from "./WhatWeDo";
 import { getPublicCommittees } from "@/shared/services/publicApi";
+import EventsMatchSection from "./Eventsmatchsection";
 
 const ManagingCommittee = lazy(() => import("./ManagingCommitte"));
 const Promoters = lazy(() => import("./Promoters"));
@@ -104,6 +105,9 @@ const Home = () => {
       </DeferredSection>
       <DeferredSection minHeight={460}>
         <SportsCommittee />
+      </DeferredSection>
+      <DeferredSection minHeight={460}>
+        <EventsMatchSection />
       </DeferredSection>
       <DeferredSection minHeight={520}>
         <BlogSection />

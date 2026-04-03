@@ -1,6 +1,8 @@
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Preloader } from "../modules/website/components/Globalenhancer";
+import MatchDetailPage from "../modules/website/pages/matchpage/Matchdetailpage";
+import EventsPage from "../modules/website/pages/matchpage/Eventspage";
 
 /** Scroll window to top whenever the route changes (fixes opening new page at footer) */
 function ScrollToTop() {
@@ -46,6 +48,8 @@ const AppRoutes = () => {
             <Route path="/blogs/*" element={<BlogRoutes />} />
             <Route path="/committee" element={<CommitteePage />} />
             <Route path="/donate-now" element={<DonateNow />} />
+            <Route path="/events/:slug" element={<MatchDetailPage />} />
+            <Route path="/events-list" element={<EventsPage />} />
             <Route path="/Contribute-now" element={<Navigate to="/donate-now" replace />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           </Route>

@@ -15,6 +15,7 @@ import { sendOtp, verifyOtp, submitMemberForm } from '../../../../shared/service
 /* ════════════════════════════════════════════════════════
    MEMBERSHIP DATA
 ════════════════════════════════════════════════════════ */
+
 const MEMBERSHIP_DATA = {
   individual: {
     id: 'individual',
@@ -157,7 +158,19 @@ const MEMBERSHIP_DATA = {
     membershipOpts: ['— Select Turnover Slab —', 'Up to ₹1 Cr (₹2,50,000)', '₹1 Cr – ₹5 Cr (₹5,00,000)', '₹5 Cr – ₹25 Cr (₹10,00,000)', '₹25 Cr – ₹50 Cr (₹20,00,000)', '₹50 Cr – ₹100 Cr (₹35,00,000)', 'Above ₹100 Cr (₹50,00,000)'],
   },
 }
+const MEMBERSHIP_FEE = 1000;
+const INDIVIDUAL_FEE = 1000;
+const CORPORATE_FEE = 5000;
 
+const formatAmount = (amountNum, isCorporate = false) => {
+  const membershipFee = isCorporate ? CORPORATE_FEE : INDIVIDUAL_FEE;
+  const donation = amountNum - membershipFee;
+  return {
+    display: `₹${membershipFee.toLocaleString('en-IN')} # ₹${donation.toLocaleString('en-IN')} (Recommended Donation)`,
+    donation,
+    membershipFee,
+  };
+};
 const TABS = [
   { id: 'individual', label: 'Individual Players', shortLabel: 'Individual', Icon: FaUser },
   { id: 'player',     label: 'Individual Patron',  shortLabel: 'Patron',     Icon: FaRunning },
@@ -644,7 +657,7 @@ function TabContent({ data, onFillOnline }) {
               <th style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(9px,1vw,11px)', fontWeight: 800, color: 'rgba(255,255,255,.75)', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
                 {data.id === 'corporate' ? 'Company Turnover Range' : 'Membership Sub-Type'}
               </th>
-              <th className="text-right" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(9px,1vw,11px)', fontWeight: 800, color: 'rgba(255,255,255,.75)', letterSpacing: '1.5px', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+              <th className="text-left" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(9px,1vw,11px)', fontWeight: 800, color: 'rgba(255,255,255,.75)', letterSpacing: '1.5px', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
                 Amount
               </th>
               <th className="hidden md:table-cell" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(9px,1vw,11px)', fontWeight: 800, color: 'rgba(255,255,255,.75)', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
@@ -654,25 +667,65 @@ function TabContent({ data, onFillOnline }) {
           </thead>
           <tbody>
             {data.feeTable.map((row, i) => (
-              <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc', borderBottom: i < data.feeTable.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
-                <td style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(11px,1.2vw,13px)', color: '#1e293b', fontWeight: 600 }}>
-                  {row.subType}
-                </td>
-                <td className="text-right" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', whiteSpace: 'nowrap' }}>
-                  <span style={{ fontSize: 'clamp(11px,1.2vw,13px)', fontWeight: 700, color: '#0B1E4B' }}>{row.amount}</span>
-                  <span style={{ fontSize: 10, color: '#94a3b8', marginLeft: 4 }}>+ GST</span>
-                </td>
-                <td className="hidden md:table-cell" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)' }}>
-                  <div className="flex flex-wrap !gap-1">
-                    {row.benefits.map((b, j) => (
-                      <span key={j} style={{ fontSize: 'clamp(10px,1.1vw,11.5px)', color: '#64748b' }}>
-                        {b}{j < row.benefits.length - 1 ? ' •' : ''}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-            ))}
+  <tr
+    key={i}
+    style={{
+      background: i % 2 === 0 ? '#fff' : '#f8fafc',
+      borderBottom: i < data.feeTable.length - 1 ? '1px solid #f1f5f9' : 'none'
+    }}
+  >
+    <td
+      style={{
+        padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)',
+        fontSize: 'clamp(11px,1.2vw,13px)',
+        color: '#1e293b',
+        fontWeight: 600
+      }}
+    >
+      {row.subType}
+    </td>
+
+    <td
+      className="text-left"
+      style={{
+        padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      <span
+        style={{
+          fontSize: 'clamp(11px,1.2vw,13px)',
+          fontWeight: 700,
+          color: '#0B1E4B'
+        }}
+      >
+       {formatAmount(row.amountNum, data.id === 'corporate').display}
+      </span>
+
+    </td>
+
+    <td
+      className="hidden md:table-cell"
+      style={{
+        padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)'
+      }}
+    >
+      <div className="flex flex-wrap !gap-1">
+        {row.benefits.map((b, j) => (
+          <span
+            key={j}
+            style={{
+              fontSize: 'clamp(10px,1.1vw,11.5px)',
+              color: '#64748b'
+            }}
+          >
+            {b}{j < row.benefits.length - 1 ? ' •' : ''}
+          </span>
+        ))}
+      </div>
+    </td>
+  </tr>
+))}
           </tbody>
         </table>
       </div>
