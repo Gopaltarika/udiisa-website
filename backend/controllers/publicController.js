@@ -9,6 +9,7 @@ import CommitteeGroup from '../models/CommitteeGroup.js'
 import SpecialMember from '../models/SpecialMember.js'
 import GeneralMember from '../models/GeneralMember.js'
 import Player from '../models/Player.js'
+import Event from '../models/Event.js'
 import mongoose from 'mongoose'
 import { toPublicMediaUrl } from '../utils/mediaUrl.js'
 
@@ -41,6 +42,106 @@ function formatDate(d) {
   const display = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
   const iso = date.toISOString().slice(0, 10)
   return { display, iso }
+}
+
+/** Event `date` field is often YYYY-MM-DD from admin — parse as local calendar date */
+function formatEventListDate(dateStr) {
+  if (!dateStr || !String(dateStr).trim()) return ''
+  const s = String(dateStr).trim()
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const [y, m, d] = s.split('-').map(Number)
+    const date = new Date(y, m - 1, d)
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+  }
+  const date = new Date(s)
+  if (Number.isNaN(date.getTime())) return s
+  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function mapEventToPublicList(req, doc) {
+  const teamA = doc.teamA || {}
+  const teamB = doc.teamB || {}
+  const loc = String(doc.location || '').trim()
+  return {
+    id: doc._id.toString(),
+    slug: doc.slug,
+    title: doc.title,
+    date: formatEventListDate(doc.date),
+    location: loc,
+    venue: loc,
+    sport: doc.sport,
+    status: 'Upcoming',
+    teamA: {
+      name: teamA.name,
+      members: Array.isArray(teamA.members) ? teamA.members.length : 0,
+      img: toPublicMediaUrl(req, teamA.img),
+    },
+    teamB: {
+      name: teamB.name,
+      members: Array.isArray(teamB.members) ? teamB.members.length : 0,
+      img: toPublicMediaUrl(req, teamB.img),
+    },
+  }
+}
+
+function defaultEventDescription(doc) {
+  const loc = String(doc.location || '').trim()
+  const sport = String(doc.sport || 'sports').trim()
+  const place = loc ? ` in ${loc}` : ''
+  return `${doc.title} is a ${sport} event${place}, organised under UDIISA. Follow full squad lineups and updates here.`
+}
+
+// ─── PUBLIC EVENTS (matches / admin Events) ───────────────────
+export const getPublicEvents = async (req, res) => {
+  try {
+    const limitRaw = parseInt(req.query.limit, 10)
+    const limit = Number.isFinite(limitRaw) ? Math.min(100, Math.max(1, limitRaw)) : null
+    let q = Event.find({}).sort({ createdAt: -1 }).lean()
+    if (limit) q = q.limit(limit)
+    const list = await q
+    return res.json(list.map((row) => mapEventToPublicList(req, row)))
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to fetch events' })
+  }
+}
+
+export const getPublicEventBySlug = async (req, res) => {
+  try {
+    const slug = String(req.params.slug || '').trim()
+    if (!slug) return res.status(404).json({ message: 'Event not found' })
+    const doc = await Event.findOne({ slug }).lean()
+    if (!doc) return res.status(404).json({ message: 'Event not found' })
+
+    const teamA = doc.teamA || {}
+    const teamB = doc.teamB || {}
+    const loc = String(doc.location || '').trim()
+    const membersA = Array.isArray(teamA.members) ? teamA.members : []
+    const membersB = Array.isArray(teamB.members) ? teamB.members : []
+
+    const out = {
+      id: doc._id.toString(),
+      slug: doc.slug,
+      title: doc.title,
+      date: formatEventListDate(doc.date),
+      sport: doc.sport,
+      venue: loc || 'TBA',
+      status: 'Upcoming',
+      description: defaultEventDescription(doc),
+      teamA: {
+        name: teamA.name,
+        captain: String(teamA.captain || '').trim(),
+        members: membersA.map((m) => ({ name: m.name })),
+      },
+      teamB: {
+        name: teamB.name,
+        captain: String(teamB.captain || '').trim(),
+        members: membersB.map((m) => ({ name: m.name })),
+      },
+    }
+    return res.json(out)
+  } catch (e) {
+    return res.status(500).json({ message: e.message || 'Failed to fetch event' })
+  }
 }
 
 // ─── PUBLIC BLOGS ──────────────────────────────────────────

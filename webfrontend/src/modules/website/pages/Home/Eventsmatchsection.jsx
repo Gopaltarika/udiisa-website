@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getPublicEvents } from "@/shared/services/publicApi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Keyboard, A11y } from "swiper/modules";
 import { HiSparkles } from "react-icons/hi";
@@ -7,45 +8,6 @@ import { FaUsers, FaArrowRight, FaChevronLeft, FaChevronRight, FaMapMarkerAlt } 
 import { IoCalendarOutline } from "react-icons/io5";
 import "swiper/css";
 import "swiper/css/pagination";
-
-/* ─── Demo Data ──────────────────────────────────────────────────────────────── */
-const EVENTS = [
-  {
-    id: "1", slug: "udiisa-cricket-championship-2025",
-    title: "UDIISA Cricket Championship",
-    date: "15 Mar 2025", location: "Delhi", sport: "Cricket",
-    teamA: { name: "Delhi Dynamos",   members: 18, img: "https://images.unsplash.com/photo-1540747913346-19212a4a87e2?w=600&q=80" },
-    teamB: { name: "Mumbai Strikers", members: 22, img: "https://images.unsplash.com/photo-1593766827666-a3a3e0562da0?w=600&q=80" },
-  },
-  {
-    id: "2", slug: "national-football-league-2025",
-    title: "National Football League",
-    date: "22 Apr 2025", location: "Mumbai", sport: "Football",
-    teamA: { name: "Punjab Lions",   members: 14, img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80" },
-    teamB: { name: "Chennai Tigers", members: 16, img: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=600&q=80" },
-  },
-  {
-    id: "3", slug: "state-basketball-tournament-2025",
-    title: "State Basketball Tournament",
-    date: "05 May 2025", location: "Bangalore", sport: "Basketball",
-    teamA: { name: "Rajasthan Royals", members: 12, img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80" },
-    teamB: { name: "UP Warriors",      members: 11, img: "https://images.unsplash.com/photo-1580327344181-c1163234e5a9?w=600&q=80" },
-  },
-  {
-    id: "4", slug: "udiisa-kabaddi-cup-2025",
-    title: "UDIISA Kabaddi Cup",
-    date: "18 Jun 2025", location: "Jaipur", sport: "Kabaddi",
-    teamA: { name: "Haryana Hawks", members: 10, img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
-    teamB: { name: "Bihar Bravos",  members: 10, img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80" },
-  },
-  {
-    id: "5", slug: "all-india-athletics-meet-2025",
-    title: "All India Athletics Meet",
-    date: "30 Jul 2025", location: "Lucknow", sport: "Athletics",
-    teamA: { name: "North Zone", members: 32, img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&q=80" },
-    teamB: { name: "South Zone", members: 28, img: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&q=80" },
-  },
-];
 
 /* ─── Compact Match Card ─────────────────────────────────────────────────────── */
 function MatchCard({ event, onView }) {
@@ -162,6 +124,23 @@ function MatchCard({ event, onView }) {
 export default function EventsMatchSection() {
   const navigate = useNavigate();
   const [swiper, setSwiper] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getPublicEvents({ limit: 12 });
+        if (!cancelled) setEvents(Array.isArray(data) ? data : []);
+      } catch {
+        if (!cancelled) setEvents([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <section className="relative overflow-hidden !py-12 sm:!py-16 lg:!py-20 bg-gradient-to-b from-[#f8faff] via-white to-[#fff8f4]">
@@ -218,41 +197,57 @@ export default function EventsMatchSection() {
 
         {/* Slider */}
         <div className="relative">
-          <button
-            onClick={() => swiper?.slidePrev()}
-            className="hidden sm:flex absolute -left-5 lg:-left-6 top-[38%] -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 items-center justify-center text-slate-500 shadow-md hover:bg-[#0B1E4B] hover:text-white hover:border-[#0B1E4B] transition-all duration-200 cursor-pointer"
-          >
-            <FaChevronLeft className="text-[11px]" />
-          </button>
-          <button
-            onClick={() => swiper?.slideNext()}
-            className="hidden sm:flex absolute -right-5 lg:-right-6 top-[38%] -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] items-center justify-center text-white border-none shadow-[0_3px_12px_rgba(240,90,26,0.35)] hover:scale-110 transition-all duration-200 cursor-pointer"
-          >
-            <FaChevronRight className="text-[11px]" />
-          </button>
+          {loading ? (
+            <div className="flex justify-center !py-16">
+              <p className="text-sm font-semibold text-slate-400">Loading events…</p>
+            </div>
+          ) : events.length === 0 ? (
+            <div className="flex justify-center !py-16">
+              <p className="text-sm font-semibold text-slate-400 text-center !max-w-md">
+                No upcoming matches yet. Add events from the admin panel to show them here.
+              </p>
+            </div>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => swiper?.slidePrev()}
+                className="hidden sm:flex absolute -left-5 lg:-left-6 top-[38%] -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 items-center justify-center text-slate-500 shadow-md hover:bg-[#0B1E4B] hover:text-white hover:border-[#0B1E4B] transition-all duration-200 cursor-pointer"
+              >
+                <FaChevronLeft className="text-[11px]" />
+              </button>
+              <button
+                type="button"
+                onClick={() => swiper?.slideNext()}
+                className="hidden sm:flex absolute -right-5 lg:-right-6 top-[38%] -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-gradient-to-br from-[#F05A1A] to-[#FF7D42] items-center justify-center text-white border-none shadow-[0_3px_12px_rgba(240,90,26,0.35)] hover:scale-110 transition-all duration-200 cursor-pointer"
+              >
+                <FaChevronRight className="text-[11px]" />
+              </button>
 
-          <Swiper
-            modules={[Navigation, Pagination, Keyboard, A11y]}
-            className="ev-swiper"
-            loop={EVENTS.length > 3}
-            keyboard={{ enabled: true }}
-            pagination={{ clickable: true }}
-            grabCursor
-            onSwiper={setSwiper}
-            breakpoints={{
-              0:    { slidesPerView: 1,    spaceBetween: 12 },
-              480:  { slidesPerView: 1.15, spaceBetween: 12 },
-              640:  { slidesPerView: 2,    spaceBetween: 14 },
-              900:  { slidesPerView: 2.5,    spaceBetween: 16 },
-              1200: { slidesPerView: 3,    spaceBetween: 16 },
-            }}
-          >
-            {EVENTS.map(ev => (
-              <SwiperSlide key={ev.id}>
-                <MatchCard event={ev} onView={(slug) => navigate(`/events/${slug}`)} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+              <Swiper
+                modules={[Navigation, Pagination, Keyboard, A11y]}
+                className="ev-swiper"
+                loop={events.length > 3}
+                keyboard={{ enabled: true }}
+                pagination={{ clickable: true }}
+                grabCursor
+                onSwiper={setSwiper}
+                breakpoints={{
+                  0:    { slidesPerView: 1,    spaceBetween: 12 },
+                  480:  { slidesPerView: 1.15, spaceBetween: 12 },
+                  640:  { slidesPerView: 2,    spaceBetween: 14 },
+                  900:  { slidesPerView: 2.5,    spaceBetween: 16 },
+                  1200: { slidesPerView: 3,    spaceBetween: 16 },
+                }}
+              >
+                {events.map((ev) => (
+                  <SwiperSlide key={ev.id}>
+                    <MatchCard event={ev} onView={(s) => navigate(`/events/${s}`)} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </>
+          )}
         </div>
 
         {/* View All */}

@@ -108,6 +108,12 @@ export const getPublicGeneralMembers = (type) =>
 export const getPublicPlayers = () =>
   publicApi.get('/public/players').then((res) => res.data)
 
+export const getPublicEvents = (params) =>
+  publicApi.get('/public/events', { params }).then((res) => res.data)
+
+export const getPublicEventBySlug = (slug) =>
+  publicApi.get(`/public/events/slug/${encodeURIComponent(slug)}`).then((res) => res.data)
+
 // ─── Incoming forms (contact, member, OTP) ───────────────────────
 export const submitContact = (data) =>
   publicApi.post('/incoming/public/contact', data).then((res) => res.data)

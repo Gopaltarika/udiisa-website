@@ -14,6 +14,7 @@ import memberRoutes from './routes/memberRoutes.js'
 import playerRoutes from './routes/playerRoutes.js'
 import incomingRoutes from './routes/incomingRoutes.js'
 import publicRoutes from './routes/publicRoutes.js'
+import eventRoutes from './routes/eventRoutes.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
@@ -77,6 +78,7 @@ app.use('/api/members', memberRoutes)
 app.use('/api/players', playerRoutes)
 app.use('/api/incoming', incomingRoutes)
 app.use('/api/public', publicRoutes)
+app.use('/api/events', eventRoutes)
 
 app.get('/api/health', (req, res) => res.json({ ok: true, message: 'UDI API running' }))
 

@@ -1,175 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { getPublicEvents } from "@/shared/services/publicApi";
 import {
   FaMapMarkerAlt, FaUsers, FaArrowRight, FaSearch, FaFilter,
   FaCrown, FaCalendarAlt, FaTimes,
 } from "react-icons/fa";
 import { HiSparkles, HiLightningBolt } from "react-icons/hi";
 import { IoCalendarOutline } from "react-icons/io5";
-
-/* ─── All Events Data ────────────────────────────────────────────────────────── */
-const ALL_EVENTS = [
-  {
-    id: "1",
-    slug: "udiisa-cricket-championship-2025",
-    title: "UDIISA Cricket Championship",
-    date: "15 Mar 2025",
-    location: "Delhi",
-    venue: "Feroz Shah Kotla Ground",
-    sport: "Cricket",
-    status: "Upcoming",
-    teamA: {
-      name: "Delhi Dynamos",
-      members: 18,
-      img: "https://images.unsplash.com/photo-1540747913346-19212a4a87e2?w=600&q=80",
-    },
-    teamB: {
-      name: "Mumbai Strikers",
-      members: 22,
-      img: "https://images.unsplash.com/photo-1593766827666-a3a3e0562da0?w=600&q=80",
-    },
-  },
-  {
-    id: "2",
-    slug: "national-football-league-2025",
-    title: "National Football League",
-    date: "22 Apr 2025",
-    location: "Mumbai",
-    venue: "DY Patil Stadium",
-    sport: "Football",
-    status: "Upcoming",
-    teamA: {
-      name: "Punjab Lions",
-      members: 14,
-      img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80",
-    },
-    teamB: {
-      name: "Chennai Tigers",
-      members: 16,
-      img: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=600&q=80",
-    },
-  },
-  {
-    id: "3",
-    slug: "state-basketball-tournament-2025",
-    title: "State Basketball Tournament",
-    date: "05 May 2025",
-    location: "Bangalore",
-    venue: "Sree Kanteerava Indoor Stadium",
-    sport: "Basketball",
-    status: "Upcoming",
-    teamA: {
-      name: "Rajasthan Royals",
-      members: 12,
-      img: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80",
-    },
-    teamB: {
-      name: "UP Warriors",
-      members: 11,
-      img: "https://images.unsplash.com/photo-1580327344181-c1163234e5a9?w=600&q=80",
-    },
-  },
-  {
-    id: "4",
-    slug: "udiisa-kabaddi-cup-2025",
-    title: "UDIISA Kabaddi Cup",
-    date: "18 Jun 2025",
-    location: "Jaipur",
-    venue: "SMS Indoor Hall",
-    sport: "Kabaddi",
-    status: "Upcoming",
-    teamA: {
-      name: "Haryana Hawks",
-      members: 10,
-      img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80",
-    },
-    teamB: {
-      name: "Bihar Bravos",
-      members: 10,
-      img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80",
-    },
-  },
-  {
-    id: "5",
-    slug: "all-india-athletics-meet-2025",
-    title: "All India Athletics Meet",
-    date: "30 Jul 2025",
-    location: "Lucknow",
-    venue: "Ekana Sports City",
-    sport: "Athletics",
-    status: "Upcoming",
-    teamA: {
-      name: "North Zone",
-      members: 32,
-      img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&q=80",
-    },
-    teamB: {
-      name: "South Zone",
-      members: 28,
-      img: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&q=80",
-    },
-  },
-  {
-    id: "6",
-    slug: "inter-state-volleyball-2025",
-    title: "Inter-State Volleyball Cup",
-    date: "10 Aug 2025",
-    location: "Hyderabad",
-    venue: "Gachibowli Indoor Stadium",
-    sport: "Volleyball",
-    status: "Upcoming",
-    teamA: {
-      name: "Andhra Eagles",
-      members: 12,
-      img: "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=600&q=80",
-    },
-    teamB: {
-      name: "Karnataka Kings",
-      members: 12,
-      img: "https://images.unsplash.com/photo-1547940442-1e39d8d2f7cb?w=600&q=80",
-    },
-  },
-  {
-    id: "7",
-    slug: "national-badminton-open-2025",
-    title: "National Badminton Open",
-    date: "20 Sep 2025",
-    location: "Chennai",
-    venue: "Nehru Indoor Stadium",
-    sport: "Badminton",
-    status: "Upcoming",
-    teamA: {
-      name: "Tamil Tigers",
-      members: 8,
-      img: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80",
-    },
-    teamB: {
-      name: "Kerala Shuttlers",
-      members: 8,
-      img: "https://images.unsplash.com/photo-1613918431703-aa50889e3be6?w=600&q=80",
-    },
-  },
-  {
-    id: "8",
-    slug: "udiisa-wrestling-cup-2025",
-    title: "UDIISA Wrestling Cup",
-    date: "05 Oct 2025",
-    location: "Haryana",
-    venue: "Tau Devi Lal Stadium",
-    sport: "Wrestling",
-    status: "Upcoming",
-    teamA: {
-      name: "Punjab Dangal",
-      members: 15,
-      img: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&q=80",
-    },
-    teamB: {
-      name: "Haryana Kushti",
-      members: 15,
-      img: "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=600&q=80",
-    },
-  },
-];
 
 /* ─── Sport color map ────────────────────────────────────────────────────────── */
 const SPORT_COLORS = {
@@ -182,8 +19,6 @@ const SPORT_COLORS = {
   Badminton:  { bg: "bg-yellow-100",  text: "text-yellow-700",  dot: "bg-yellow-500" },
   Wrestling:  { bg: "bg-red-100",     text: "text-red-700",     dot: "bg-red-500" },
 };
-
-const ALL_SPORTS = ["All", ...Object.keys(SPORT_COLORS)];
 
 /* ─── Skeleton Card ──────────────────────────────────────────────────────────── */
 function SkeletonCard() {
@@ -292,7 +127,7 @@ function EventCard({ event, onView }) {
           </span>
           <span className="inline-flex items-center !gap-1 text-[10px] font-semibold text-slate-400">
             <FaMapMarkerAlt className="text-[#F05A1A] text-[8px]" />
-            {venue}, {location}
+            {venue && location && venue !== location ? `${venue}, ${location}` : (location || venue || "—")}
           </span>
         </div>
 
@@ -334,14 +169,28 @@ export default function EventsPage() {
   const [search, setSearch] = useState("");
   const [activeSport, setActiveSport] = useState("All");
 
-  /* Simulate data fetch with skeleton */
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setEvents(ALL_EVENTS);
-      setLoading(false);
-    }, 1800);
-    return () => clearTimeout(timer);
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getPublicEvents();
+        if (!cancelled) setEvents(Array.isArray(data) ? data : []);
+      } catch {
+        if (!cancelled) setEvents([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
+
+  const sportPills = useMemo(() => {
+    const set = new Set(Object.keys(SPORT_COLORS));
+    events.forEach((e) => {
+      if (e.sport) set.add(e.sport);
+    });
+    return ["All", ...set];
+  }, [events]);
 
   /* Filtered list */
   const filtered = events.filter((ev) => {
@@ -350,7 +199,9 @@ export default function EventsPage() {
     const matchSearch =
       !q ||
       ev.title.toLowerCase().includes(q) ||
-      ev.location.toLowerCase().includes(q) ||
+      (ev.location || "").toLowerCase().includes(q) ||
+      (ev.venue || "").toLowerCase().includes(q) ||
+      ev.sport.toLowerCase().includes(q) ||
       ev.teamA.name.toLowerCase().includes(q) ||
       ev.teamB.name.toLowerCase().includes(q);
     return matchSport && matchSearch;
@@ -509,7 +360,7 @@ export default function EventsPage() {
             {/* Sport filter pills - horizontally scrollable */}
             <div className="flex items-center !gap-2 overflow-x-auto !pb-1" style={{ scrollbarWidth: "none" }}>
               <FaFilter className="text-slate-300 text-[10px] flex-shrink-0" />
-              {ALL_SPORTS.map((sp) => (
+              {sportPills.map((sp) => (
                 <button
                   key={sp}
                   onClick={() => setActiveSport(sp)}

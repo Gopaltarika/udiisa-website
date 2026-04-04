@@ -1,4 +1,5 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
+import eventService from './Eventservice'
 import {
   FaPlus, FaSearch, FaCrown, FaUsers, FaEdit, FaTrash,
   FaTimes, FaChevronRight, FaMapMarkerAlt, FaCalendarAlt,
@@ -13,128 +14,6 @@ const SPORT_OPTIONS = [
   'Hockey', 'Tennis', 'Swimming', 'Other',
 ]
 
-const INITIAL_EVENTS = [
-  {
-    id: '1',
-    title: 'UDIISA Cricket Championship',
-    sport: 'Cricket',
-    date: '2025-03-15',
-    location: 'Delhi',
-    slug: 'udiisa-cricket-championship-2025',
-    createdAt: '2025-01-10T09:00:00Z',
-    teamA: {
-      name: 'Delhi Dynamos',
-      captain: 'Rohit Sharma',
-      img: 'https://images.unsplash.com/photo-1540747913346-19212a4a87e2?w=400&q=80',
-      members: [
-        { id: 'm1', name: 'Rohit Sharma' }, { id: 'm2', name: 'Shikhar Dhawan' },
-        { id: 'm3', name: 'Virat Singh' },  { id: 'm4', name: 'Priya Rajan' },
-        { id: 'm5', name: 'Deepak Yadav' }, { id: 'm6', name: 'Arjun Kapoor' },
-        { id: 'm7', name: 'Manish Tiwari' },{ id: 'm8', name: 'Ravi Gupta' },
-      ],
-    },
-    teamB: {
-      name: 'Mumbai Strikers',
-      captain: 'Sachin Jr.',
-      img: 'https://images.unsplash.com/photo-1593766827666-a3a3e0562da0?w=400&q=80',
-      members: [
-        { id: 'm9',  name: 'Sachin Jr.' },    { id: 'm10', name: 'Jasprit Singh' },
-        { id: 'm11', name: 'Hardik Mehta' },  { id: 'm12', name: 'Ishan Kishore' },
-        { id: 'm13', name: 'Suryakumar V.' }, { id: 'm14', name: 'Kieron Patel' },
-        { id: 'm15', name: 'Bhuvneshwar M.' },{ id: 'm16', name: 'Ravindra K.' },
-      ],
-    },
-  },
-  {
-    id: '2',
-    title: 'National Football League',
-    sport: 'Football',
-    date: '2025-04-22',
-    location: 'Mumbai',
-    slug: 'national-football-league-2025',
-    createdAt: '2025-01-15T10:30:00Z',
-    teamA: {
-      name: 'Punjab Lions',
-      captain: 'Gurpreet Singh',
-      img: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80',
-      members: [
-        { id: 'm17', name: 'Gurpreet Singh' }, { id: 'm18', name: 'Sandesh Jhingan' },
-        { id: 'm19', name: 'Suresh Singh' },   { id: 'm20', name: 'Manvir Singh' },
-        { id: 'm21', name: 'Udanta Kumar' },   { id: 'm22', name: 'Sahal Abdul' },
-      ],
-    },
-    teamB: {
-      name: 'Chennai Tigers',
-      captain: 'Chhangte',
-      img: 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=400&q=80',
-      members: [
-        { id: 'm23', name: 'Chhangte' },     { id: 'm24', name: 'Vishal Kaith' },
-        { id: 'm25', name: 'Bikash Yumnam' },{ id: 'm26', name: 'Joni Kauko' },
-        { id: 'm27', name: 'Petar S.' },     { id: 'm28', name: 'Vladimir K.' },
-      ],
-    },
-  },
-  {
-    id: '3',
-    title: 'State Basketball Tournament',
-    sport: 'Basketball',
-    date: '2025-05-05',
-    location: 'Bangalore',
-    slug: 'state-basketball-tournament-2025',
-    createdAt: '2025-01-20T08:00:00Z',
-    teamA: {
-      name: 'Rajasthan Royals',
-      captain: 'Vishesh B.',
-      img: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80',
-      members: [
-        { id: 'm29', name: 'Vishesh B.' },    { id: 'm30', name: 'Amjyot Singh' },
-        { id: 'm31', name: 'Arshpreet B.' },  { id: 'm32', name: 'Akilan Pari' },
-        { id: 'm33', name: 'Palpreet Singh' },
-      ],
-    },
-    teamB: {
-      name: 'UP Warriors',
-      captain: 'Satnam Singh',
-      img: 'https://images.unsplash.com/photo-1580327344181-c1163234e5a9?w=400&q=80',
-      members: [
-        { id: 'm34', name: 'Satnam Singh' },  { id: 'm35', name: 'Princepal Singh' },
-        { id: 'm36', name: 'Karan Ranjit' },  { id: 'm37', name: 'Robin Singh' },
-        { id: 'm38', name: 'Aravind A.' },
-      ],
-    },
-  },
-  {
-    id: '4',
-    title: 'UDIISA Kabaddi Cup',
-    sport: 'Kabaddi',
-    date: '2025-06-18',
-    location: 'Jaipur',
-    slug: 'udiisa-kabaddi-cup-2025',
-    createdAt: '2025-02-01T11:00:00Z',
-    teamA: {
-      name: 'Haryana Hawks',
-      captain: 'Pardeep Narwal',
-      img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80',
-      members: [
-        { id: 'm39', name: 'Pardeep Narwal' }, { id: 'm40', name: 'Pawan Sehrawat' },
-        { id: 'm41', name: 'Surender Nada' },  { id: 'm42', name: 'Manjeet Chhillar' },
-        { id: 'm43', name: 'Ravi Kumar' },
-      ],
-    },
-    teamB: {
-      name: 'Bihar Bravos',
-      captain: 'Ajay Thakur',
-      img: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80',
-      members: [
-        { id: 'm44', name: 'Ajay Thakur' },    { id: 'm45', name: 'Rohit Kumar' },
-        { id: 'm46', name: 'Sachin Tanwar' },   { id: 'm47', name: 'Dharmaraj C.' },
-        { id: 'm48', name: 'Rahul Chaudhari' },
-      ],
-    },
-  },
-]
-
-const uid = () => 'e' + Date.now() + Math.random().toString(36).slice(2, 5)
 const mid = () => 'm' + Date.now() + Math.random().toString(36).slice(2, 5)
 
 const formatDate = (d) => {
@@ -211,9 +90,9 @@ function EventModal({ isOpen, onClose, onSave, editEvent }) {
   const [saving, setSaving] = useState(false)
   const [step, setStep] = useState(1)
 
-  // Populate form when editing
-  useState(() => {
-    if (isOpen && editEvent) {
+  useEffect(() => {
+    if (!isOpen) return
+    if (editEvent) {
       setForm({
         title: editEvent.title,
         sport: editEvent.sport,
@@ -227,12 +106,14 @@ function EventModal({ isOpen, onClose, onSave, editEvent }) {
       })
       setPreviewA(editEvent.teamA.img || null)
       setPreviewB(editEvent.teamB.img || null)
-    } else if (isOpen && !editEvent) {
+    } else {
       setForm(EMPTY_FORM)
       setPreviewA(null)
       setPreviewB(null)
     }
-  }, [isOpen])
+    setErrors({})
+    setStep(1)
+  }, [isOpen, editEvent])
 
   if (!isOpen) return null
 
@@ -270,62 +151,62 @@ function EventModal({ isOpen, onClose, onSave, editEvent }) {
   const handleSave = async () => {
     if (!validateStep(3)) return
     setSaving(true)
-
-    if (isEdit) {
-      // UPDATE: preserve existing members, only update meta + team name/captain/img
-      const updatedEvent = {
-        ...editEvent,
-        title: form.title.trim(),
-        sport: form.sport,
-        date: form.date,
-        location: form.location.trim(),
-        slug: form.slug.trim() || toSlug(form.title),
-        teamA: {
-          ...editEvent.teamA,
-          name: form.teamAName.trim(),
-          captain: form.teamACaptain.trim(),
-          img: previewA || editEvent.teamA.img || null,
-        },
-        teamB: {
-          ...editEvent.teamB,
-          name: form.teamBName.trim(),
-          captain: form.teamBCaptain.trim(),
-          img: previewB || editEvent.teamB.img || null,
-        },
+    try {
+      if (isEdit) {
+        const updatedEvent = {
+          ...editEvent,
+          title: form.title.trim(),
+          sport: form.sport,
+          date: form.date,
+          location: form.location.trim(),
+          slug: form.slug.trim() || toSlug(form.title),
+          teamA: {
+            ...editEvent.teamA,
+            name: form.teamAName.trim(),
+            captain: form.teamACaptain.trim(),
+            img: previewA || editEvent.teamA.img || null,
+          },
+          teamB: {
+            ...editEvent.teamB,
+            name: form.teamBName.trim(),
+            captain: form.teamBCaptain.trim(),
+            img: previewB || editEvent.teamB.img || null,
+          },
+        }
+        await onSave(updatedEvent)
+      } else {
+        const newEvent = {
+          title: form.title.trim(),
+          sport: form.sport,
+          date: form.date,
+          location: form.location.trim(),
+          slug: form.slug.trim() || toSlug(form.title),
+          teamA: {
+            name: form.teamAName.trim(),
+            captain: form.teamACaptain.trim(),
+            img: previewA || null,
+            members: form.teamACaptain.trim()
+              ? [{ id: mid(), name: form.teamACaptain.trim() }]
+              : [],
+          },
+          teamB: {
+            name: form.teamBName.trim(),
+            captain: form.teamBCaptain.trim(),
+            img: previewB || null,
+            members: form.teamBCaptain.trim()
+              ? [{ id: mid(), name: form.teamBCaptain.trim() }]
+              : [],
+          },
+        }
+        await onSave(newEvent)
       }
-      onSave(updatedEvent)
-    } else {
-      // CREATE
-      const newEvent = {
-        id: uid(),
-        title: form.title.trim(),
-        sport: form.sport,
-        date: form.date,
-        location: form.location.trim(),
-        slug: form.slug.trim() || toSlug(form.title),
-        createdAt: new Date().toISOString(),
-        teamA: {
-          name: form.teamAName.trim(),
-          captain: form.teamACaptain.trim(),
-          img: previewA || null,
-          members: form.teamACaptain.trim()
-            ? [{ id: mid(), name: form.teamACaptain.trim() }]
-            : [],
-        },
-        teamB: {
-          name: form.teamBName.trim(),
-          captain: form.teamBCaptain.trim(),
-          img: previewB || null,
-          members: form.teamBCaptain.trim()
-            ? [{ id: mid(), name: form.teamBCaptain.trim() }]
-            : [],
-        },
-      }
-      onSave(newEvent)
+      handleClose()
+    } catch (e) {
+      const msg = e?.response?.data?.message || e?.message || 'Save failed'
+      window.alert(msg)
+    } finally {
+      setSaving(false)
     }
-
-    setSaving(false)
-    handleClose()
   }
 
   const handleClose = () => {
@@ -942,7 +823,9 @@ function EventDetailPanel({ event, onTeamUpdate }) {
    MAIN PAGE
 ═══════════════════════════════════════════════════════════════════ */
 export default function Events() {
-  const [events, setEvents] = useState(INITIAL_EVENTS)
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [listError, setListError] = useState('')
   const [selectedId, setSelectedId] = useState(null)
   const [search, setSearch] = useState('')
   const [mobileView, setMobileView] = useState('list')
@@ -951,6 +834,25 @@ export default function Events() {
   const [addOpen, setAddOpen] = useState(false)
   const [editEvent, setEditEvent] = useState(null)   // event object to edit
   const [deleteTarget, setDeleteTarget] = useState(null) // event object to delete
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      setListError('')
+      try {
+        const { data } = await eventService.getEvents()
+        if (!cancelled) setEvents(Array.isArray(data) ? data : [])
+      } catch (e) {
+        if (!cancelled) {
+          setListError(e?.response?.data?.message || e?.message || 'Failed to load events')
+          setEvents([])
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
 
   const filtered = useMemo(() => {
     if (!search.trim()) return events
@@ -968,33 +870,53 @@ export default function Events() {
 
   const handleSelectEvent = (id) => { setSelectedId(id); setMobileView('detail') }
 
-  const handleTeamUpdate = (eventId, side, updatedTeam) =>
-    setEvents(prev => prev.map(ev => {
-      if (ev.id !== eventId) return ev
-      return side === 'A' ? { ...ev, teamA: updatedTeam } : { ...ev, teamB: updatedTeam }
-    }))
+  const handleTeamUpdate = async (eventId, side, updatedTeam) => {
+    let next
+    setEvents((prev) => {
+      const ev = prev.find((e) => e.id === eventId)
+      if (!ev) return prev
+      next = side === 'A' ? { ...ev, teamA: updatedTeam } : { ...ev, teamB: updatedTeam }
+      return prev.map((e) => (e.id === eventId ? next : e))
+    })
+    if (!next) return
+    try {
+      const { data } = await eventService.updateEvent(eventId, next)
+      setEvents((prev) => prev.map((e) => (e.id === eventId ? data : e)))
+    } catch (e) {
+      try {
+        const { data } = await eventService.getEvents()
+        setEvents(Array.isArray(data) ? data : [])
+      } catch (_) { /* keep optimistic state */ }
+      window.alert(e?.response?.data?.message || e?.message || 'Could not save squad')
+    }
+  }
 
-  // ADD
-  const handleAddEvent = (newEvent) => {
-    setEvents(prev => [newEvent, ...prev])
-    setSelectedId(newEvent.id)
+  const handleAddEvent = async (newEvent) => {
+    const { data } = await eventService.addEvent(newEvent)
+    setEvents((prev) => [data, ...prev])
+    setSelectedId(data.id)
     setMobileView('detail')
   }
 
-  // EDIT
-  const handleEditSave = (updatedEvent) => {
-    setEvents(prev => prev.map(ev => ev.id === updatedEvent.id ? updatedEvent : ev))
+  const handleEditSave = async (updatedEvent) => {
+    const { data } = await eventService.updateEvent(updatedEvent.id, updatedEvent)
+    setEvents((prev) => prev.map((ev) => (ev.id === updatedEvent.id ? data : ev)))
   }
 
-  // DELETE
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!deleteTarget) return
-    setEvents(prev => prev.filter(ev => ev.id !== deleteTarget.id))
-    if (selectedId === deleteTarget.id) {
-      setSelectedId(null)
-      setMobileView('list')
+    const id = deleteTarget.id
+    try {
+      await eventService.deleteEvent(id)
+      setEvents((prev) => prev.filter((ev) => ev.id !== id))
+      if (selectedId === id) {
+        setSelectedId(null)
+        setMobileView('list')
+      }
+      setDeleteTarget(null)
+    } catch (e) {
+      window.alert(e?.response?.data?.message || e?.message || 'Delete failed')
     }
-    setDeleteTarget(null)
   }
 
   return (
@@ -1005,6 +927,9 @@ export default function Events() {
         <div>
           <h1 className="text-xl font-black text-[#0B1E4B]">Events</h1>
           <p className="text-xs text-slate-400 font-semibold">Manage events &amp; squad members</p>
+          {listError && (
+            <p className="text-[11px] text-red-500 font-semibold mt-1">{listError}</p>
+          )}
         </div>
         <button
           onClick={() => setAddOpen(true)}
@@ -1039,7 +964,11 @@ export default function Events() {
 
           {/* List */}
           <div className="flex-1 overflow-y-auto p-2">
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="flex flex-col items-center justify-center h-40 gap-2">
+                <p className="text-xs text-slate-400 font-semibold">Loading events…</p>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 gap-3">
                 {!search ? (
                   <>

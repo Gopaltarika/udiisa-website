@@ -1,5 +1,5 @@
 // admin/services/eventService.js
-import api from './api'
+import api from '../../services/api'
 
 const eventService = {
   getEvents:    (params)     => api.get('/events', { params }),
