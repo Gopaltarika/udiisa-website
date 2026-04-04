@@ -6,6 +6,7 @@ const Dashboard = lazy(() => import("../modules/admin/pages/Dashboard"));
 const AdminLayout = lazy(() => import("../modules/admin/layout/AdminLayout"));
 const Players = lazy(() => import("../modules/admin/pages/Players"));
 const Blogs = lazy(() => import("../modules/admin/pages/Blogs"));
+const Events = lazy(() => import("../modules/admin/pages/event/Events"));
 const Settings = lazy(() => import("../modules/admin/pages/Settings"));
 const GeneralMembers = lazy(() => import("../modules/admin/pages/members/GeneralMembers"));
 const SpecialMembers = lazy(() => import("../modules/admin/pages/members/SpecialMembers"));
@@ -51,6 +52,7 @@ const AppRoutes = () => {
             <Route path="incoming/members" element={<IncomingMembers />} />
             <Route path="incoming/contacts" element={<IncomingContacts />} />
             <Route path="blogs" element={<Blogs />} />
+            <Route path="events" element={<Events />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="/admin/forgot-password" element={<ForgotPassword />} />

@@ -2,7 +2,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   MdDashboard, MdPeople, MdStar, MdEmail,
-  MdArticle, MdSettings, MdSportsCricket,
+  MdArticle, MdSettings, MdSportsCricket, MdSportsScore 
 } from 'react-icons/md'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { useState } from 'react'
@@ -33,6 +33,11 @@ const NAV = [
     icon: <MdPeople />,
     label: 'Committees',
   },
+  {
+  label: 'Events',
+  icon:  <MdSportsScore />,
+  to:  '/admin/events',
+},
   {
     to: '/admin/blogs',
     icon: <MdArticle />,

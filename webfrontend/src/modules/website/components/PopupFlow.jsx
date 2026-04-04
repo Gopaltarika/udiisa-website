@@ -118,7 +118,7 @@ export default function PopupFlow() {
         <img
           src={scannerImage}
           alt="QR Code"
-          className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 mb-3 sm:mb-4 border rounded-xl p-2 sm:p-3 bg-white shadow-lg"
+          className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 mb-3 sm:mb-4 border rounded-xl p-2 sm:p-3 bg-white shadow-lg select-none pointer-events-none"
         />
 
         <p className="text-xs sm:text-sm text-gray-700 font-medium mb-1">
