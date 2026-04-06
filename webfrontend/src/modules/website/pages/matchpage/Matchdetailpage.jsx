@@ -27,8 +27,8 @@ function TeamTable({ team, side, memberCount }) {
           </p>
         </div>
         <div className="ml-auto flex-shrink-0 flex flex-col items-end">
-          <span className="text-white/70 text-[9px] font-bold uppercase tracking-wide">Captain</span>
-          <span className="text-yellow-300 text-[10px] font-extrabold truncate max-w-[90px]">{team.captain || "—"}</span>
+          <span className="text-white/70 text-[16px] font-bold uppercase tracking-wide">Captain</span>
+          <span className="text-yellow-300 text-[18px] font-extrabold truncate max-w-[90px]">{team.captain || "—"}</span>
         </div>
       </div>
 
@@ -62,9 +62,9 @@ function TeamTable({ team, side, memberCount }) {
               </div>
 
               <div className="min-w-0 !pr-1">
-                <p className="!m-0 text-[10px] font-extrabold text-[#0B1E4B] truncate leading-tight">
+                <p className="!m-0 text-[16px] font-extrabold text-[#0B1E4B] truncate leading-tight">
                   {member.name}
-                  {isCaptain && <span className="!ml-1 text-yellow-500 text-[8px]">(C)</span>}
+                  {isCaptain && <span className="!ml-1 text-yellow-500 text-[12px]">(C)</span>}
                 </p>
               </div>
             </div>
@@ -73,11 +73,11 @@ function TeamTable({ team, side, memberCount }) {
       </div>
 
       <div className={`!px-4 !py-2 flex items-center justify-between ${isLeft ? "bg-blue-50" : "bg-orange-50"}`}>
-        <span className={`text-[9px] font-bold ${isLeft ? "text-blue-500" : "text-orange-500"}`}>
-          <FaUsers className="inline !mr-1 text-[8px]" />
+        <span className={`text-[12px] font-bold ${isLeft ? "text-blue-500" : "text-orange-500"}`}>
+          <FaUsers className="inline !mr-1 text-[16px]" />
           {memberCount} Members
         </span>
-        <span className={`text-[8px] font-extrabold uppercase tracking-wider ${isLeft ? "text-[#0B1E4B]" : "text-[#F05A1A]"}`}>
+        <span className={`text-[14px] font-extrabold uppercase tracking-wider ${isLeft ? "text-[#0B1E4B]" : "text-[#F05A1A]"}`}>
           Full Squad
         </span>
       </div>
@@ -213,10 +213,10 @@ export default function MatchDetailPage() {
 
             <div className="flex flex-wrap items-center !gap-2 !mb-4">
               <span className="inline-flex items-center !gap-1.5 !px-3 !py-1.5 rounded-full bg-white border border-slate-100 shadow-sm text-[10px] font-bold text-slate-600">
-                <FaCalendarAlt className="text-[#F05A1A] text-[9px]" /> {event.date}
+                <FaCalendarAlt className="text-[#F05A1A] text-[14px]" /> {event.date}
               </span>
               <span className="inline-flex items-center !gap-1.5 !px-3 !py-1.5 rounded-full bg-white border border-slate-100 shadow-sm text-[10px] font-bold text-slate-600">
-                <FaMapMarkerAlt className="text-[#F05A1A] text-[9px]" /> {event.venue}
+                <FaMapMarkerAlt className="text-[#F05A1A] text-[14px]" /> {event.venue}
               </span>
             </div>
 
@@ -234,7 +234,7 @@ export default function MatchDetailPage() {
                 <h2 className="!m-0 text-[#0B1E4B] font-black text-[16px] sm:text-[18px] leading-tight">
                   Full Squad Lineup
                 </h2>
-                <p className="!m-0 text-slate-400 text-[10px] font-semibold">
+                <p className="!m-0 text-slate-400 text-[12px] font-semibold">
                   {counts.total} total players · Captain highlighted with 👑
                 </p>
               </div>
@@ -246,7 +246,7 @@ export default function MatchDetailPage() {
               <div className="hidden md:flex flex-col items-center justify-center flex-shrink-0 !gap-2">
                 <div className="w-1 flex-1 bg-gradient-to-b from-transparent via-slate-200 to-transparent rounded-full" />
                 <div className="w-10 h-10 rounded-full bg-white border-2 border-slate-200 shadow-md flex items-center justify-center">
-                  <span className="text-[9px] font-black text-[#F05A1A]" style={{ fontFamily: "'Bebas Neue', cursive" }}>VS</span>
+                  <span className="sm:text-[16px] text-[12px] font-black text-[#F05A1A]" style={{ fontFamily: "'Bebas Neue', cursive" }}>VS</span>
                 </div>
                 <div className="w-1 flex-1 bg-gradient-to-b from-transparent via-slate-200 to-transparent rounded-full" />
               </div>

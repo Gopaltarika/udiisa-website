@@ -175,11 +175,11 @@ export default function BlogDetail () {
               <article>
 
                 {/* ── HERO IMAGE ── */}
-                <div className="relative w-full h-[300px] sm:h-[380px] rounded-[24px] overflow-hidden !mb-[28px] bg-slate-200">
+                <div className="relative w-full h-[300px] sm:h-[401px] rounded-[24px] overflow-hidden !mb-[28px] bg-slate-200">
                   <img
                     src={blog.image}
                     alt={blog.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-fill"
                     fetchPriority="high"
                     decoding="async"
                     onError={e => {

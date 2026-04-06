@@ -31,12 +31,12 @@ export default function BlogCard ({ blog }) {
       "
     >
       {/* ── Thumbnail ── */}
-      <div className="w-[110px] h-[90px] sm:w-[130px] sm:h-[100px] rounded-[12px] overflow-hidden flex-shrink-0 bg-slate-100">
+      <div className="w-[110px] h-[90px] sm:w-[180px] sm:h-[120px] rounded-[12px] overflow-hidden flex-shrink-0 bg-slate-100">
         <img
           src={blog.image}
           alt={blog.title}
           loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-[1.08] transition-transform duration-500"
+          className="w-full h-full object-fill group-hover:scale-[1.08] transition-transform duration-500"
           decoding="async"
           onError={e => {
             e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category)}&background=0B1E4B&color=fff&size=300`

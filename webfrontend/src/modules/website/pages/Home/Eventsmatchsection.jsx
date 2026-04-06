@@ -25,7 +25,7 @@ function MatchCard({ event, onView }) {
         <div className="relative w-1/2 overflow-hidden">
           <img
             src={teamA.img} alt={teamA.name} loading="lazy" draggable={false}
-            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+            className="absolute inset-0 w-full object-top h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={e => { e.currentTarget.src = fbA; }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-black/20" />
@@ -35,7 +35,7 @@ function MatchCard({ event, onView }) {
         <div className="relative w-1/2 overflow-hidden">
           <img
             src={teamB.img} alt={teamB.name} loading="lazy" draggable={false}
-            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+            className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
             onError={e => { e.currentTarget.src = fbB; }}
           />
           <div className="absolute inset-0 bg-gradient-to-l from-black/45 via-black/10 to-black/20" />

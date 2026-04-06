@@ -162,8 +162,11 @@ const MEMBERSHIP_FEE = 1000;
 const INDIVIDUAL_FEE = 1000;
 const CORPORATE_FEE = 5000;
 
-const formatAmount = (amountNum, isCorporate = false) => {
-  const membershipFee = isCorporate ? CORPORATE_FEE : INDIVIDUAL_FEE;
+const PREMIUM_SUBTYPES = ['Silver', 'Gold', 'Diamond'];
+
+const formatAmount = (amountNum, isCorporate = false, subType = '') => {
+  const isPremium = PREMIUM_SUBTYPES.includes(subType);
+  const membershipFee = isCorporate ? CORPORATE_FEE : isPremium ? 5000 : INDIVIDUAL_FEE;
   const donation = amountNum - membershipFee;
   return {
     display: `₹${membershipFee.toLocaleString('en-IN')} # ₹${donation.toLocaleString('en-IN')} (Recommended Donation)`,
@@ -699,7 +702,8 @@ function TabContent({ data, onFillOnline }) {
           color: '#0B1E4B'
         }}
       >
-       {formatAmount(row.amountNum, data.id === 'corporate').display}
+      {formatAmount(row.amountNum, data.id === 'corporate', row.subType).display}
+
       </span>
 
     </td>

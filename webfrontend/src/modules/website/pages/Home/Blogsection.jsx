@@ -254,13 +254,13 @@ const BlogSection = () => {
                     onClick={() => navigate(`/blogs/${blog.slug || blog.id}`)}
                   >
                     {/* Image */}
-                    <div style={{ position: 'relative', overflow: 'hidden', height: 'clamp(140px,18vw,175px)' }}>
+                    <div style={{ position: 'relative', overflow: 'hidden', height: 'clamp(140px,18vw,210px)' }}>
                       <img
                         src={blog.image}
                         alt={blog.title}
                         loading="lazy"
                         draggable={false}
-                        className="blog-img !w-full !h-full !object-cover"
+                        className="blog-img !w-full !h-full !object-fill"
                         style={{ userSelect: 'none', WebkitUserDrag: 'none' }}
                         onError={(e) => {
                           e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category || 'Blog')}&background=0B1E4B&color=fff&size=600`
