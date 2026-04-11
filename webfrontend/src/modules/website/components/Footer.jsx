@@ -25,11 +25,11 @@ const contactInfo = [
 ]
 
 const socials = [
-  { icon: <FaFacebookF />,  href: '#' },
-  { icon: <FaTwitter />,    href: '#' },
-  { icon: <FaInstagram />,  href: 'https://www.instagram.com/udisports.in/' },
-  { icon: <FaYoutube />,    href: '#' },
-  { icon: <FaLinkedinIn />, href: '#' },
+  { icon: <FaFacebookF />,  href: 'https://www.facebook.com/share/14ZtTFp2Aii/?mibextid=wwXIfr' },
+  // { icon: <FaTwitter />,    href: '#' },
+  { icon: <FaInstagram />,  href: 'https://www.instagram.com/udiisa_ngo?igsh=MTVhb3J3aWd0cjZxMw%3D%3D&utm_source=qr' },
+  { icon: <FaYoutube />,    href: 'https://www.youtube.com/live/bSBboTiUkyQ' },
+  // { icon: <FaLinkedinIn />, href: '#' },
 ]
 
 const Footer = () => {
