@@ -129,7 +129,7 @@ export default function Navbar() {
           {/* LOGO */}
           <a href="/" className="no-underline" onClick={closeAll}>
             <img
-              src="/Logo.svg"
+              src="/Logo.webp"
               alt="UDIISA logo"
               className="max-h-12 w-auto"
               fetchPriority="high"

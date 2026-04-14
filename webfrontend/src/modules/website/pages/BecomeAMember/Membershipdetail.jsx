@@ -25,7 +25,7 @@ const MEMBERSHIP_DATA = {
     accentColor: '#0B1E4B',
     accentLight: '#EEF2FF',
     tagline: 'For sports enthusiasts, officials & volunteers',
-    description: 'Individual Players Membership is open to any person who has an interest in the promotion and development of sports in India. It provides direct access to UDIISA events, training programmes, and community networks.',
+    description: 'Individual Players Membership is open to any person who has an interest in the promotion and development of sports in India. It provides direct access to UDIISA events, training programmes, and community networks. This membership is valid for 1 year.',
     eligibility: [
       'Indian citizen aged 18 years or above',
       'Genuine interest in sports development or administration',
@@ -68,7 +68,7 @@ const MEMBERSHIP_DATA = {
     accentColor: '#F05A1A',
     accentLight: '#FFF3EC',
     tagline: 'For active Players, patrons & sports leaders',
-    description: 'Individual Patron Membership is designed for active Players, ex-sportspersons, and dedicated patrons of sports. Each higher tier automatically includes all privileges of the preceding lower tiers.',
+    description: 'Individual Patron Membership is designed for active Players, ex-sportspersons, and dedicated patrons of sports. Each higher tier automatically includes all privileges of the preceding lower tiers. This membership is valid for 1 year.',
     eligibility: [
       'Active or retired sportsperson / sports administrator',
       'Genuine commitment to sports development in India',
@@ -116,7 +116,7 @@ const MEMBERSHIP_DATA = {
     accentColor: '#1a6b3a',
     accentLight: '#F0FAF4',
     tagline: 'For companies, associations & sports organisations',
-    description: 'Lifetime Corporate Membership is available to companies and organisations whose objectives align with sports promotion. Each higher tier includes all privileges of preceding tiers. Valid till 31 March 2027 on first-cum-first-served basis.',
+    description: 'Lifetime Corporate Membership is available to companies and organisations whose objectives align with sports promotion. Each higher tier includes all privileges of preceding tiers. Valid till 31 March 2027 on first-cum-first-served basis. This membership is valid for 1 year.',
     eligibility: [
       'Registered company, LLP, partnership firm, trust, NGO, or association in India',
       'Aims & objectives aligned with sports development or player welfare',

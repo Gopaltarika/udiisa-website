@@ -184,14 +184,7 @@ function TabButton({ tab, isActive, onClick }) {
       )}
       <span style={{ fontSize: 14 }}>{tab.emoji}</span>
       <span style={{ position: "relative", zIndex: 1 }}>{tab.label}</span>
-      <span style={{
-        background: isActive ? "rgba(255,255,255,0.22)" : "#f1f5f9",
-        color: isActive ? "#fff" : "#94a3b8",
-        fontSize: 9, fontWeight: 800,
-        padding: "2px 7px", borderRadius: 999,
-      }}>
-        {tab.count}
-      </span>
+     
     </button>
   );
 }

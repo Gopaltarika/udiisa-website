@@ -89,10 +89,12 @@ const Home = () => {
       <Leadership />
       <AdvisoryBoard />
       <WhatWeDo />
-
+ <DeferredSection minHeight={520}>
+        <BlogSection />
+      </DeferredSection>
       <DeferredSection minHeight={460}>
         <ManagingCommittee />
-      </DeferredSection>
+      </DeferredSection>  
       <DeferredSection minHeight={500}>
         <SpecialMembersSection />
       </DeferredSection>
@@ -111,9 +113,7 @@ const Home = () => {
       <DeferredSection minHeight={460}>
         <EventsMatchSection />
       </DeferredSection>
-      <DeferredSection minHeight={520}>
-        <BlogSection />
-      </DeferredSection>
+     
       <DeferredSection minHeight={520}>
         <ContactUs />
       </DeferredSection>

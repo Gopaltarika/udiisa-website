@@ -28,7 +28,7 @@ const socials = [
   { icon: <FaFacebookF />,  href: 'https://www.facebook.com/share/14ZtTFp2Aii/?mibextid=wwXIfr' },
   // { icon: <FaTwitter />,    href: '#' },
   { icon: <FaInstagram />,  href: 'https://www.instagram.com/udiisa_ngo?igsh=MTVhb3J3aWd0cjZxMw%3D%3D&utm_source=qr' },
-  { icon: <FaYoutube />,    href: 'https://www.youtube.com/live/bSBboTiUkyQ' },
+  { icon: <FaYoutube />,    href: 'https://www.youtube.com/@udisportsin' },
   // { icon: <FaLinkedinIn />, href: '#' },
 ]
 
@@ -89,7 +89,7 @@ const Footer = () => {
             <div className="sm:col-span-2 lg:!col-span-1">
               <a href="/" className="flex items-center gap-3 no-underline" style={{ textDecoration: 'none' }}>
                 <img
-                  src="/white-logo.svg"
+                  src="/white-logo.webp"
                   alt="UDIISA logo"
                   className="w-full max-w-[180px] sm:max-w-[200px]"
                   decoding="async"

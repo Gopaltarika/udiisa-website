@@ -449,14 +449,7 @@ const SpecialTabBtn = ({ tab, isActive, onClick, count }) => (
     )}
     <span className="relative z-10 text-base sm:text-lg">{tab.emoji}</span>
     <span className="relative z-10 font-extrabold">{tab.label}</span>
-    <span className="relative z-10 inline-flex items-center justify-center min-w-[20px] h-5 rounded-full px-1.5 text-[9px] sm:text-[10px] font-extrabold border"
-      style={{
-        background: isActive ? `${tab.activeBorder}22` : '#f1f5f9',
-        borderColor: isActive ? `${tab.activeBorder}55` : '#e2e8f0',
-        color: isActive ? tab.activeColor : '#94a3b8',
-      }}>
-      {count}
-    </span>
+   
   </button>
 )
 
@@ -665,9 +658,7 @@ const MembersData = () => {
                   {currentTheme.desc}
                 </div>
               </div>
-              <div className="text-xs sm:text-sm font-extrabold shrink-0" style={{ color: currentTheme.accentColor }}>
-                {(specialDataSource[specialSub] || []).length} Members
-              </div>
+             
             </div>
 
             {/* Cards grid */}
