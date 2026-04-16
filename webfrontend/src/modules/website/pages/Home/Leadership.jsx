@@ -85,7 +85,7 @@ const Leadership = () => {
                   fontSize: "clamp(28px, 5vw, 52px)",
                 }}
               >
-                Mr. Jullian Jalan
+                Mr. Sunil Jalan
               </h2>
 
               {/* Orange underline */}

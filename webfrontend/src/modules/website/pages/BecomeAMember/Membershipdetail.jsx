@@ -13,6 +13,60 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { sendOtp, verifyOtp, submitMemberForm } from '../../../../shared/services/publicApi'
 
 /* ════════════════════════════════════════════════════════
+   AMOUNT DISPLAY HELPER
+   Pass the row's amountNum, membershipId, and subType.
+   Returns the string to show in the fee table.
+════════════════════════════════════════════════════════ */
+const getAmountDisplay = (amountNum, membershipId, subType) => {
+  const fmt = (n) => `₹${Number(n).toLocaleString('en-IN')}`
+
+  /* ── Individual Players ── */
+  if (membershipId === 'individual') {
+    // EWS → ₹1,200   General → ₹2,500   (plain, no donation split)
+    return fmt(amountNum)
+  }
+
+  /* ── Individual Patron ── */
+  if (membershipId === 'player') {
+    if (subType === 'EWS') {
+      // ₹5,000  (plain)
+      return fmt(5000)
+    }
+    if (subType === 'Ex Sports') {
+      // ₹5,000 # ₹7,500 (Recommended Donation)
+      return `${fmt(5000)} # ${fmt(7500)} (Recommended Donation)`
+    }
+    if (subType === 'General') {
+      // ₹5,000 # ₹20,000 (Recommended Donation)
+      return `${fmt(5000)} # ${fmt(20000)} (Recommended Donation)`
+    }
+    if (subType === 'Silver') {
+      // ₹5,000 # ₹45,000 (Recommended Donation)
+      return `${fmt(5000)} # ${fmt(45000)} (Recommended Donation)`
+    }
+    if (subType === 'Gold') {
+      // ₹5,000 # ₹70,000 (Recommended Donation)
+      return `${fmt(5000)} # ${fmt(70000)} (Recommended Donation)`
+    }
+    if (subType === 'Diamond') {
+      // ₹5,000 # ₹95,000 (Recommended Donation)
+      return `${fmt(5000)} # ${fmt(95000)} (Recommended Donation)`
+    }
+    return fmt(amountNum)
+  }
+
+  /* ── Lifetime Corporate ── */
+  if (membershipId === 'corporate') {
+    // membership fee = ₹5,000; rest = recommended donation
+    const membershipFee = 5000
+    const donation = amountNum - membershipFee
+    return `${fmt(membershipFee)} # ${fmt(donation)} (Recommended Donation)`
+  }
+
+  return fmt(amountNum)
+}
+
+/* ════════════════════════════════════════════════════════
    MEMBERSHIP DATA
 ════════════════════════════════════════════════════════ */
 
@@ -158,22 +212,7 @@ const MEMBERSHIP_DATA = {
     membershipOpts: ['— Select Turnover Slab —', 'Up to ₹1 Cr (₹2,50,000)', '₹1 Cr – ₹5 Cr (₹5,00,000)', '₹5 Cr – ₹25 Cr (₹10,00,000)', '₹25 Cr – ₹50 Cr (₹20,00,000)', '₹50 Cr – ₹100 Cr (₹35,00,000)', 'Above ₹100 Cr (₹50,00,000)'],
   },
 }
-const MEMBERSHIP_FEE = 1000;
-const INDIVIDUAL_FEE = 1000;
-const CORPORATE_FEE = 5000;
 
-const PREMIUM_SUBTYPES = ['Silver', 'Gold', 'Diamond'];
-
-const formatAmount = (amountNum, isCorporate = false, subType = '') => {
-  const isPremium = PREMIUM_SUBTYPES.includes(subType);
-  const membershipFee = isCorporate ? CORPORATE_FEE : isPremium ? 5000 : INDIVIDUAL_FEE;
-  const donation = amountNum - membershipFee;
-  return {
-    display: `₹${membershipFee.toLocaleString('en-IN')} # ₹${donation.toLocaleString('en-IN')} (Recommended Donation)`,
-    donation,
-    membershipFee,
-  };
-};
 const TABS = [
   { id: 'individual', label: 'Individual Players', shortLabel: 'Individual', Icon: FaUser },
   { id: 'player',     label: 'Individual Patron',  shortLabel: 'Patron',     Icon: FaRunning },
@@ -198,7 +237,7 @@ const getMembershipAmountLabel = (value = '') => {
 }
 
 /* ════════════════════════════════════════════════════════
-   OTP MODAL  (unchanged logic, only minor padding tweak)
+   OTP MODAL
 ════════════════════════════════════════════════════════ */
 function OTPModal({ email, onVerified, onClose }) {
   const LEN = 6, SEC = 60
@@ -626,8 +665,8 @@ function TabContent({ data, onFillOnline }) {
         style={{ fontSize: 'clamp(12px, 1.5vw, 14px)', maxWidth: 820 }}>
         {data.description}
       </p>
-      
-{/* Benefits Grid */}
+
+      {/* Benefits Grid */}
       <div className="bg-white rounded-[16px] sm:rounded-[20px] border border-slate-100 shadow-[0_4px_20px_rgba(11,30,75,.06)]"
         style={{ padding: 'clamp(14px, 2vw, 24px)' }}>
         <h4 className="flex items-center !m-0 font-extrabold text-[#0B1E4B] uppercase tracking-wider"
@@ -652,6 +691,7 @@ function TabContent({ data, onFillOnline }) {
           ))}
         </div>
       </div>
+
       {/* Fee Table */}
       <div className="overflow-x-auto rounded-[14px] sm:rounded-[18px] border border-slate-200 shadow-[0_2px_12px_rgba(11,30,75,.05)]">
         <table className="w-full text-left" style={{ minWidth: 420 }}>
@@ -670,74 +710,38 @@ function TabContent({ data, onFillOnline }) {
           </thead>
           <tbody>
             {data.feeTable.map((row, i) => (
-  <tr
-    key={i}
-    style={{
-      background: i % 2 === 0 ? '#fff' : '#f8fafc',
-      borderBottom: i < data.feeTable.length - 1 ? '1px solid #f1f5f9' : 'none'
-    }}
-  >
-    <td
-      style={{
-        padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)',
-        fontSize: 'clamp(11px,1.2vw,13px)',
-        color: '#1e293b',
-        fontWeight: 600
-      }}
-    >
-      {row.subType}
-    </td>
-
-    <td
-      className="text-left"
-      style={{
-        padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)',
-        whiteSpace: 'nowrap'
-      }}
-    >
-      <span
-        style={{
-          fontSize: 'clamp(11px,1.2vw,13px)',
-          fontWeight: 700,
-          color: '#0B1E4B'
-        }}
-      >
-      {formatAmount(row.amountNum, data.id === 'corporate', row.subType).display}
-
-      </span>
-
-    </td>
-
-    <td
-      className="hidden md:table-cell"
-      style={{
-        padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)'
-      }}
-    >
-      <div className="flex flex-wrap !gap-1">
-        {row.benefits.map((b, j) => (
-          <span
-            key={j}
-            style={{
-              fontSize: 'clamp(10px,1.1vw,11.5px)',
-              color: '#64748b'
-            }}
-          >
-            {b}{j < row.benefits.length - 1 ? ' •' : ''}
-          </span>
-        ))}
-      </div>
-    </td>
-  </tr>
-))}
+              <tr
+                key={i}
+                style={{
+                  background: i % 2 === 0 ? '#fff' : '#f8fafc',
+                  borderBottom: i < data.feeTable.length - 1 ? '1px solid #f1f5f9' : 'none'
+                }}
+              >
+                <td style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(11px,1.2vw,13px)', color: '#1e293b', fontWeight: 600 }}>
+                  {row.subType}
+                </td>
+                <td className="text-left" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: 'clamp(11px,1.2vw,13px)', fontWeight: 700, color: '#0B1E4B' }}>
+                    {getAmountDisplay(row.amountNum, data.id, row.subType)}
+                  </span>
+                </td>
+                <td className="hidden md:table-cell" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)' }}>
+                  <div className="flex flex-wrap !gap-1">
+                    {row.benefits.map((b, j) => (
+                      <span key={j} style={{ fontSize: 'clamp(10px,1.1vw,11.5px)', color: '#64748b' }}>
+                        {b}{j < row.benefits.length - 1 ? ' •' : ''}
+                      </span>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
-      
-   {/* Eligibility + Documents */}
+      {/* Eligibility + Documents */}
       <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'clamp(10px, 2vw, 20px)' }}>
-
         <div className="bg-white rounded-[16px] sm:rounded-[20px] border border-slate-100 shadow-[0_4px_20px_rgba(11,30,75,.06)]"
           style={{ padding: 'clamp(14px, 2vw, 24px)' }}>
           <h4 className="flex items-center !m-0 font-extrabold text-[#0B1E4B] uppercase tracking-wider"
@@ -784,6 +788,7 @@ function TabContent({ data, onFillOnline }) {
           </ul>
         </div>
       </div>
+
       {/* CTA */}
       <div className="flex flex-wrap items-center justify-between rounded-[16px] sm:rounded-[20px] border-2 border-dashed"
         style={{ gap: 'clamp(10px,2vw,20px)', padding: 'clamp(12px,2vw,20px) clamp(14px,2vw,24px)', borderColor: `${ac}35`, background: data.accentLight }}>
@@ -832,7 +837,6 @@ export default function MembershipDetail() {
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
         .fade-up{animation:fadeUp .35s ease both}
 
-        /* ── TAB BAR: always flex row, scrollable, no wrap ── */
         .mem-tab-bar {
           display: flex;
           flex-direction: row;
