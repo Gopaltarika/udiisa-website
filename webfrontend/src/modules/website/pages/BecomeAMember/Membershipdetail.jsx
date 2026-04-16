@@ -33,24 +33,24 @@ const getAmountDisplay = (amountNum, membershipId, subType) => {
       return fmt(5000)
     }
     if (subType === 'Ex Sports') {
-      // ₹5,000 # ₹7,500 (Recommended Donation)
-      return `${fmt(5000)} # ${fmt(7500)} (Recommended Donation)`
+      // ₹5,000 # ₹7,500 
+      return `${fmt(5000)} # ${fmt(7500)} `
     }
     if (subType === 'General') {
-      // ₹5,000 # ₹20,000 (Recommended Donation)
-      return `${fmt(5000)} # ${fmt(20000)} (Recommended Donation)`
+      // ₹5,000 # ₹20,000 
+      return `${fmt(5000)} # ${fmt(20000)} `
     }
     if (subType === 'Silver') {
-      // ₹5,000 # ₹45,000 (Recommended Donation)
-      return `${fmt(5000)} # ${fmt(45000)} (Recommended Donation)`
+      // ₹5,000 # ₹45,000 
+      return `${fmt(5000)} # ${fmt(45000)} `
     }
     if (subType === 'Gold') {
-      // ₹5,000 # ₹70,000 (Recommended Donation)
-      return `${fmt(5000)} # ${fmt(70000)} (Recommended Donation)`
+      // ₹5,000 # ₹70,000 
+      return `${fmt(5000)} # ${fmt(70000)} `
     }
     if (subType === 'Diamond') {
-      // ₹5,000 # ₹95,000 (Recommended Donation)
-      return `${fmt(5000)} # ${fmt(95000)} (Recommended Donation)`
+      // ₹5,000 # ₹95,000 
+      return `${fmt(5000)} # ${fmt(95000)} `
     }
     return fmt(amountNum)
   }
@@ -60,7 +60,7 @@ const getAmountDisplay = (amountNum, membershipId, subType) => {
     // membership fee = ₹5,000; rest = recommended donation
     const membershipFee = 5000
     const donation = amountNum - membershipFee
-    return `${fmt(membershipFee)} # ${fmt(donation)} (Recommended Donation)`
+    return `${fmt(membershipFee)} # ${fmt(donation)} `
   }
 
   return fmt(amountNum)
@@ -139,7 +139,7 @@ const MEMBERSHIP_DATA = {
       { subType: 'EWS',       amount: '₹5,000',    amountNum: 5000,   benefits: ['Membership Certificate', 'ID Card'],                              badgeCls: 'bg-emerald-600 text-white', rowBg: '' },
       { subType: 'Ex Sports', amount: '₹12,500',   amountNum: 12500,  benefits: ['Membership Certificate', 'ID Card'],                              badgeCls: 'bg-slate-600 text-white',   rowBg: 'bg-slate-50/60' },
       { subType: 'General',   amount: '₹25,000',   amountNum: 25000,  benefits: ['Certificate', 'ID Card', 'Speaker Opportunity'],                  badgeCls: 'bg-[#F05A1A] text-white',   rowBg: 'bg-orange-50/40' },
-      { subType: 'Silver',    amount: '₹50,000',   amountNum: 50000,  benefits: ['Certificate', 'ID', 'Speaker Opp.', 'Advisory Panel Access'],     badgeCls: 'bg-slate-400 text-white',   rowBg: 'bg-slate-50' },
+      { subType: 'Silver',    amount: '₹50,000',   amountNum: 50000,  benefits: ['Certificate', 'ID', 'Speaker Opp.', 'Advisory Panel Access', 'Website Listing'],     badgeCls: 'bg-slate-400 text-white',   rowBg: 'bg-slate-50' },
       { subType: 'Gold',      amount: '₹75,000',   amountNum: 75000,  benefits: ['All Silver benefits', 'Governing Council Access'],                badgeCls: 'bg-amber-500 text-white',   rowBg: 'bg-amber-50/40' },
       { subType: 'Diamond',   amount: '₹1,00,000', amountNum: 100000, benefits: ['All Gold benefits', 'Founder Member Category'],                   badgeCls: 'bg-indigo-600 text-white',  rowBg: 'bg-indigo-50/40' },
     ],
@@ -701,7 +701,7 @@ function TabContent({ data, onFillOnline }) {
                 {data.id === 'corporate' ? 'Company Turnover Range' : 'Membership Sub-Type'}
               </th>
               <th className="text-left" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(9px,1vw,11px)', fontWeight: 800, color: 'rgba(255,255,255,.75)', letterSpacing: '1.5px', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-                Amount
+                Amount # Donation
               </th>
               <th className="hidden md:table-cell" style={{ padding: 'clamp(8px,1.2vw,12px) clamp(10px,1.5vw,20px)', fontSize: 'clamp(9px,1vw,11px)', fontWeight: 800, color: 'rgba(255,255,255,.75)', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
                 Key Benefits
