@@ -35,6 +35,13 @@ const baseURL = normalizeApiBaseUrl(import.meta.env.VITE_API_URL)
 const CACHE_TTL_MS = 5 * 60 * 1000
 const cacheStore = new Map()
 const inflightStore = new Map()
+const COMMITTEE_ROLE_PRIORITY = [
+  'chairman',
+  'vice chairman',
+  'general secretary',
+  'joint secretary',
+  'treasurer',
+]
 
 const publicApi = axios.create({
   baseURL,
@@ -57,6 +64,28 @@ const fromCache = (key) => {
 const setCache = (key, value, ttlMs = CACHE_TTL_MS) => {
   cacheStore.set(key, { value, expiresAt: now() + ttlMs })
 }
+
+const normalizeRole = (role) => String(role || '').trim().toLowerCase().replace(/\s+/g, ' ')
+
+const getRoleOrder = (member = {}) => {
+  const role = normalizeRole(member.role)
+  const idx = COMMITTEE_ROLE_PRIORITY.indexOf(role)
+  return idx === -1 ? Number.MAX_SAFE_INTEGER : idx
+}
+
+const sortCommitteeMembers = (members = []) =>
+  [...members].sort((a, b) => {
+    const orderDiff = getRoleOrder(a) - getRoleOrder(b)
+    if (orderDiff !== 0) return orderDiff
+
+    return String(a?.name || '').localeCompare(String(b?.name || ''))
+  })
+
+const normalizeCommitteeList = (list) =>
+  (Array.isArray(list) ? list : []).map((committee) => ({
+    ...committee,
+    members: sortCommitteeMembers(Array.isArray(committee?.members) ? committee.members : []),
+  }))
 
 const fetchWithCache = async (key, requestFn, { force = false, ttlMs = CACHE_TTL_MS } = {}) => {
   if (!force) {
@@ -93,7 +122,10 @@ export const getPublicCommittee = () =>
 export const getPublicCommittees = (options = {}) =>
   fetchWithCache(
     'public:committees',
-    () => publicApi.get('/public/committees').then((res) => res.data),
+    () =>
+      publicApi
+        .get('/public/committees')
+        .then((res) => normalizeCommitteeList(res.data)),
     options
   )
 

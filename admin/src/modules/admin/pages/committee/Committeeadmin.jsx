@@ -3,6 +3,34 @@ import { Ic, Spin, Toast, ConfirmDialog, Btn } from "./Committeeutils"
 import { CommitteeModal, MembersPanel, CommitteeItem } from "./CommitteeComponents"
 import memberService from "../../services/memberService"
 
+const COMMITTEE_ROLE_PRIORITY = [
+  "chairman",
+  "vice chairman",
+  "general secretary",
+  "joint secretary",
+  "treasurer",
+]
+
+const normalizeRole = (role) => String(role || "").trim().toLowerCase().replace(/\s+/g, " ")
+
+const getRoleOrder = (member = {}) => {
+  const idx = COMMITTEE_ROLE_PRIORITY.indexOf(normalizeRole(member.role))
+  return idx === -1 ? Number.MAX_SAFE_INTEGER : idx
+}
+
+const sortMembersByRolePriority = (members = []) =>
+  [...members].sort((a, b) => {
+    const orderDiff = getRoleOrder(a) - getRoleOrder(b)
+    if (orderDiff !== 0) return orderDiff
+    return String(a?.name || "").localeCompare(String(b?.name || ""))
+  })
+
+const normalizeCommittees = (committees = []) =>
+  (Array.isArray(committees) ? committees : []).map((committee) => ({
+    ...committee,
+    members: sortMembersByRolePriority(Array.isArray(committee?.members) ? committee.members : []),
+  }))
+
 export default function CommitteeAdmin() {
   const [data,       setData]       = useState([])
   const [loading,    setLoading]    = useState(true)
@@ -26,8 +54,9 @@ export default function CommitteeAdmin() {
   const refresh = useCallback(async () => {
     try {
       const d = await API.getAll()
-      setData(d)
-      setSelected(prev => prev ? (d.find(c => c._id===prev._id) || d[0] || null) : (d[0] || null))
+      const normalized = normalizeCommittees(d)
+      setData(normalized)
+      setSelected(prev => prev ? (normalized.find(c => c._id===prev._id) || normalized[0] || null) : (normalized[0] || null))
     } catch { showToast("Failed to load", "error") }
   }, [showToast])
 
