@@ -5,6 +5,7 @@ import memberService from "../../services/memberService"
 
 const COMMITTEE_ROLE_PRIORITY = [
   "chairman",
+  "co-chairman",
   "vice chairman",
   "general secretary",
   "joint secretary",

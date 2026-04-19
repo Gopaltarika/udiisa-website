@@ -37,6 +37,7 @@ const cacheStore = new Map()
 const inflightStore = new Map()
 const COMMITTEE_ROLE_PRIORITY = [
   'chairman',
+  'co-chairman',
   'vice chairman',
   'general secretary',
   'joint secretary',
