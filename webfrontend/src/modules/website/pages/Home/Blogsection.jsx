@@ -231,8 +231,8 @@ const BlogSection = () => {
               }
               loop={!loading && blogs.length > 1}
               breakpoints={{
-                0:    { slidesPerView: 1,   spaceBetween: 10 },
-                480:  { slidesPerView: 1.2, spaceBetween: 12 },
+                0:    { slidesPerView: 1.2,   spaceBetween: 10 },
+                480:  { slidesPerView: 1.5, spaceBetween: 12 },
                 640:  { slidesPerView: 2,   spaceBetween: 14 },
                 900:  { slidesPerView: 2,   spaceBetween: 16 },
                 1024: { slidesPerView: 3,   spaceBetween: 18 },
