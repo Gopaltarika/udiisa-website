@@ -141,12 +141,20 @@ const ManagingCommittee = () => {
           ? managingCommittee.members.map((m, index) => {
               const role = m.role || 'Member'
               const roleLower = role.toLowerCase()
-              const isOrange = roleLower.includes('chairman') || roleLower.includes('president') || index < 2
+              // Top 3 get orange badge (chairman / president / first 3 by index)
+              const isOrange =
+                roleLower.includes('chairman') ||
+                roleLower.includes('president') ||
+                index < 3
               return {
                 id: m._id || `${m.name}-${index}`,
                 name: m.name || 'Member',
                 role,
-                img: m.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name || 'Member')}&background=F05A1A&color=fff&size=300`,
+                img:
+                  m.image ||
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    m.name || 'Member'
+                  )}&background=F05A1A&color=fff&size=300`,
                 isOrange,
               }
             })
@@ -164,9 +172,10 @@ const ManagingCommittee = () => {
     return () => { active = false }
   }, [])
 
-  const visibleMembers  = useMemo(() => members.slice(0, 5), [members])
-  const topTwo          = visibleMembers.slice(0, 2)
-  const bottomThree     = visibleMembers.slice(2, 5)
+  // ── Show 6 members: top 3 + bottom 3 ──
+  const visibleMembers = useMemo(() => members.slice(0, 6), [members])
+  const topThree       = visibleMembers.slice(0, 3)
+  const bottomThree    = visibleMembers.slice(3, 6)
 
   /* Connector line between rows */
   const Connector = () => (
@@ -245,14 +254,14 @@ const ManagingCommittee = () => {
         .btn-arrow { transition: transform .25s ease; }
         .view-btn:hover .btn-arrow { transform: translateX(4px); }
 
-        /* ── Layout: Top 2 ── */
+        /* ── Layout: Top 3 ── */
         .mc-top-row {
           display: flex;
           justify-content: center;
-          gap: 20px;
+          gap: 16px;
         }
         .mc-top-row .mc-card-wrap {
-          width: clamp(150px, 22vw, 240px);
+          width: clamp(130px, 20vw, 200px);
         }
 
         /* ── Layout: Bottom 3 ── */
@@ -263,17 +272,17 @@ const ManagingCommittee = () => {
           margin-top: 16px;
         }
         .mc-bottom-row .mc-card-wrap {
-          width: clamp(130px, 20vw, 210px);
+          width: clamp(120px, 18vw, 185px);
         }
 
         /* ── Skeleton rows mirror real layout ── */
         .mc-skel-top {
           display: flex;
           justify-content: center;
-          gap: 20px;
+          gap: 16px;
         }
         .mc-skel-top .mc-skel-wrap {
-          width: clamp(150px, 22vw, 240px);
+          width: clamp(130px, 20vw, 200px);
         }
         .mc-skel-bottom {
           display: flex;
@@ -282,16 +291,16 @@ const ManagingCommittee = () => {
           margin-top: 16px;
         }
         .mc-skel-bottom .mc-skel-wrap {
-          width: clamp(130px, 20vw, 210px);
+          width: clamp(120px, 18vw, 185px);
         }
 
         /* ── Mobile ── */
         @media (max-width: 480px) {
           .mc-top-row,
-          .mc-skel-top { gap: 10px; }
+          .mc-skel-top { gap: 8px; }
 
           .mc-top-row .mc-card-wrap,
-          .mc-skel-top .mc-skel-wrap { width: calc(50% - 5px); }
+          .mc-skel-top .mc-skel-wrap { width: calc(33.33% - 6px); }
 
           .mc-bottom-row,
           .mc-skel-bottom { gap: 8px; flex-wrap: nowrap; }
@@ -303,10 +312,10 @@ const ManagingCommittee = () => {
         /* ── Tablet ── */
         @media (min-width: 481px) and (max-width: 768px) {
           .mc-top-row .mc-card-wrap,
-          .mc-skel-top .mc-skel-wrap { width: clamp(140px, 28vw, 200px); }
+          .mc-skel-top .mc-skel-wrap { width: clamp(120px, 26vw, 180px); }
 
           .mc-bottom-row .mc-card-wrap,
-          .mc-skel-bottom .mc-skel-wrap { width: clamp(110px, 24vw, 170px); }
+          .mc-skel-bottom .mc-skel-wrap { width: clamp(110px, 24vw, 165px); }
         }
       `}</style>
 
@@ -333,9 +342,9 @@ const ManagingCommittee = () => {
           {/* ── Skeleton Loading ── */}
           {loading && (
             <div className="!mb-[28px] sm:!mb-[36px] lg:!mb-[44px]">
-              {/* Top 2 skeletons */}
+              {/* Top 3 skeletons */}
               <div className="mc-skel-top">
-                {[0, 1].map((i) => (
+                {[0, 1, 2].map((i) => (
                   <div key={i} className="mc-skel-wrap">
                     <SkeletonCard size="lg" />
                   </div>
@@ -356,12 +365,13 @@ const ManagingCommittee = () => {
             </div>
           )}
 
-          {/* ── 5-Member Layout ── */}
+          {/* ── 6-Member Layout (3 + 3) ── */}
           {!loading && visibleMembers.length > 0 && (
             <div className="!mb-[28px] sm:!mb-[36px] lg:!mb-[44px]">
-              {/* Top Row */}
+
+              {/* Top Row — 3 large cards */}
               <div className="mc-top-row">
-                {topTwo.map((m) => (
+                {topThree.map((m) => (
                   <MemberCard key={m.id} m={m} size="lg" />
                 ))}
               </div>
@@ -369,7 +379,7 @@ const ManagingCommittee = () => {
               {/* Connector */}
               {bottomThree.length > 0 && <Connector />}
 
-              {/* Bottom Row */}
+              {/* Bottom Row — 3 small cards */}
               {bottomThree.length > 0 && (
                 <div className="mc-bottom-row">
                   {bottomThree.map((m) => (
