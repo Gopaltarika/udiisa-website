@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { HiArrowUp } from "react-icons/hi";
 import { HiMiniMusicalNote } from "react-icons/hi2";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
-
+import { FaWhatsapp } from "react-icons/fa";
 const INJECTED_STYLES = `
   /* ── PRELOADER ── */
   @keyframes ge-bar-bounce {
@@ -576,6 +576,83 @@ function BackToTopButton({ visible }) {
     </button>
   );
 }
+function WhatsAppButton({
+  phoneNumber = "919999999999", // Apna number country code ke sath
+  message = "Hello",
+}) {
+  const handleWhatsAppClick = useCallback(() => {
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    window.open(whatsappURL, "_blank", "noopener,noreferrer");
+  }, [phoneNumber, message]);
+
+  return (
+    <button
+      onClick={handleWhatsAppClick}
+      aria-label="Chat on WhatsApp"
+      className="ge-music-btn ge-fade-in"
+      style={{
+        position: "fixed",
+        bottom: 156, // Music button ke upar
+        right: 28,
+        zIndex: 998,
+        width: 50,
+        height: 50,
+        borderRadius: "50%",
+        background: "linear-gradient(135deg, #25D366 0%, #1EBE5D 100%)",
+        border: "none",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow:
+          "0 6px 24px rgba(37, 211, 102, 0.42), 0 2px 8px rgba(0,0,0,0.15)",
+        color: "#fff",
+        outline: "none",
+      }}
+    >
+      {/* Ripple Effect */}
+      <div
+        className="ge-ripple-ring"
+        style={{
+          border: "2px solid rgba(37, 211, 102, 0.5)",
+        }}
+      />
+      <div
+        className="ge-ripple-ring ge-ripple-ring-2"
+        style={{
+          border: "2px solid rgba(37, 211, 102, 0.35)",
+        }}
+      />
+
+      <FaWhatsapp style={{ fontSize: 24 }} />
+
+      {/* Tooltip */}
+      <div
+        style={{
+          position: "absolute",
+          right: "calc(100% + 10px)",
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: "rgba(37, 211, 102, 0.95)",
+          color: "#fff",
+          fontSize: 11,
+          fontWeight: 700,
+          padding: "5px 10px",
+          borderRadius: 8,
+          whiteSpace: "nowrap",
+          opacity: 0,
+          pointerEvents: "none",
+          transition: "opacity 0.2s",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+        }}
+        className="ge-tooltip"
+      >
+        Chat on WhatsApp
+      </div>
+    </button>
+  );
+}
 
 /* ══════════════════════════════════════════════
    SUB-COMPONENT: Music Toggle Button
@@ -760,7 +837,10 @@ export default function GlobalEnhancer({
 
       {/* ══════════ 1. PRELOADER ══════════ */}
       {!preloaderDone && <Preloader onDone={handlePreloaderDone} />}
-
+<WhatsAppButton
+  phoneNumber="918307598050" // Yaha apna real WhatsApp number
+  message="Hello Sir, I want to know more details."
+/>
       {/* ══════════ 2. MUSIC TOGGLE ══════════ */}
       <MusicToggleButton
         isPlaying={isPlaying}
