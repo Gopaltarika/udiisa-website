@@ -17,6 +17,16 @@ const EMPTY = { name: '', companyName: '', membershipCategory: 'Silver', photo: 
 
 // ── Category Config ──────────────────────────────────────────────────────────
 const CATEGORIES = [
+ 
+  {
+    value: 'Body Corporate',
+    label: '🏢 Body Corporate',
+    bg: '#ecfdf5',
+    color: '#065f46',
+    border: '#a7f3d0',
+    dot: '#10b981',
+  },
+ 
   {
     value: 'Diamond',
     label: '💎 Diamond',
@@ -57,14 +67,7 @@ const CATEGORIES = [
     border: '#f9a8d4',
     dot: '#ec4899',
   },
-  {
-    value: 'Body Corporate',
-    label: '🏢 Body Corporate',
-    bg: '#ecfdf5',
-    color: '#065f46',
-    border: '#a7f3d0',
-    dot: '#10b981',
-  },
+ 
 ]
 
 const getCat = (val) => CATEGORIES.find(c => c.value === val) || CATEGORIES[2]
