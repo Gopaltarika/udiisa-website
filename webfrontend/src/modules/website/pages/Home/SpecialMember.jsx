@@ -578,7 +578,7 @@ function SwiperSliderSection({ members, theme, activeTab }) {
 // ─── Main Export ───────────────────────────────────────────────────────────────
 export default function SpecialMembersSection() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("diamond");
+  const [activeTab, setActiveTab] = useState("bodyCorporate");
   const [memberGroups, setMemberGroups] = useState(EMPTY_GROUPS);
   const [loading, setLoading] = useState(true);
 
@@ -598,11 +598,12 @@ export default function SpecialMembersSection() {
             item.membershipCategory || item.membershipType || ""
           ).toLowerCase();
           let key = "silver";
-          if      (categoryRaw.includes("diamond"))                                       key = "diamond";
+          if (categoryRaw.includes("corporate") || categoryRaw.includes("body"))    key = "bodyCorporate";
+          else if      (categoryRaw.includes("diamond"))                                       key = "diamond";
           else if (categoryRaw.includes("gold"))                                          key = "gold";
           else if (categoryRaw.includes("dignitar"))                                      key = "dignitaries";
           else if (categoryRaw.includes("celebrit"))                                      key = "celebrity";
-          else if (categoryRaw.includes("corporate") || categoryRaw.includes("body"))    key = "bodyCorporate";
+          
 
           groups[key].push({
             id:      item.id || `${key}-${Math.random()}`,
