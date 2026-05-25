@@ -11,16 +11,36 @@ import "swiper/css/pagination";
 import { getPublicSpecialMembers } from "../../../../shared/services/publicApi";
 
 const EMPTY_GROUPS = {
+  bodyCorporate: [],
   diamond: [],
   gold: [],
   silver: [],
   dignitaries: [],
   celebrity: [],
-  bodyCorporate: [],
+  
 };
 
 // ─── Themes ───────────────────────────────────────────────────────────────────
 const TABS = [
+
+    
+  {
+    key: "bodyCorporate", label: "Corporate Members", emoji: "🏢",
+    tabActiveBg: "linear-gradient(135deg, #064e3b 0%, #059669 100%)",
+    tabActiveBorder: "#34d399", tabActiveText: "#fff",
+    tabActiveShadow: "0 8px 28px rgba(5,150,105,0.35)",
+    cardBg: "linear-gradient(145deg, #ffffff 0%, #ecfdf5 60%, #d1fae5 100%)",
+    cardBorder: "#6ee7b7",
+    cardShadow: "0 20px 60px rgba(5,150,105,0.13), 0 4px 20px rgba(5,150,105,0.08)",
+    cardTopBar: "linear-gradient(90deg, #064e3b, #059669, #34d399)",
+    ringGrad: "conic-gradient(from 0deg, #064e3b, #34d399, #d1fae5, #34d399, #064e3b)",
+    accentColor: "#059669", accentLight: "#d1fae5",
+    badgeBg: "linear-gradient(135deg, #d1fae5, #ecfdf5)", badgeBorder: "#6ee7b7", badgeText: "#064e3b",
+    verifiedBg: "linear-gradient(135deg, #064e3b, #059669)", companyColor: "#059669",
+    dotActive: "#059669", dotShadow: "rgba(5,150,105,0.4)",
+  },
+
+
   {
     key: "diamond", label: "Diamond", emoji: "💎",
     tabActiveBg: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
@@ -66,21 +86,7 @@ const TABS = [
     verifiedBg: "linear-gradient(135deg, #334155, #64748b)", companyColor: "#475569",
     dotActive: "#64748b", dotShadow: "rgba(100,116,139,0.35)",
   },
-  {
-    key: "dignitaries", label: "Dignitaries", emoji: "🎖️",
-    tabActiveBg: "linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%)",
-    tabActiveBorder: "#a78bfa", tabActiveText: "#fff",
-    tabActiveShadow: "0 8px 28px rgba(124,58,237,0.35)",
-    cardBg: "linear-gradient(145deg, #ffffff 0%, #f5f3ff 60%, #ede9fe 100%)",
-    cardBorder: "#c4b5fd",
-    cardShadow: "0 20px 60px rgba(124,58,237,0.13), 0 4px 20px rgba(124,58,237,0.08)",
-    cardTopBar: "linear-gradient(90deg, #4c1d95, #7c3aed, #a78bfa)",
-    ringGrad: "conic-gradient(from 0deg, #4c1d95, #a78bfa, #ede9fe, #a78bfa, #4c1d95)",
-    accentColor: "#7c3aed", accentLight: "#ede9fe",
-    badgeBg: "linear-gradient(135deg, #ede9fe, #f5f3ff)", badgeBorder: "#c4b5fd", badgeText: "#4c1d95",
-    verifiedBg: "linear-gradient(135deg, #4c1d95, #7c3aed)", companyColor: "#7c3aed",
-    dotActive: "#7c3aed", dotShadow: "rgba(124,58,237,0.4)",
-  },
+
   {
     // ── NEW: Celebrity tab ─────────────────────────────────────────────────
     key: "celebrity", label: "Celebrity", emoji: "🌟",
@@ -99,21 +105,23 @@ const TABS = [
     // extra celebrity-specific
     spotlight: true,
   },
+
   {
-    key: "bodyCorporate", label: "Corporate Members", emoji: "🏢",
-    tabActiveBg: "linear-gradient(135deg, #064e3b 0%, #059669 100%)",
-    tabActiveBorder: "#34d399", tabActiveText: "#fff",
-    tabActiveShadow: "0 8px 28px rgba(5,150,105,0.35)",
-    cardBg: "linear-gradient(145deg, #ffffff 0%, #ecfdf5 60%, #d1fae5 100%)",
-    cardBorder: "#6ee7b7",
-    cardShadow: "0 20px 60px rgba(5,150,105,0.13), 0 4px 20px rgba(5,150,105,0.08)",
-    cardTopBar: "linear-gradient(90deg, #064e3b, #059669, #34d399)",
-    ringGrad: "conic-gradient(from 0deg, #064e3b, #34d399, #d1fae5, #34d399, #064e3b)",
-    accentColor: "#059669", accentLight: "#d1fae5",
-    badgeBg: "linear-gradient(135deg, #d1fae5, #ecfdf5)", badgeBorder: "#6ee7b7", badgeText: "#064e3b",
-    verifiedBg: "linear-gradient(135deg, #064e3b, #059669)", companyColor: "#059669",
-    dotActive: "#059669", dotShadow: "rgba(5,150,105,0.4)",
+    key: "dignitaries", label: "Dignitaries", emoji: "🎖️",
+    tabActiveBg: "linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%)",
+    tabActiveBorder: "#a78bfa", tabActiveText: "#fff",
+    tabActiveShadow: "0 8px 28px rgba(124,58,237,0.35)",
+    cardBg: "linear-gradient(145deg, #ffffff 0%, #f5f3ff 60%, #ede9fe 100%)",
+    cardBorder: "#c4b5fd",
+    cardShadow: "0 20px 60px rgba(124,58,237,0.13), 0 4px 20px rgba(124,58,237,0.08)",
+    cardTopBar: "linear-gradient(90deg, #4c1d95, #7c3aed, #a78bfa)",
+    ringGrad: "conic-gradient(from 0deg, #4c1d95, #a78bfa, #ede9fe, #a78bfa, #4c1d95)",
+    accentColor: "#7c3aed", accentLight: "#ede9fe",
+    badgeBg: "linear-gradient(135deg, #ede9fe, #f5f3ff)", badgeBorder: "#c4b5fd", badgeText: "#4c1d95",
+    verifiedBg: "linear-gradient(135deg, #4c1d95, #7c3aed)", companyColor: "#7c3aed",
+    dotActive: "#7c3aed", dotShadow: "rgba(124,58,237,0.4)",
   },
+
 ];
 
 // ─── Skeleton Card ─────────────────────────────────────────────────────────────
@@ -589,8 +597,8 @@ export default function SpecialMembersSection() {
       .then((list) => {
         if (cancelled) return;
         const groups = {
-          diamond: [], gold: [], silver: [],
-          dignitaries: [], celebrity: [], bodyCorporate: [],
+          bodyCorporate: [], diamond: [], gold: [], silver: [],
+          dignitaries: [], celebrity: [],
         };
         const items = Array.isArray(list) ? list : [];
         items.forEach((item) => {
