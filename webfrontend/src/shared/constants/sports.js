@@ -1,0 +1,16 @@
+export const SPORT_OPTIONS = [
+  'Cricket',
+  'Football',
+  'Badminton',
+  'Athletics',
+  'Boxing',
+  'Wrestling',
+  'Swimming',
+  'Tennis',
+  'Hockey',
+  'Kabaddi',
+  'Archery',
+  'Gymnastics',
+  'Volleyball',
+  'Basketball',
+]

@@ -6,8 +6,6 @@ import Leadership from "./Leadership";
 import WhatWeDo from "./WhatWeDo";
 import { getPublicCommittees } from "@/shared/services/publicApi";
 import EventsMatchSection from "./Eventsmatchsection";
-import PopupFlow from "../../components/PopupFlow";
-
 const ManagingCommittee = lazy(() => import("./ManagingCommitte"));
 const Promoters = lazy(() => import("./Promoters"));
 const SpecialMembersSection = lazy(() => import("./SpecialMember"));
@@ -83,7 +81,6 @@ const Home = () => {
 
   return (
     <>
-      <PopupFlow />
       <HeroSection />
       <AboutUs />
       <Leadership />

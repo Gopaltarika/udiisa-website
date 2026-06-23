@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Preloader } from "../modules/website/components/Globalenhancer";
+import PopupFlow from "../modules/website/components/PopupFlow";
 import MatchDetailPage from "../modules/website/pages/matchpage/Matchdetailpage";
 import EventsPage from "../modules/website/pages/matchpage/Eventspage";
 
@@ -31,6 +32,7 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <PopupFlow />
       <Suspense fallback={<Preloader noTimer />}>
         <Routes>
           {/* WEBSITE */}
