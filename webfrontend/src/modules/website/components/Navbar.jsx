@@ -83,11 +83,12 @@ export default function Navbar() {
   // Special Member dropdown
   const specialItems = [
     { label: "Diamond Member",    href: "/members/special-members/diamond",     icon: <BsDiamondFill />,   desc: "Premium elite tier",      color: "#a0d8ef" },
+    { label: "Corporate Members", href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members",   color: "#6ee7b7" },
     { label: "Gold Member",       href: "/members/special-members/gold",        icon: <BsStarFill />,      desc: "Top-tier membership",     color: "#FFD700" },
     { label: "Silver Member",     href: "/members/special-members/silver",      icon: <BsStarFill />,      desc: "Distinguished level",     color: "#C0C0C0" },
     { label: "Dignitaries",       href: "/members/special-members/dignitaries", icon: <BsPersonFill />,    desc: "Eminent personalities",   color: "#d8b4fe" },
     { label: "Celebrity",         href: "/members/special-members/celebrity",   icon: <RiVipCrownFill />,  desc: "Stars & public figures",  color: "#f9a8d4" },
-    { label: "Corporate Members", href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members",   color: "#6ee7b7" },
+
   ]
 
   // Active link colour helper

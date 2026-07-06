@@ -23,24 +23,6 @@ const EMPTY_GROUPS = {
 // ─── Themes ───────────────────────────────────────────────────────────────────
 const TABS = [
 
-    
-  {
-    key: "bodyCorporate", label: "Corporate Members", emoji: "🏢",
-    tabActiveBg: "linear-gradient(135deg, #064e3b 0%, #059669 100%)",
-    tabActiveBorder: "#34d399", tabActiveText: "#fff",
-    tabActiveShadow: "0 8px 28px rgba(5,150,105,0.35)",
-    cardBg: "linear-gradient(145deg, #ffffff 0%, #ecfdf5 60%, #d1fae5 100%)",
-    cardBorder: "#6ee7b7",
-    cardShadow: "0 20px 60px rgba(5,150,105,0.13), 0 4px 20px rgba(5,150,105,0.08)",
-    cardTopBar: "linear-gradient(90deg, #064e3b, #059669, #34d399)",
-    ringGrad: "conic-gradient(from 0deg, #064e3b, #34d399, #d1fae5, #34d399, #064e3b)",
-    accentColor: "#059669", accentLight: "#d1fae5",
-    badgeBg: "linear-gradient(135deg, #d1fae5, #ecfdf5)", badgeBorder: "#6ee7b7", badgeText: "#064e3b",
-    verifiedBg: "linear-gradient(135deg, #064e3b, #059669)", companyColor: "#059669",
-    dotActive: "#059669", dotShadow: "rgba(5,150,105,0.4)",
-  },
-
-
   {
     key: "diamond", label: "Diamond", emoji: "💎",
     tabActiveBg: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
@@ -55,6 +37,21 @@ const TABS = [
     badgeBg: "linear-gradient(135deg, #dbeafe, #eff6ff)", badgeBorder: "#93c5fd", badgeText: "#1e40af",
     verifiedBg: "linear-gradient(135deg, #1e3a8a, #2563eb)", companyColor: "#2563eb",
     dotActive: "#2563eb", dotShadow: "rgba(37,99,235,0.4)",
+  },
+  {
+    key: "bodyCorporate", label: "Corporate", emoji: "🏢",
+    tabActiveBg: "linear-gradient(135deg, #064e3b 0%, #059669 100%)",
+    tabActiveBorder: "#34d399", tabActiveText: "#fff",
+    tabActiveShadow: "0 8px 28px rgba(5,150,105,0.35)",
+    cardBg: "linear-gradient(145deg, #ffffff 0%, #ecfdf5 60%, #d1fae5 100%)",
+    cardBorder: "#6ee7b7",
+    cardShadow: "0 20px 60px rgba(5,150,105,0.13), 0 4px 20px rgba(5,150,105,0.08)",
+    cardTopBar: "linear-gradient(90deg, #064e3b, #059669, #34d399)",
+    ringGrad: "conic-gradient(from 0deg, #064e3b, #34d399, #d1fae5, #34d399, #064e3b)",
+    accentColor: "#059669", accentLight: "#d1fae5",
+    badgeBg: "linear-gradient(135deg, #d1fae5, #ecfdf5)", badgeBorder: "#6ee7b7", badgeText: "#064e3b",
+    verifiedBg: "linear-gradient(135deg, #064e3b, #059669)", companyColor: "#059669",
+    dotActive: "#059669", dotShadow: "rgba(5,150,105,0.4)",
   },
   {
     key: "gold", label: "Gold", emoji: "🥇",
@@ -586,7 +583,7 @@ function SwiperSliderSection({ members, theme, activeTab }) {
 // ─── Main Export ───────────────────────────────────────────────────────────────
 export default function SpecialMembersSection() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("bodyCorporate");
+  const [activeTab, setActiveTab] = useState("diamond");
   const [memberGroups, setMemberGroups] = useState(EMPTY_GROUPS);
   const [loading, setLoading] = useState(true);
 
