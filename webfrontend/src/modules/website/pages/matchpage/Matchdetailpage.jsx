@@ -4,6 +4,7 @@ import { FaArrowLeft, FaMapMarkerAlt, FaCrown, FaUsers, FaCalendarAlt } from "re
 import { HiSparkles } from "react-icons/hi";
 import { IoStatsChart } from "react-icons/io5";
 import { getPublicEventBySlug } from "@/shared/services/publicApi";
+import SEO from "@/shared/components/SEO";
 
 /* ─── Team Table ─────────────────────────────────────────────────────────────── */
 function TeamTable({ team, side, memberCount }) {
@@ -151,6 +152,42 @@ export default function MatchDetailPage() {
 
   return (
     <>
+      <SEO
+        title={`${event.title} | Sports Event`}
+        description={event.description}
+        keywords={`${event.sport}, ${event.teamA.name}, ${event.teamB.name}, sports NGO event, UDIISA match`}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "SportsEvent",
+          "name": event.title,
+          "description": event.description,
+          "startDate": event.dateISO || event.date,
+          "location": {
+            "@type": "Place",
+            "name": event.venue,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": event.location
+            }
+          },
+          "competitor": [
+            {
+              "@type": "SportsTeam",
+              "name": event.teamA.name
+            },
+            {
+              "@type": "SportsTeam",
+              "name": event.teamB.name
+            }
+          ],
+          "sport": event.sport,
+          "eventStatus": event.status === "Live"
+            ? "https://schema.org/EventScheduled"
+            : event.status === "Completed"
+              ? "https://schema.org/EventCompleted"
+              : "https://schema.org/EventScheduled"
+        }}
+      />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
 

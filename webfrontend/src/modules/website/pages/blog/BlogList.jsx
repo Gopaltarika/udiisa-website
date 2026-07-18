@@ -27,6 +27,7 @@ import BlogCard    from './BlogCard'
 import BlogSidebar from './BlogSidebar'
 import { useBlogs } from './blogData'
 import PageHero from '../../../../shared/components/PageHero'
+import SEO from '@/shared/components/SEO'
 
 const LIMIT = 5
 
@@ -205,9 +206,21 @@ export default function BlogList () {
 
   return (
     <div className=" bg-gradient-to-b from-[#F4F6FB] to-white">
- <PageHero
-      badge="Stories & Updates"
-      heading="OUR"
+      <SEO
+        title="Sports NGO Blogs & Stories"
+        description="Read the latest athlete success stories, grassroots sports updates, event details, and sports initiatives from UDIISA Sports NGO India."
+        keywords="sports NGO blogs, grassroots sports stories, athlete success stories, Indian sports NGO news"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          "name": "UDIISA Sports NGO Blog",
+          "description": "Athlete success stories, grassroots sports updates, event details, and sports initiatives from UDIISA Sports NGO India.",
+          "url": "https://udisports.in/blogs"
+        }}
+      />
+      <PageHero
+        badge="Stories & Updates"
+        heading="OUR"
       highlight="Blog"
       description="Insights, stories, and News from the world of sports."
       bgImage="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1920&q=85&fit=crop"

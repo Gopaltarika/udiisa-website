@@ -1,0 +1,39 @@
+# User-Agent rules for Search Engines and AI Agents
+User-Agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /backend/
+
+# Explicitly whitelist AI crawlers to ensure AI search engines (ChatGPT, Gemini, Perplexity) index the website correctly
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+
+User-agent: Applebot
+Allow: /
+Disallow: /admin/
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# Reference the XML sitemap
+Sitemap: https://udisports.in/sitemap.xml

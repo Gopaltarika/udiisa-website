@@ -14,6 +14,7 @@ import { BsShieldFillCheck, BsStarFill } from 'react-icons/bs'
 import { GiLaurelCrown, GiTargetArrows } from 'react-icons/gi'
 import PageHero from '../../../../shared/components/PageHero'
 import aboutimg from '@/assets/images/about-img.webp'
+import SEO from '@/shared/components/SEO'
 /* ═══════════════════════════════════════════════════════
    DATA MAPS — edit here to update all sections
 ═══════════════════════════════════════════════════════ */
@@ -106,6 +107,22 @@ export default function AboutUs() {
 
   return (
     <div className="min-h-screen bg-white font-['Plus_Jakarta_Sans',sans-serif]">
+      <SEO
+        title="About Us"
+        description="Learn about UDIISA Sports NGO, our mission to discover, develop, and support talented sports players in India who face financial limitations."
+        keywords="about UDIISA, sports charity mission, support young athletes, sports association India, NGO details"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "About UDIISA",
+          "description": "Learn about UDIISA Sports NGO, our mission to discover, develop, and support talented sports players in India who face financial limitations.",
+          "publisher": {
+            "@type": "NGO",
+            "name": "UDIISA Sports NGO",
+            "url": "https://udisports.in/"
+          }
+        }}
+      />
       <style>{`
         .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
         .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}

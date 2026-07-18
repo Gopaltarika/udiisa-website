@@ -26,6 +26,7 @@ import { MdArticle }  from 'react-icons/md'
 import BlogSidebar from './BlogSidebar'
 import BlogCard    from './BlogCard'
 import { useBlogDetail, useRecentBlogs, getCatColor } from './blogData'
+import SEO from '@/shared/components/SEO'
 
 /* ── Skeleton loader ── */
 const DetailSkeleton = () => (
@@ -173,6 +174,34 @@ export default function BlogDetail () {
               </div>
             ) : blog ? (
               <article>
+                <SEO
+                  title={blog.title}
+                  description={blog.excerpt}
+                  keywords={blog.tags ? blog.tags.join(', ') : blog.category}
+                  ogImage={blog.image}
+                  ogType="article"
+                  schema={{
+                    "@context": "https://schema.org",
+                    "@type": "BlogPosting",
+                    "headline": blog.title,
+                    "image": blog.image,
+                    "datePublished": blog.dateISO || blog.date,
+                    "author": {
+                      "@type": "Person",
+                      "name": blog.author || "UDIISA Staff"
+                    },
+                    "description": blog.excerpt,
+                    "articleBody": blog.content ? blog.content.replace(/<[^>]*>/g, '') : '',
+                    "publisher": {
+                      "@type": "NGO",
+                      "name": "UDIISA Sports NGO",
+                      "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://udisports.in/short-logo.webp"
+                      }
+                    }
+                  }}
+                />
 
                 {/* ── HERO IMAGE ── */}
                 <div className="relative w-full h-[300px] sm:h-[401px] rounded-[24px] overflow-hidden !mb-[28px] bg-slate-200">

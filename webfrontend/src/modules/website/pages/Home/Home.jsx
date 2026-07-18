@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import SEO from "@/shared/components/SEO";
 import AboutUs from "./AboutUs";
 import AdvisoryBoard from "./AdvisoryBoard";
 import HeroSection from "./HeroSection";
@@ -81,6 +82,23 @@ const Home = () => {
 
   return (
     <>
+      <SEO
+        title="Home | Sports NGO India"
+        description="UDIISA is a premier sports NGO in India dedicated to nurturing grassroots talent, providing professional coaching, and offering sponsorship to underprivileged athletes."
+        keywords="sports NGO India, grassroots sports, athlete sponsorship, athletic mentorship, support Indian sports, sports charity India"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "SportsOrganization",
+          "name": "UDIISA Sports NGO",
+          "url": "https://udisports.in/",
+          "logo": "https://udisports.in/short-logo.webp",
+          "description": "UDIISA is a sports NGO in India supporting players through mentorship, opportunities, and community-driven programs.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "India"
+          }
+        }}
+      />
       <HeroSection />
       <AboutUs />
       <Leadership />

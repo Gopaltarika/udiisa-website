@@ -449,10 +449,21 @@ const navArrowBtnBase = {
   lineHeight: 0,
   flexShrink: 0,
 };
-
 // ─── Swiper Slider Section ─────────────────────────────────────────────────────
 function SwiperSliderSection({ members, theme, activeTab }) {
-  const total = members.length;
+  const originalCount = members.length;
+
+  const loopingMembers = useMemo(() => {
+    if (originalCount <= 1) return members;
+    let list = [...members];
+    // Keep repeating list until we have at least 8 items for a smooth swiper loop
+    while (list.length < 8) {
+      list = [...list, ...members];
+    }
+    return list;
+  }, [members, originalCount]);
+
+  const total = loopingMembers.length;
   const [swiper, setSwiper] = useState(null);
 
   const paginationStyle = `
@@ -470,12 +481,12 @@ function SwiperSliderSection({ members, theme, activeTab }) {
           modules={[Navigation, Pagination, Keyboard, A11y, Autoplay]}
           className={`sms-swiper sms-swiper-${activeTab}`}
           centeredSlides
-          loop={total > 3}
-          rewind={total > 1 && total <= 3}
+          loop={originalCount > 1}
+          rewind={false}
           keyboard={{ enabled: true }}
           pagination={{ clickable: true }}
           autoplay={
-            total > 1
+            originalCount > 1
               ? {
                   delay: 2500,
                   disableOnInteraction: false,
@@ -496,8 +507,8 @@ function SwiperSliderSection({ members, theme, activeTab }) {
           }}
           style={{ userSelect: "none" }}
         >
-          {members.map((member, i) => (
-            <SwiperSlide key={member.id || i}>
+          {loopingMembers.map((member, i) => (
+            <SwiperSlide key={member.id || `${member.name}-${i}`}>
               {({ isActive }) => (
                 <div style={{
                   width: "100%",
@@ -519,7 +530,7 @@ function SwiperSliderSection({ members, theme, activeTab }) {
         </Swiper>
 
         {/* Nav Arrows */}
-        {total > 1 && (
+        {originalCount > 1 && (
           <div style={{
             display: "flex", justifyContent: "center", alignItems: "center",
             gap: 12, marginTop: 2, marginBottom: 6,

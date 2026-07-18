@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react"
 import CommitteeSection from "./Committeesection"
 import { getPublicCommittees } from "@/shared/services/publicApi"
+import SEO from "@/shared/components/SEO"
 
 export default function CommitteePage() {
   const [committees, setCommittees] = useState([])
@@ -66,6 +67,11 @@ export default function CommitteePage() {
 
   return (
     <>
+      <SEO
+        title="Our Committees & Leadership"
+        description="Meet the specialized advisory board, managing committee, and leadership panels guiding UDIISA Sports NGO India."
+        keywords="UDIISA committees, sports NGO board, sports advisory board, managing committee India"
+      />
       <style>{`
         @keyframes heroFadeUp {
           from { opacity:0; transform:translateY(28px); }

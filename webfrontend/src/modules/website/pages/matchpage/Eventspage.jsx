@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPublicEvents } from "@/shared/services/publicApi";
+import SEO from "@/shared/components/SEO";
 import {
   FaMapMarkerAlt, FaUsers, FaArrowRight, FaSearch, FaFilter,
   FaCrown, FaCalendarAlt, FaTimes,
@@ -211,6 +212,11 @@ export default function EventsPage() {
 
   return (
     <>
+      <SEO
+        title="Upcoming Sports Events & Tournaments"
+        description="Follow upcoming sports tournaments, events, and match schedules hosted by UDIISA Sports NGO India."
+        keywords="upcoming sports tournaments, sports match schedule, UDIISA events, grassroots sports tournament, boxing athletics matches India"
+      />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
 

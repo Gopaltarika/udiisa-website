@@ -1,8 +1,25 @@
 import { FaHandHoldingHeart, FaUsers, FaUniversity } from "react-icons/fa";
+import SEO from "@/shared/components/SEO";
 
 export default function DonateNow() {
   return (
     <div className="bg-slate-50 min-h-screen py-16 px-6">
+      <SEO
+        title="Donate Now | Support Underprivileged Athletes"
+        description="Donate to UDIISA Sports NGO to support the training, nutrition, kits, and coaching of talented young sports players in India. Enable tax rebate under Section 80G."
+        keywords="donate to sports NGO, sports charity donation India, 80G tax exemption donation, support Indian athletes, grassroots sports fundraising"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "DonateAction",
+          "name": "Donate to UDIISA Sports NGO",
+          "description": "Donate to UDIISA Sports NGO to support the training, nutrition, kits, and coaching of talented young sports players in India.",
+          "recipient": {
+            "@type": "NGO",
+            "name": "UDIISA Sports NGO",
+            "url": "https://udisports.in/"
+          }
+        }}
+      />
       <div className="max-w-6xl mx-auto">
 
         {/* Heading */}
