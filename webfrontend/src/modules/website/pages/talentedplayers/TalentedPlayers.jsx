@@ -18,14 +18,15 @@ const TalentedPlayers = () => {
   return (
     <>
       <SEO
-        title="Talented Players & Sponsored Athletes"
-        description="Meet the rising sports stars and talented young athletes supported by UDIISA Sports NGO India. Read their achievements and inspiring journeys."
-        keywords="talented athletes India, sponsored players, grassroots athletes Haryana, support sports youth, athletic sponsorship recipients"
+        title="UDIISA Talented Players & Sponsored Athletes"
+        description="Meet rising athletes supported by UDIISA — talent stories, achievements and journeys powered by UDI International Sports Association."
+        keywords="UDIISA talented players, UDIISA sponsored athletes, grassroots athletes India"
         schema={{
           "@context": "https://schema.org",
           "@type": "ItemList",
           "name": "UDIISA Sponsored Talented Players",
-          "description": "Rising sports stars and talented young athletes supported by UDIISA Sports NGO.",
+          "description": "Rising sports stars and talented young athletes supported by UDIISA.",
+
           "numberOfItems": players.length,
           "itemListElement": players.map((p, idx) => ({
             "@type": "ListItem",

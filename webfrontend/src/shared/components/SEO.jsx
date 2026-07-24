@@ -1,49 +1,112 @@
 import { useLocation } from "react-router-dom";
 
-const SEO = ({ title, description, keywords, ogType = "website", ogImage, schema }) => {
+/**
+ * Central SEO helper — React 19 hoists these tags into <head>.
+ * Optimized for brand search ("UDIISA") + AI/crawler discovery.
+ */
+const SEO = ({
+  title,
+  description,
+  keywords,
+  ogType = "website",
+  ogImage,
+  schema,
+  canonical,
+  noIndex = false,
+  article,
+}) => {
   const location = useLocation();
 
-  const siteName = "UDIISA Sports NGO";
-  const defaultTitle = "UDIISA | Sports NGO in India";
-  const defaultDesc = "UDIISA is a premier sports NGO in India supporting young talented athletes through professional coaching, mentorship, sponsorships, and sports development.";
-  const defaultKeywords = "sports NGO, sports charity, grassroots sports, athlete sponsorship, NGO India, youth sports, sports training NGO, boxing NGO, athletics NGO, cricket NGO, Haryana sports, support Indian sports, donate to sports, sports community India";
-  const defaultImage = "https://udisports.in/short-logo.webp";
+  const siteName = "UDIISA";
   const baseUrl = "https://udisports.in";
+  const defaultTitle =
+    "UDIISA | UDI International Sports Association | Sports NGO India";
+  const defaultDesc =
+    "UDIISA (UDI International Sports Association) is a non-profit sports NGO in India identifying, nurturing and empowering athletes through training, mentorship, scholarships and sports development programs.";
+  const defaultKeywords =
+    "UDIISA, UDIISA Sports, UDIISA NGO, UDI International Sports Association, UDIISA India, UDI Sports, sports NGO India, grassroots sports, athlete sponsorship, sports charity India, sports scholarship, sports association India";
+  const defaultImage = "https://udisports.in/short-logo.webp";
 
-  const metaTitle = title ? `${title} | UDIISA` : defaultTitle;
-  const metaDesc = description || defaultDesc;
-  const metaKeywords = keywords ? `${keywords}, ${defaultKeywords}` : defaultKeywords;
-  const canonicalUrl = `${baseUrl}${location.pathname}`;
-  const metaImage = ogImage || defaultImage;
+  const path = location.pathname.replace(/\/+$/, "") || "/";
+  const canonicalUrl = canonical || `${baseUrl}${path === "/" ? "/" : path}`;
+
+  const metaTitle = title
+    ? /udiisa/i.test(title)
+      ? title
+      : `${title} | UDIISA`
+    : defaultTitle;
+
+  const metaDesc = (description || defaultDesc).slice(0, 160);
+  const metaKeywords = keywords
+    ? `UDIISA, ${keywords}, ${defaultKeywords}`
+    : defaultKeywords;
+  const metaImage = ogImage
+    ? ogImage.startsWith("http")
+      ? ogImage
+      : `${baseUrl}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
+    : defaultImage;
+
+  const schemas = schema
+    ? Array.isArray(schema)
+      ? schema
+      : [schema]
+    : [];
 
   return (
     <>
-      {/* Primary Metadata */}
       <title>{metaTitle}</title>
       <meta name="description" content={metaDesc} />
       <meta name="keywords" content={metaKeywords} />
+      <meta
+        name="robots"
+        content={
+          noIndex
+            ? "noindex,nofollow"
+            : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+        }
+      />
+      <meta name="author" content="UDIISA — UDI International Sports Association" />
+      <meta name="application-name" content="UDIISA" />
       <link rel="canonical" href={canonicalUrl} />
 
-      {/* Open Graph / Facebook */}
+      {/* Open Graph */}
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={metaTitle} />
       <meta property="og:description" content={metaDesc} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:image" content={metaImage} />
-      <meta property="og:site_name" content={siteName} />
+      <meta property="og:site_name" content="UDIISA" />
+      <meta property="og:locale" content="en_IN" />
 
-      {/* Twitter Cards */}
+      {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDesc} />
       <meta name="twitter:image" content={metaImage} />
 
-      {/* Dynamic JSON-LD Structured Data for AI & Search Engines */}
-      {schema && (
-        <script type="application/ld+json">
-          {JSON.stringify(schema)}
-        </script>
+      {/* Article extras for blog posts */}
+      {article?.publishedTime && (
+        <meta property="article:published_time" content={article.publishedTime} />
       )}
+      {article?.modifiedTime && (
+        <meta property="article:modified_time" content={article.modifiedTime} />
+      )}
+      {article?.author && (
+        <meta property="article:author" content={article.author} />
+      )}
+      {article?.section && (
+        <meta property="article:section" content={article.section} />
+      )}
+      {Array.isArray(article?.tags) &&
+        article.tags.map((tag) => (
+          <meta key={tag} property="article:tag" content={tag} />
+        ))}
+
+      {schemas.map((s, i) => (
+        <script key={i} type="application/ld+json">
+          {JSON.stringify(s)}
+        </script>
+      ))}
     </>
   );
 };

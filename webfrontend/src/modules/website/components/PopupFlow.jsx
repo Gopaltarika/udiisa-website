@@ -8,7 +8,7 @@ import { SPORT_OPTIONS } from '@/shared/constants/sports'
 const POSTER_URL =
   'https://res.cloudinary.com/dwpvz393k/image/upload/v1782131757/udi_xty1zf.png'
 
-const QR_DELAY_MS = 5000
+const QR_DELAY_MS = 15000
 const GAP_AFTER_QR_MS = 5000
 
 export default function PopupFlow() {
@@ -90,7 +90,7 @@ export default function PopupFlow() {
       role="dialog"
       aria-modal="true"
     >
-      {/* DONATION / QR POPUP — 5 seconds */}
+      {/* DONATION / QR POPUP — 15 seconds */}
       {active === 'donation' && (
         <div
           onClick={(e) => e.stopPropagation()}

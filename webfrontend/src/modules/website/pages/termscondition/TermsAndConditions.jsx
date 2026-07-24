@@ -149,9 +149,9 @@ export default function TermsAndConditions() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white font-sans">
       <SEO
-        title="Terms and Conditions & Privacy Policy"
-        description="Official document detailing terms and conditions, legal registration under Companies Act, privacy policy, and eligibility guidelines of UDIISA Sports NGO."
-        keywords="UDIISA terms, sports NGO terms, legal guidelines UDIISA, privacy policy sports charity"
+        title="UDIISA Terms & Privacy Policy"
+        description="UDIISA terms and conditions, privacy policy and eligibility guidelines for membership, programs and website use."
+        keywords="UDIISA terms, UDIISA privacy policy, UDIISA legal"
       />
       {/* Header */}
       <div className="relative overflow-hidden">

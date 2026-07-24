@@ -213,9 +213,9 @@ export default function EventsPage() {
   return (
     <>
       <SEO
-        title="Upcoming Sports Events & Tournaments"
-        description="Follow upcoming sports tournaments, events, and match schedules hosted by UDIISA Sports NGO India."
-        keywords="upcoming sports tournaments, sports match schedule, UDIISA events, grassroots sports tournament, boxing athletics matches India"
+        title="UDIISA Events & Tournaments"
+        description="Follow upcoming UDIISA sports events, tournaments, talent hunts and match schedules across India."
+        keywords="UDIISA events, UDIISA tournaments, UDIISA talent hunt, sports events India NGO"
       />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');

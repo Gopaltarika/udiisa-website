@@ -175,30 +175,73 @@ export default function BlogDetail () {
             ) : blog ? (
               <article>
                 <SEO
-                  title={blog.title}
-                  description={blog.excerpt}
-                  keywords={blog.tags ? blog.tags.join(', ') : blog.category}
+                  title={`${blog.title} | UDIISA Blog`}
+                  description={
+                    (blog.excerpt || blog.title || '')
+                      .replace(/\s+/g, ' ')
+                      .trim()
+                      .slice(0, 155) ||
+                    `Read ${blog.title} on the official UDIISA blog — sports stories and athlete updates from UDI International Sports Association.`
+                  }
+                  keywords={[
+                    'UDIISA blog',
+                    blog.category,
+                    ...(blog.tags || []),
+                    'sports NGO India',
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
                   ogImage={blog.image}
                   ogType="article"
+                  canonical={`https://udisports.in/blogs/${blog.slug || slug}`}
+                  article={{
+                    publishedTime: blog.dateISO || blog.date,
+                    modifiedTime: blog.updatedAt || blog.dateISO || blog.date,
+                    author: blog.author || 'UDIISA',
+                    section: blog.category || 'Sports',
+                    tags: blog.tags || [],
+                  }}
                   schema={{
                     "@context": "https://schema.org",
                     "@type": "BlogPosting",
                     "headline": blog.title,
-                    "image": blog.image,
+                    "name": blog.title,
+                    "image": blog.image
+                      ? [blog.image]
+                      : ["https://udisports.in/short-logo.webp"],
                     "datePublished": blog.dateISO || blog.date,
+                    "dateModified": blog.updatedAt || blog.dateISO || blog.date,
                     "author": {
                       "@type": "Person",
-                      "name": blog.author || "UDIISA Staff"
+                      "name": blog.author || "UDIISA"
                     },
-                    "description": blog.excerpt,
-                    "articleBody": blog.content ? blog.content.replace(/<[^>]*>/g, '') : '',
+                    "description": (blog.excerpt || '').slice(0, 160),
+                    "articleBody": blog.content
+                      ? blog.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 5000)
+                      : '',
+                    "keywords": [
+                      'UDIISA',
+                      blog.category,
+                      ...(blog.tags || []),
+                    ].filter(Boolean).join(', '),
+                    "mainEntityOfPage": {
+                      "@type": "WebPage",
+                      "@id": `https://udisports.in/blogs/${blog.slug || slug}`
+                    },
+                    "url": `https://udisports.in/blogs/${blog.slug || slug}`,
                     "publisher": {
                       "@type": "NGO",
-                      "name": "UDIISA Sports NGO",
+                      "name": "UDIISA",
+                      "alternateName": "UDI International Sports Association",
                       "logo": {
                         "@type": "ImageObject",
                         "url": "https://udisports.in/short-logo.webp"
                       }
+                    },
+                    "isPartOf": {
+                      "@type": "Blog",
+                      "name": "UDIISA Blog",
+                      "url": "https://udisports.in/blogs"
                     }
                   }}
                 />
@@ -207,12 +250,12 @@ export default function BlogDetail () {
                 <div className="relative w-full h-[300px] sm:h-[401px] rounded-[24px] overflow-hidden !mb-[28px] bg-slate-200">
                   <img
                     src={blog.image}
-                    alt={blog.title}
+                    alt={`${blog.title} | UDIISA Blog`}
                     className="w-full h-full object-fill"
                     fetchPriority="high"
                     decoding="async"
                     onError={e => {
-                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category)}&background=0B1E4B&color=fff&size=800`
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category || 'UDIISA')}&background=0B1E4B&color=fff&size=800`
                     }}
                   />
                   {/* Gradient overlay */}

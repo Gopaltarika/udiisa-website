@@ -7,15 +7,21 @@ const ContactUs = () => {
   return (
     <>
       <SEO
-        title="Contact Us"
-        description="Get in touch with UDIISA Sports NGO India. Contact us for athlete sponsorship, membership inquiries, donations, or partnership opportunities."
-        keywords="contact UDIISA, sports NGO contact number, sponsor young athletes India, contact sports charity"
+        title="Contact UDIISA | Get in Touch"
+        description="Contact UDIISA (UDI International Sports Association) for membership, athlete sponsorship, donations, volunteering or partnership inquiries. Email info@udisports.in."
+        keywords="contact UDIISA, UDIISA phone number, UDIISA email, sports NGO contact India"
         schema={{
           "@context": "https://schema.org",
           "@type": "ContactPage",
-          "name": "Contact UDIISA Sports NGO",
-          "description": "Get in touch with UDIISA Sports NGO India. Contact us for athlete sponsorship, membership inquiries, donations, or partnership opportunities.",
-          "url": "https://udisports.in/contact-us"
+          "name": "Contact UDIISA",
+          "description": "Get in touch with UDIISA for athlete sponsorship, membership, donations, or partnership opportunities.",
+          "url": "https://udisports.in/contact-us",
+          "mainEntity": {
+            "@type": "NGO",
+            "name": "UDIISA",
+            "email": "info@udisports.in",
+            "telephone": "+91-83075-98050"
+          }
         }}
       />
       <PageHero

@@ -4,7 +4,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /backend/
 
-# Explicitly whitelist AI crawlers to ensure AI search engines (ChatGPT, Gemini, Perplexity) index the website correctly
+# Explicitly whitelist AI crawlers (ChatGPT, Gemini, Perplexity, Claude)
 User-agent: GPTBot
 Allow: /
 Disallow: /admin/
@@ -17,9 +17,19 @@ User-agent: ClaudeBot
 Allow: /
 Disallow: /admin/
 
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin/
+
 User-agent: Google-Extended
 Allow: /
 Disallow: /admin/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
 
 User-agent: PerplexityBot
 Allow: /

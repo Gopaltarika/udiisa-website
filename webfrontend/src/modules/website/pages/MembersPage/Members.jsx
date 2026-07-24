@@ -7,9 +7,9 @@ const Members = () => {
   return (
     <div>
       <SEO
-        title="Our Members & Directory"
-        description="Meet the patrons, ambassadors, corporate entities, and sports promoters who form the backbone of UDIISA Sports NGO."
-        keywords="sports NGO members, UDIISA directory, sports patrons India, grassroots sports community"
+        title="UDIISA Members Directory"
+        description="Explore the UDIISA members directory — patrons, ambassadors, corporate partners and sports promoters supporting athlete development in India."
+        keywords="UDIISA members, UDIISA directory, UDIISA patrons, sports NGO members India"
       />
       <PageHero
         badge="OUR Members"

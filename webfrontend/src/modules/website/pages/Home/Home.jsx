@@ -83,20 +83,31 @@ const Home = () => {
   return (
     <>
       <SEO
-        title="Home | Sports NGO India"
-        description="UDIISA is a premier sports NGO in India dedicated to nurturing grassroots talent, providing professional coaching, and offering sponsorship to underprivileged athletes."
-        keywords="sports NGO India, grassroots sports, athlete sponsorship, athletic mentorship, support Indian sports, sports charity India"
+        title="UDIISA | UDI International Sports Association | Sports NGO India"
+        description="UDIISA (UDI International Sports Association) — sports NGO in India nurturing grassroots talent with coaching, mentorship, scholarships and athlete sponsorship."
+        keywords="UDIISA official website, UDIISA Sports NGO, UDI International Sports Association, sports NGO India, athlete sponsorship India"
         schema={{
           "@context": "https://schema.org",
           "@type": "SportsOrganization",
-          "name": "UDIISA Sports NGO",
+          "name": "UDIISA",
+          "alternateName": ["UDI International Sports Association", "UDIISA Sports NGO", "UDI Sports"],
           "url": "https://udisports.in/",
           "logo": "https://udisports.in/short-logo.webp",
-          "description": "UDIISA is a sports NGO in India supporting players through mentorship, opportunities, and community-driven programs.",
+          "description": "UDIISA is a sports NGO in India supporting players through mentorship, scholarships, opportunities, and community-driven programs.",
+          "email": "info@udisports.in",
+          "telephone": "+91-83075-98050",
           "address": {
             "@type": "PostalAddress",
-            "addressCountry": "India"
-          }
+            "streetAddress": "5091, 9th Floor, Tower 5, Parker Residency, Tehsil Rai",
+            "addressLocality": "Sonipat",
+            "addressRegion": "Haryana",
+            "addressCountry": "IN"
+          },
+          "sameAs": [
+            "https://www.facebook.com/share/14ZtTFp2Aii/?mibextid=wwXIfr",
+            "https://www.instagram.com/udiisa_ngo/",
+            "https://www.youtube.com/@udisportsin"
+          ]
         }}
       />
       <HeroSection />

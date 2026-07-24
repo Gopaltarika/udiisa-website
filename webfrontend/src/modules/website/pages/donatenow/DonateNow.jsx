@@ -5,17 +5,18 @@ export default function DonateNow() {
   return (
     <div className="bg-slate-50 min-h-screen py-16 px-6">
       <SEO
-        title="Donate Now | Support Underprivileged Athletes"
-        description="Donate to UDIISA Sports NGO to support the training, nutrition, kits, and coaching of talented young sports players in India. Enable tax rebate under Section 80G."
-        keywords="donate to sports NGO, sports charity donation India, 80G tax exemption donation, support Indian athletes, grassroots sports fundraising"
+        title="Donate to UDIISA | Support Athletes"
+        description="Donate to UDIISA to support training, nutrition, kits and coaching for talented young athletes in India. Secure donations that fund sports development."
+        keywords="donate UDIISA, UDIISA donation, support UDIISA athletes, sports NGO donation India"
         schema={{
           "@context": "https://schema.org",
           "@type": "DonateAction",
-          "name": "Donate to UDIISA Sports NGO",
-          "description": "Donate to UDIISA Sports NGO to support the training, nutrition, kits, and coaching of talented young sports players in India.",
+          "name": "Donate to UDIISA",
+          "description": "Donate to UDIISA to support training, nutrition, kits and coaching for talented young sports players in India.",
           "recipient": {
             "@type": "NGO",
-            "name": "UDIISA Sports NGO",
+            "name": "UDIISA",
+            "alternateName": "UDI International Sports Association",
             "url": "https://udisports.in/"
           }
         }}

@@ -153,15 +153,21 @@ export default function MatchDetailPage() {
   return (
     <>
       <SEO
-        title={`${event.title} | Sports Event`}
-        description={event.description}
-        keywords={`${event.sport}, ${event.teamA.name}, ${event.teamB.name}, sports NGO event, UDIISA match`}
+        title={`${event.title} | UDIISA Event`}
+        description={(event.description || `${event.title} — sports event by UDIISA`).slice(0, 155)}
+        keywords={`${event.sport}, ${event.teamA?.name}, ${event.teamB?.name}, UDIISA event, UDIISA tournament`}
+        canonical={event.slug ? `https://udisports.in/events/${event.slug}` : undefined}
         schema={{
           "@context": "https://schema.org",
           "@type": "SportsEvent",
           "name": event.title,
           "description": event.description,
           "startDate": event.dateISO || event.date,
+          "organizer": {
+            "@type": "NGO",
+            "name": "UDIISA",
+            "url": "https://udisports.in/"
+          },
           "location": {
             "@type": "Place",
             "name": event.venue,

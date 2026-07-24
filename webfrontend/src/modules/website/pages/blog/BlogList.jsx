@@ -207,15 +207,20 @@ export default function BlogList () {
   return (
     <div className=" bg-gradient-to-b from-[#F4F6FB] to-white">
       <SEO
-        title="Sports NGO Blogs & Stories"
-        description="Read the latest athlete success stories, grassroots sports updates, event details, and sports initiatives from UDIISA Sports NGO India."
-        keywords="sports NGO blogs, grassroots sports stories, athlete success stories, Indian sports NGO news"
+        title="UDIISA Blog | Sports Stories & News"
+        description="Read UDIISA blogs — athlete success stories, talent hunts, events and sports development updates from UDI International Sports Association."
+        keywords="UDIISA blog, UDIISA news, sports NGO blogs India, athlete success stories UDIISA"
         schema={{
           "@context": "https://schema.org",
           "@type": "Blog",
-          "name": "UDIISA Sports NGO Blog",
-          "description": "Athlete success stories, grassroots sports updates, event details, and sports initiatives from UDIISA Sports NGO India.",
-          "url": "https://udisports.in/blogs"
+          "name": "UDIISA Blog",
+          "description": "Athlete success stories, grassroots sports updates, events and initiatives from UDIISA.",
+          "url": "https://udisports.in/blogs",
+          "publisher": {
+            "@type": "NGO",
+            "name": "UDIISA",
+            "url": "https://udisports.in/"
+          }
         }}
       />
       <PageHero

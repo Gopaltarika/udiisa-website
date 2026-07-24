@@ -7,9 +7,9 @@ const Main = () => {
   return (
     <>
       <SEO
-        title="Become a Member"
-        description="Join UDIISA Sports NGO as an individual patron, lifetime corporate member, or athlete. Support sports development in India."
-        keywords="become sports NGO member, support sports India, corporate sports sponsorship, sports registration India"
+        title="Become a UDIISA Member | Join Today"
+        description="Join UDIISA as an individual patron, player or lifetime corporate member. Access events, training camps, networking and athlete support programs."
+        keywords="UDIISA membership, become UDIISA member, UDIISA registration, sports NGO membership India"
       />
       <PageHero
         badge="Join SPORTFORCE"

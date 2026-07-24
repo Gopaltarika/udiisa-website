@@ -68,9 +68,9 @@ export default function CommitteePage() {
   return (
     <>
       <SEO
-        title="Our Committees & Leadership"
-        description="Meet the specialized advisory board, managing committee, and leadership panels guiding UDIISA Sports NGO India."
-        keywords="UDIISA committees, sports NGO board, sports advisory board, managing committee India"
+        title="UDIISA Committees & Leadership"
+        description="Meet the UDIISA advisory board, managing committee and leadership guiding UDI International Sports Association across India."
+        keywords="UDIISA committee, UDIISA leadership, UDIISA board, sports NGO managing committee"
       />
       <style>{`
         @keyframes heroFadeUp {

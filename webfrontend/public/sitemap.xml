@@ -3,85 +3,85 @@
   <!-- Core Directory Structure Pages -->
   <url>
     <loc>https://udisports.in/</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
   </url>
   <url>
     <loc>https://udisports.in/about-us</loc>
-    <lastmod>2026-07-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
+    <lastmod>2026-07-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
   </url>
   <url>
     <loc>https://udisports.in/contact-us</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://udisports.in/committee</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://udisports.in/donate-now</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://udisports.in/talented-players</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://udisports.in/members/special-members</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://udisports.in/members/general-members</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://udisports.in/membership/individual-patron</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://udisports.in/membership/individual-player</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://udisports.in/membership/lifetime-corporate</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://udisports.in/blogs</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://udisports.in/events-list</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://udisports.in/terms-and-conditions</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
   </url>

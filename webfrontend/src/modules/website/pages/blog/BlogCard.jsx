@@ -1,53 +1,53 @@
 /**
- * BlogCard.jsx  ← /src/blogs/BlogCard.jsx
- * ─────────────────────────────────────────────
- * Single blog item card used in BlogList.
- *
- * Props:
- *   blog : object — single blog data from API / mock
+ * BlogCard.jsx
+ * SEO: uses <Link> (crawlable), semantic <article>/<h2>, descriptive alt text.
  */
 
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FaCalendarAlt, FaClock, FaArrowRight } from 'react-icons/fa'
 import { getCatColor } from './blogData'
 
 export default function BlogCard ({ blog }) {
-  const navigate = useNavigate()
-  const color    = getCatColor(blog.category)
+  const color = getCatColor(blog.category)
+  const href = `/blogs/${blog.slug}`
 
   return (
     <article
-      onClick={() => navigate(`/blogs/${blog.slug}`)}
       className="
         group relative flex items-start !gap-[18px]
         bg-white rounded-[18px]
         border-[1.5px] border-slate-100
         shadow-[0_2px_12px_rgba(11,30,75,0.06)]
-        !p-[18px] overflow-hidden cursor-pointer
+        !p-[18px] overflow-hidden
         hover:shadow-[0_10px_36px_rgba(11,30,75,0.12),0_2px_10px_rgba(240,90,26,0.07)]
         hover:border-[rgba(240,90,26,0.22)]
         hover:-translate-y-[4px]
         transition-all duration-300
       "
+      itemScope
+      itemType="https://schema.org/BlogPosting"
     >
-      {/* ── Thumbnail ── */}
-      <div className="w-[110px] h-[90px] sm:w-[180px] sm:h-[120px] rounded-[12px] overflow-hidden flex-shrink-0 bg-slate-100">
+      <Link
+        to={href}
+        className="absolute inset-0 z-[1] rounded-[18px]"
+        aria-label={`Read UDIISA blog: ${blog.title}`}
+      />
+
+      <div className="w-[110px] h-[90px] sm:w-[180px] sm:h-[120px] rounded-[12px] overflow-hidden flex-shrink-0 bg-slate-100 relative z-0">
         <img
           src={blog.image}
-          alt={blog.title}
+          alt={`${blog.title} — UDIISA blog`}
           loading="lazy"
           className="w-full h-full object-fill group-hover:scale-[1.08] transition-transform duration-500"
           decoding="async"
+          itemProp="image"
           onError={e => {
-            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category)}&background=0B1E4B&color=fff&size=300`
+            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(blog.category || 'UDIISA')}&background=0B1E4B&color=fff&size=300`
           }}
         />
       </div>
 
-      {/* ── Content ── */}
-      <div className="flex-1 min-w-0 flex flex-col !gap-[6px]">
-
-        {/* Category badge */}
+      <div className="flex-1 min-w-0 flex flex-col !gap-[6px] relative z-0 pointer-events-none">
         <span className={`
           inline-flex items-center self-start
           !px-[9px] !py-[3px] rounded-full
@@ -57,52 +57,45 @@ export default function BlogCard ({ blog }) {
           {blog.category}
         </span>
 
-        {/* Title */}
-        <h2 className="
-          text-[#0B1E4B] font-extrabold leading-snug !m-0
-          text-[14.5px] sm:text-[15.5px]
-          group-hover:text-[#F05A1A] transition-colors duration-200
-          overflow-hidden line-clamp-2
-        ">
+        <h2
+          className="
+            text-[#0B1E4B] font-extrabold leading-snug !m-0
+            text-[14.5px] sm:text-[15.5px]
+            group-hover:text-[#F05A1A] transition-colors duration-200
+            overflow-hidden line-clamp-2
+          "
+          itemProp="headline"
+        >
           {blog.title}
         </h2>
 
-        {/* Excerpt */}
-        <p className="text-slate-500 text-[12.5px] leading-[1.6] !m-0 overflow-hidden line-clamp-2">
+        <p
+          className="text-slate-500 text-[12.5px] leading-[1.6] !m-0 overflow-hidden line-clamp-2"
+          itemProp="description"
+        >
           {blog.excerpt}
         </p>
 
-        {/* Meta */}
+        <meta itemProp="author" content={blog.author || 'UDIISA'} />
+
         <div className="flex items-center !gap-[14px] !mt-[2px] flex-wrap">
           <span className="flex items-center !gap-[5px] text-[11px] text-slate-400 font-medium">
             <FaCalendarAlt className="text-[#F05A1A] text-[9px]" />
-            {blog.date}
+            <time itemProp="datePublished" dateTime={blog.dateISO || blog.date}>
+              {blog.date}
+            </time>
           </span>
-          <span className="flex items-center !gap-[5px] text-[11px] text-slate-400 font-medium">
-            <FaClock className="text-[9px] text-slate-300" />
-            {blog.readTime}
+          {blog.readTime && (
+            <span className="flex items-center !gap-[5px] text-[11px] text-slate-400 font-medium">
+              <FaClock className="text-[#F05A1A] text-[9px]" />
+              {blog.readTime}
+            </span>
+          )}
+          <span className="ml-auto flex items-center !gap-[5px] text-[11px] font-extrabold text-[#F05A1A] opacity-0 group-hover:opacity-100 transition-opacity">
+            Read more <FaArrowRight className="text-[9px]" />
           </span>
         </div>
       </div>
-
-      {/* ── Arrow button ── */}
-      <div className="
-        flex-shrink-0 w-[30px] h-[30px] rounded-full self-center
-        bg-slate-50 border border-slate-200
-        flex items-center justify-center
-        group-hover:bg-[#F05A1A] group-hover:border-[#F05A1A]
-        transition-all duration-250
-      ">
-        <FaArrowRight className="text-[10px] text-slate-400 group-hover:text-white transition-colors duration-250" />
-      </div>
-
-      {/* Bottom bar */}
-      <div className="
-        absolute bottom-0 left-0 right-0 h-[3px]
-        bg-gradient-to-r from-[#F05A1A] to-[#FF7D42]
-        scale-x-0 origin-left group-hover:scale-x-100
-        transition-transform duration-300
-      " />
     </article>
   )
 }
