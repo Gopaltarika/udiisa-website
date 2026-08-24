@@ -84,30 +84,19 @@ const Home = () => {
     <>
       <SEO
         title="UDIISA | UDI International Sports Association | Sports NGO India"
-        description="UDIISA (UDI International Sports Association) — sports NGO in India nurturing grassroots talent with coaching, mentorship, scholarships and athlete sponsorship."
-        keywords="UDIISA official website, UDIISA Sports NGO, UDI International Sports Association, sports NGO India, athlete sponsorship India"
+        description="UDIISA (UDI International Sports Association) is the official sports NGO website for athlete training, mentorship, scholarships and grassroots sports development in India."
+        keywords="UDIISA official website, UDIISA NGO, sports NGO India, NGO for athletes India, athlete sponsorship NGO, sports scholarship NGO"
         schema={{
           "@context": "https://schema.org",
-          "@type": "SportsOrganization",
-          "name": "UDIISA",
-          "alternateName": ["UDI International Sports Association", "UDIISA Sports NGO", "UDI Sports"],
-          "url": "https://udisports.in/",
-          "logo": "https://udisports.in/short-logo.webp",
-          "description": "UDIISA is a sports NGO in India supporting players through mentorship, scholarships, opportunities, and community-driven programs.",
-          "email": "info@udisports.in",
-          "telephone": "+91-83075-98050",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "5091, 9th Floor, Tower 5, Parker Residency, Tehsil Rai",
-            "addressLocality": "Sonipat",
-            "addressRegion": "Haryana",
-            "addressCountry": "IN"
-          },
-          "sameAs": [
-            "https://www.facebook.com/share/14ZtTFp2Aii/?mibextid=wwXIfr",
-            "https://www.instagram.com/udiisa_ngo/",
-            "https://www.youtube.com/@udisportsin"
-          ]
+          "@type": "WebPage",
+          "@id": "https://udisports.in/#webpage",
+          url: "https://udisports.in/",
+          name: "UDIISA | Official Sports NGO India",
+          description:
+            "Official website of UDIISA, a sports NGO in India supporting athletes through mentorship, scholarships and sports development programs.",
+          about: { "@id": "https://udisports.in/#organization" },
+          isPartOf: { "@id": "https://udisports.in/#website" },
+          inLanguage: "en-IN",
         }}
       />
       <HeroSection />

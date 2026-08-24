@@ -109,9 +109,9 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-white font-['Plus_Jakarta_Sans',sans-serif]">
       <SEO
-        title="About UDIISA | UDI International Sports Association"
-        description="About UDIISA — UDI International Sports Association. Learn our mission, vision, FAQs on scholarships, membership, volunteering & athlete support across India."
-        keywords="about UDIISA, UDIISA FAQ, UDI International Sports Association, sports NGO mission India, UDIISA scholarships membership"
+        title="About UDIISA NGO | UDI International Sports Association"
+        description="About UDIISA — a sports NGO in India. Mission, vision, FAQs on scholarships, membership, volunteering and athlete support. Official UDI International Sports Association."
+        keywords="about UDIISA, UDIISA NGO, UDIISA FAQ, sports NGO mission India, UDIISA scholarships, non profit sports organization India"
         schema={[
           {
             "@context": "https://schema.org",

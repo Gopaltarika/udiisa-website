@@ -10,7 +10,17 @@ export const FAQS = [
   {
     cat: 'about',
     q: 'What is UDIISA?',
-    a: 'UDIISA (UDI International Sports Association) is a non-profit sports organization dedicated to identifying, nurturing, and empowering athletes through training, mentorship, scholarships, and sports development programs across India.',
+    a: 'UDIISA (UDI International Sports Association) is a non-profit sports NGO in India dedicated to identifying, nurturing, and empowering athletes through training, mentorship, scholarships, and sports development programs. The official website is udisports.in.',
+  },
+  {
+    cat: 'about',
+    q: 'Is UDIISA an NGO?',
+    a: 'Yes. UDIISA is a sports NGO / non-profit sports organization in India. We support talented players who lack resources so they can train, compete, and grow with dignity.',
+  },
+  {
+    cat: 'about',
+    q: 'What does UDIISA stand for?',
+    a: 'UDIISA stands for UDI International Sports Association. Search for UDIISA, UDIISA NGO, or UDI International Sports Association to find the official website.',
   },
   {
     cat: 'programs',

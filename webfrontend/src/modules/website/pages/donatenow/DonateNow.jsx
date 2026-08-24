@@ -5,9 +5,9 @@ export default function DonateNow() {
   return (
     <div className="bg-slate-50 min-h-screen py-16 px-6">
       <SEO
-        title="Donate to UDIISA | Support Athletes"
-        description="Donate to UDIISA to support training, nutrition, kits and coaching for talented young athletes in India. Secure donations that fund sports development."
-        keywords="donate UDIISA, UDIISA donation, support UDIISA athletes, sports NGO donation India"
+        title="Donate to UDIISA NGO | Support Athletes"
+        description="Donate to UDIISA, a sports NGO in India, to fund training, nutrition, kits and coaching for talented young athletes."
+        keywords="donate UDIISA, UDIISA NGO donation, donate to sports NGO India, support UDIISA athletes"
         schema={{
           "@context": "https://schema.org",
           "@type": "DonateAction",

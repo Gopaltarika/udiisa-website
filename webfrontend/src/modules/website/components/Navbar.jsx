@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom"
-import { HiMenu, HiX } from "react-icons/hi"
-import { FaTrophy, FaChevronDown, FaUsers } from "react-icons/fa"
+import { HiMenu, HiX, HiSparkles } from "react-icons/hi"
+import { FaTrophy, FaChevronDown, FaUsers, FaArrowRight } from "react-icons/fa"
 import { BsStarFill, BsDiamondFill, BsPersonFill, BsBuildingsFill } from "react-icons/bs"
 import { GiLaurelsTrophy } from "react-icons/gi"
 import { MdVolunteerActivism, MdContactMail, MdGroups } from "react-icons/md"
@@ -70,7 +70,7 @@ export default function Navbar() {
   const onMEnter = () => { clearTimeout(membersTimer.current);   setMembersDrop(true) }
   const onMLeave = () => { membersTimer.current   = setTimeout(() => setMembersDrop(false),   130) }
   const onSEnter = () => { clearTimeout(specialTimer.current);   setSpecialDrop(true) }
-  const onSLeave = () => { specialTimer.current   = setTimeout(() => setSpecialDrop(false),   130) }
+  const onSLeave = () => { specialTimer.current   = setTimeout(() => setSpecialDrop(false),   220) }
   const onCEnter = () => { clearTimeout(committeeTimer.current); loadCommittees(); setCommitteeDrop(true) }
   const onCLeave = () => { committeeTimer.current = setTimeout(() => setCommitteeDrop(false),  130) }
 
@@ -80,15 +80,68 @@ export default function Navbar() {
     { label: "Talented Players", href: "/talented-players",          icon: <GiLaurelsTrophy />, desc: "Our star performers"     },
   ]
 
-  // Special Member dropdown
+  // Special Member mega menu
   const specialItems = [
-    { label: "Diamond Member",    href: "/members/special-members/diamond",     icon: <BsDiamondFill />,   desc: "Premium elite tier",      color: "#a0d8ef" },
-    { label: "Corporate Members", href: "/members/special-members/corporate",   icon: <BsBuildingsFill />, desc: "Institutional members",   color: "#6ee7b7" },
-    { label: "Gold Member",       href: "/members/special-members/gold",        icon: <BsStarFill />,      desc: "Top-tier membership",     color: "#FFD700" },
-    { label: "Silver Member",     href: "/members/special-members/silver",      icon: <BsStarFill />,      desc: "Distinguished level",     color: "#C0C0C0" },
-    { label: "Dignitaries",       href: "/members/special-members/dignitaries", icon: <BsPersonFill />,    desc: "Eminent personalities",   color: "#d8b4fe" },
-    { label: "Celebrity",         href: "/members/special-members/celebrity",   icon: <RiVipCrownFill />,  desc: "Stars & public figures",  color: "#f9a8d4" },
-
+    {
+      label: "Diamond Member",
+      href: "/members/special-members/diamond",
+      icon: <BsDiamondFill />,
+      desc: "Our most prestigious patrons",
+      color: "#2563eb",
+      iconBg: "linear-gradient(135deg,#dbeafe,#93c5fd)",
+      cardBg: "linear-gradient(160deg,#eff6ff 0%,#fff 70%)",
+      border: "#bfdbfe",
+    },
+    {
+      label: "Corporate Members",
+      href: "/members/special-members/corporate",
+      icon: <BsBuildingsFill />,
+      desc: "Institutions backing UDIISA",
+      color: "#059669",
+      iconBg: "linear-gradient(135deg,#d1fae5,#6ee7b7)",
+      cardBg: "linear-gradient(160deg,#ecfdf5 0%,#fff 70%)",
+      border: "#a7f3d0",
+    },
+    {
+      label: "Gold Member",
+      href: "/members/special-members/gold",
+      icon: <BsStarFill />,
+      desc: "Top-tier sports patrons",
+      color: "#d97706",
+      iconBg: "linear-gradient(135deg,#fef3c7,#fbbf24)",
+      cardBg: "linear-gradient(160deg,#fffbeb 0%,#fff 70%)",
+      border: "#fde68a",
+    },
+    {
+      label: "Silver Member",
+      href: "/members/special-members/silver",
+      icon: <BsStarFill />,
+      desc: "Distinguished contributors",
+      color: "#64748b",
+      iconBg: "linear-gradient(135deg,#f1f5f9,#cbd5e1)",
+      cardBg: "linear-gradient(160deg,#f8fafc 0%,#fff 70%)",
+      border: "#e2e8f0",
+    },
+    {
+      label: "Dignitaries",
+      href: "/members/special-members/dignitaries",
+      icon: <BsPersonFill />,
+      desc: "Leaders & eminent guests",
+      color: "#7c3aed",
+      iconBg: "linear-gradient(135deg,#ede9fe,#c4b5fd)",
+      cardBg: "linear-gradient(160deg,#f5f3ff 0%,#fff 70%)",
+      border: "#ddd6fe",
+    },
+    {
+      label: "Celebrity",
+      href: "/members/special-members/celebrity",
+      icon: <RiVipCrownFill />,
+      desc: "Stars & public figures",
+      color: "#db2777",
+      iconBg: "linear-gradient(135deg,#fce7f3,#f9a8d4)",
+      cardBg: "linear-gradient(160deg,#fdf2f8 0%,#fff 70%)",
+      border: "#fbcfe8",
+    },
   ]
 
   // Active link colour helper
@@ -119,6 +172,14 @@ export default function Navbar() {
 
         .acc { overflow:hidden; max-height:0; transition:max-height .32s ease; }
         .acc.open { max-height:600px; }
+
+        @keyframes megaIn {
+          from { opacity:0; transform:translateX(-50%) translateY(8px) scale(.98); }
+          to   { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+        }
+        .mega-anim { animation: megaIn .22s cubic-bezier(.16,1,.3,1) both; }
+        .mega-card { transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+        .mega-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(11,30,75,.10); }
       `}</style>
 
       {/* ══ NAVBAR ══ */}
@@ -178,37 +239,77 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Special Member dropdown */}
+            {/* Special Member mega menu */}
             <div className="relative" onMouseEnter={onSEnter} onMouseLeave={onSLeave}>
-              <button className={linkCls("Special Member")}>
+              <button className={linkCls("Special Member")} aria-expanded={specialDrop} aria-haspopup="true">
                 Special Member
                 <FaChevronDown className={`text-[10px] transition-transform duration-200 ${specialDrop ? "rotate-180 text-[#F05A1A]" : "rotate-0"}`} />
               </button>
 
               {specialDrop && (
                 <div
-                  className="drop-anim absolute z-[200] bg-white rounded-[18px] !p-2 min-w-[250px] shadow-[0_24px_60px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-[150%] -translate-x-1/2"
+                  className="mega-anim absolute z-[200] w-[min(92vw,560px)] bg-white rounded-[18px] overflow-hidden shadow-[0_24px_56px_rgba(11,30,75,.16),0_4px_16px_rgba(0,0,0,.06)] border border-[#eef2f8] top-[calc(100%+12px)] left-1/2"
                   onMouseEnter={onSEnter} onMouseLeave={onSLeave}
                 >
-                  <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rotate-45 w-3 h-3 bg-white border-l border-t border-[#eef2f8]" />
-                  {specialItems.map(item => (
-                    <a
-                      key={item.label} href={item.href}
-                      className="flex items-center gap-3 !px-3 !py-[11px] rounded-xl no-underline text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
-                      onClick={closeAll}
-                    >
-                      <div
-                        className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 text-[15px]"
-                        style={{ background: `${item.color}22`, color: item.color }}
-                      >
-                        {item.icon}
-                      </div>
+                  <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 rotate-45 w-2.5 h-2.5 bg-[#0B1E4B] border-l border-t border-[#0B1E4B]" />
+
+                  <div className="relative overflow-hidden bg-gradient-to-r from-[#0B1E4B] via-[#152B6B] to-[#0B1E4B] !px-3.5 !py-3">
+                    <div className="pointer-events-none absolute -right-6 -top-8 h-20 w-20 rounded-full bg-[#F05A1A]/20 blur-2xl" />
+                    <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-[13px] font-bold">{item.label}</div>
-                        <div className="text-[11px] text-slate-400 !mt-0.5">{item.desc}</div>
+                        <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[1.4px] text-[#FFAD5C]">
+                          <HiSparkles className="text-[12px]" /> Elite Circle
+                        </div>
+                        <div className="!mt-0.5 font-[Bebas_Neue] text-[20px] leading-none tracking-[0.8px] text-white">
+                          Special Members
+                        </div>
+                        <p className="!mt-1 !mb-0 max-w-[280px] text-[11px] font-medium leading-snug text-white/65">
+                          Patrons, institutions, dignitaries and celebrities who strengthen UDIISA.
+                        </p>
                       </div>
-                    </a>
-                  ))}
+                      <a
+                        href="/members/special-members"
+                        onClick={closeAll}
+                        className="shrink-0 flex items-center gap-1.5 !px-2.5 !py-1.5 rounded-lg no-underline text-[11px] font-bold text-[#0B1E4B] bg-white hover:bg-[#FFF3EC] transition-colors"
+                      >
+                        View all <FaArrowRight className="text-[9px]" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1.5 !p-2.5">
+                    {specialItems.map((item) => {
+                      const isOn = location.pathname === item.href
+                      return (
+                        <a
+                          key={item.label}
+                          href={item.href}
+                          onClick={closeAll}
+                          className="mega-card group flex flex-col gap-1.5 !px-2.5 !py-2.5 rounded-[12px] no-underline border"
+                          style={{
+                            background: item.cardBg,
+                            borderColor: isOn ? item.color : item.border,
+                            boxShadow: isOn ? `0 6px 16px ${item.color}22` : "none",
+                          }}
+                        >
+                          <div
+                            className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[13px] text-white shadow-sm"
+                            style={{ background: item.iconBg, color: item.color }}
+                          >
+                            {item.icon}
+                          </div>
+                          <div>
+                            <div className="text-[12px] font-extrabold text-[#0B1E4B] group-hover:text-[#F05A1A] transition-colors">
+                              {item.label}
+                            </div>
+                            <div className="text-[10px] text-slate-500 !mt-0.5 leading-snug">
+                              {item.desc}
+                            </div>
+                          </div>
+                        </a>
+                      )
+                    })}
+                  </div>
                 </div>
               )}
             </div>
@@ -377,15 +478,21 @@ export default function Navbar() {
                 <FaChevronDown className={`text-[11px] transition-transform duration-200 ${mobileSpecialDrop ? "rotate-180 text-[#F05A1A]" : "text-slate-400"}`} />
               </button>
               <div className={`acc ${mobileSpecialDrop ? "open" : ""}`}>
-                <div className="!pl-2.5">
+                <div className="!pl-1.5 !pr-1 !pb-1 flex flex-col gap-1">
                   {specialItems.map(item => (
                     <a
                       key={item.label} href={item.href}
-                      className="flex items-center gap-2.5 !px-3 !py-3 rounded-[10px] no-underline text-[13px] font-semibold font-[Plus_Jakarta_Sans] text-slate-600 transition-all duration-150 hover:bg-[#FFF3EC] hover:text-[#F05A1A]"
+                      className="flex items-center gap-2.5 !px-2.5 !py-2.5 rounded-[12px] no-underline text-[13px] font-semibold font-[Plus_Jakarta_Sans] text-slate-700 transition-all duration-150"
+                      style={{ background: item.cardBg, border: `1px solid ${item.border}` }}
                       onClick={closeAll}
                     >
-                      <span className="text-[14px]" style={{ color: item.color }}>{item.icon}</span>
-                      {item.label}
+                      <span
+                        className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[13px] shrink-0"
+                        style={{ background: item.iconBg, color: item.color }}
+                      >
+                        {item.icon}
+                      </span>
+                      <span className="flex-1">{item.label}</span>
                     </a>
                   ))}
                 </div>

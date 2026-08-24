@@ -1,8 +1,16 @@
 import { useLocation } from "react-router-dom";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  NGO_KEYWORDS,
+  SITE_URL,
+  organizationSchema,
+  websiteSchema,
+} from "../constants/seo";
 
 /**
  * Central SEO helper — React 19 hoists these tags into <head>.
- * Optimized for brand search ("UDIISA") + AI/crawler discovery.
+ * Brand search (UDIISA) + sports NGO intent + JSON-LD.
  */
 const SEO = ({
   title,
@@ -18,14 +26,11 @@ const SEO = ({
   const location = useLocation();
 
   const siteName = "UDIISA";
-  const baseUrl = "https://udisports.in";
-  const defaultTitle =
-    "UDIISA | UDI International Sports Association | Sports NGO India";
-  const defaultDesc =
-    "UDIISA (UDI International Sports Association) is a non-profit sports NGO in India identifying, nurturing and empowering athletes through training, mentorship, scholarships and sports development programs.";
-  const defaultKeywords =
-    "UDIISA, UDIISA Sports, UDIISA NGO, UDI International Sports Association, UDIISA India, UDI Sports, sports NGO India, grassroots sports, athlete sponsorship, sports charity India, sports scholarship, sports association India";
-  const defaultImage = "https://udisports.in/short-logo.webp";
+  const baseUrl = SITE_URL;
+  const defaultTitle = DEFAULT_TITLE;
+  const defaultDesc = DEFAULT_DESCRIPTION;
+  const defaultKeywords = NGO_KEYWORDS;
+  const defaultImage = `${SITE_URL}/short-logo.webp`;
 
   const path = location.pathname.replace(/\/+$/, "") || "/";
   const canonicalUrl = canonical || `${baseUrl}${path === "/" ? "/" : path}`;
@@ -46,11 +51,14 @@ const SEO = ({
       : `${baseUrl}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
     : defaultImage;
 
-  const schemas = schema
+  const pageSchemas = schema
     ? Array.isArray(schema)
       ? schema
       : [schema]
     : [];
+  const schemas = noIndex
+    ? pageSchemas
+    : [organizationSchema(), websiteSchema(), ...pageSchemas];
 
   return (
     <>

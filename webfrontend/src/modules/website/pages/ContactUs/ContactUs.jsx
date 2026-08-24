@@ -7,9 +7,9 @@ const ContactUs = () => {
   return (
     <>
       <SEO
-        title="Contact UDIISA | Get in Touch"
-        description="Contact UDIISA (UDI International Sports Association) for membership, athlete sponsorship, donations, volunteering or partnership inquiries. Email info@udisports.in."
-        keywords="contact UDIISA, UDIISA phone number, UDIISA email, sports NGO contact India"
+        title="Contact UDIISA NGO | Get in Touch"
+        description="Contact UDIISA, a sports NGO in India, for membership, athlete sponsorship, donations, volunteering or partnerships. Email info@udisports.in."
+        keywords="contact UDIISA, UDIISA NGO contact, UDIISA phone, UDIISA email, sports NGO contact India"
         schema={{
           "@context": "https://schema.org",
           "@type": "ContactPage",

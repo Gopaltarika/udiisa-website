@@ -214,13 +214,16 @@
     <title>UDIISA | UDI International Sports Association | Sports NGO India</title>
     <meta
       name="description"
-      content="UDIISA (UDI International Sports Association) is a sports NGO in India identifying, nurturing and empowering athletes through training, mentorship, scholarships and sports development programs."
+      content="UDIISA (UDI International Sports Association) is a sports NGO in India supporting athletes through training, mentorship, scholarships and grassroots sports development. Official UDIISA website."
     />
     <meta name="author" content="UDIISA — UDI International Sports Association" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <meta name="theme-color" content="#0B1E4B" />
     <meta name="application-name" content="UDIISA" />
-    <meta name="keywords" content="UDIISA, UDIISA Sports, UDIISA NGO, UDI International Sports Association, UDIISA India, sports NGO India, athlete sponsorship, sports scholarship" />
+    <meta
+      name="keywords"
+      content="UDIISA, UDIISA NGO, UDIISA official website, UDIISA India, UDI International Sports Association, UDI ISA, UDI Sports, sports NGO India, sports NGO in India, non profit sports organization India, NGO for athletes India, athlete sponsorship NGO, sports scholarship NGO India, grassroots sports NGO, sports charity India, sports development NGO, NGO supporting sportspersons, youth sports NGO India"
+    />
     <link rel="canonical" href="https://udisports.in/" />
 
     <meta property="og:type" content="website" />
@@ -244,6 +247,7 @@
 
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -266,27 +270,47 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "NGO",
+        "@type": ["NGO", "SportsOrganization"],
+        "@id": "https://udisports.in/#organization",
         "name": "UDIISA",
-        "alternateName": [
-          "UDI International Sports Association",
-          "UDIISA Sports NGO",
-          "UDI Sports",
-          "UDIISA India"
-        ],
         "legalName": "UDI International Sports Association",
+        "alternateName": [
+          "UDIISA NGO",
+          "UDIISA official website",
+          "UDI International Sports Association",
+          "UDI ISA",
+          "UDI-ISA",
+          "UDI Sports",
+          "UDIISA India",
+          "UDIISA Sports NGO",
+          "udisports"
+        ],
         "url": "https://udisports.in/",
-        "logo": "https://udisports.in/short-logo.webp",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://udisports.in/short-logo.webp"
+        },
         "image": "https://udisports.in/short-logo.webp",
-        "description": "UDIISA (UDI International Sports Association) is a non-profit sports organization dedicated to identifying, nurturing, and empowering athletes through training, mentorship, scholarships, and sports development programs across India.",
+        "description": "UDIISA (UDI International Sports Association) is a sports NGO in India supporting athletes through training, mentorship, scholarships and grassroots sports development.",
+        "slogan": "United for Dynamic India",
         "email": "info@udisports.in",
         "telephone": "+91-83075-98050",
         "foundingDate": "2026",
+        "keywords": "UDIISA, UDIISA NGO, sports NGO India, athlete sponsorship, sports scholarship NGO, grassroots sports NGO",
+        "knowsAbout": [
+          "sports NGO India",
+          "athlete sponsorship",
+          "sports scholarships",
+          "grassroots sports development",
+          "youth sports",
+          "UDIISA"
+        ],
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "5091, 9th Floor, Tower 5, Parker Residency, Tehsil Rai",
           "addressLocality": "Sonipat",
           "addressRegion": "Haryana",
+          "postalCode": "131029",
           "addressCountry": "IN"
         },
         "areaServed": {
@@ -312,12 +336,20 @@
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
+        "@id": "https://udisports.in/#website",
         "name": "UDIISA",
-        "alternateName": "UDI International Sports Association",
+        "alternateName": [
+          "UDIISA NGO",
+          "UDIISA official website",
+          "UDI International Sports Association",
+          "UDI Sports",
+          "udisports"
+        ],
         "url": "https://udisports.in/",
+        "inLanguage": "en-IN",
+        "description": "Official website of UDIISA, a sports NGO in India.",
         "publisher": {
-          "@type": "NGO",
-          "name": "UDIISA"
+          "@id": "https://udisports.in/#organization"
         },
         "potentialAction": {
           "@type": "SearchAction",

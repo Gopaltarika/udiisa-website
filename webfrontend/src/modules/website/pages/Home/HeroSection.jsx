@@ -186,6 +186,9 @@ const HeroSection = () => {
             overflow: "hidden",
           }}
         >
+          <span className="sr-only">
+            UDIISA — UDI International Sports Association, sports NGO in India.{" "}
+          </span>
           <span className="h-word1">UNITED&nbsp;</span>
           <span className="h-word2">FOR&nbsp;</span>
           <span className="h-word3" style={{ color: "transparent", WebkitTextStroke: "2px #F05A1A" }}>
