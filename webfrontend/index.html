@@ -3,6 +3,214 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ2BDXX3NV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GQ2BDXX3NV', { send_page_view: false });
+    </script>
+    <script>
+      (function () {
+        function track() {
+          if (typeof window.gtag === "function") window.gtag.apply(window, arguments);
+        }
+
+        function pathOnly() {
+          return location.pathname || "/";
+        }
+
+        function safeLocation() {
+          return location.origin + pathOnly();
+        }
+
+        function applySafePageContext() {
+          track("set", {
+            page_location: safeLocation(),
+            page_path: pathOnly(),
+            page_title: document.title
+          });
+        }
+
+        var lastPath = "";
+        var lastSearchTerm = "";
+        var pageViewTimer = 0;
+
+        function maybeBlogSearch() {
+          if (pathOnly().indexOf("/blogs") !== 0) return;
+          var term = new URLSearchParams(location.search).get("search") || "";
+          term = term.trim();
+          if (!term || term === lastSearchTerm || term.indexOf("@") !== -1) return;
+          lastSearchTerm = term;
+          track("event", "view_search_results", {
+            search_term: term,
+            page_path: pathOnly(),
+            page_location: safeLocation()
+          });
+        }
+
+        function sendPageView() {
+          applySafePageContext();
+          var path = pathOnly();
+          if (path === lastPath) {
+            maybeBlogSearch();
+            return;
+          }
+          lastPath = path;
+          track("event", "page_view", {
+            page_path: path,
+            page_title: document.title,
+            page_location: safeLocation()
+          });
+          maybeBlogSearch();
+        }
+
+        function schedulePageView() {
+          clearTimeout(pageViewTimer);
+          pageViewTimer = setTimeout(sendPageView, 300);
+        }
+
+        var pushState = history.pushState;
+        var replaceState = history.replaceState;
+        history.pushState = function () {
+          var result = pushState.apply(this, arguments);
+          schedulePageView();
+          return result;
+        };
+        history.replaceState = function () {
+          var result = replaceState.apply(this, arguments);
+          schedulePageView();
+          return result;
+        };
+        window.addEventListener("popstate", schedulePageView);
+
+        if (document.readyState === "complete") schedulePageView();
+        else window.addEventListener("load", schedulePageView);
+
+        function hostnameOf(href) {
+          try {
+            return new URL(href, location.origin).hostname;
+          } catch (e) {
+            return "";
+          }
+        }
+
+        function buttonLabel(el) {
+          return ((el.getAttribute("aria-label") || "") + " " + (el.textContent || ""))
+            .replace(/\s+/g, " ")
+            .trim()
+            .slice(0, 80);
+        }
+
+        document.addEventListener("click", function (e) {
+          var el = e.target && e.target.closest && e.target.closest("a, button");
+          if (!el) return;
+
+          var href = el.getAttribute("href") || "";
+          var hrefLower = href.toLowerCase();
+          var label = buttonLabel(el).toLowerCase();
+          var host = hostnameOf(href);
+
+          applySafePageContext();
+
+          if (
+            hrefLower.indexOf("wa.me") !== -1 ||
+            hrefLower.indexOf("whatsapp.com") !== -1 ||
+            hrefLower.indexOf("api.whatsapp.com") !== -1 ||
+            label.indexOf("whatsapp") !== -1
+          ) {
+            track("event", "whatsapp_click", {
+              link_type: "whatsapp",
+              page_path: pathOnly(),
+              page_location: safeLocation()
+            });
+            return;
+          }
+
+          if (hrefLower.indexOf("mailto:") === 0) {
+            track("event", "email_click", {
+              link_type: "email",
+              page_path: pathOnly(),
+              page_location: safeLocation()
+            });
+            return;
+          }
+
+          var socialType = "";
+          if (host.indexOf("facebook.com") !== -1 || label === "facebook") socialType = "facebook";
+          else if (host.indexOf("instagram.com") !== -1 || label === "instagram") socialType = "instagram";
+          else if (host.indexOf("youtube.com") !== -1 || host.indexOf("youtu.be") !== -1) socialType = "youtube";
+          else if (host.indexOf("twitter.com") !== -1 || host.indexOf("x.com") !== -1 || label === "twitter") socialType = "twitter";
+          else if (host.indexOf("linkedin.com") !== -1 || label === "linkedin") socialType = "linkedin";
+
+          if (socialType) {
+            var params = {
+              link_type: socialType,
+              page_path: pathOnly(),
+              page_location: safeLocation()
+            };
+            if (host) params.destination_domain = host;
+            track("event", "social_click", params);
+            return;
+          }
+
+          var internalPath = "";
+          if (href && href.charAt(0) === "/") internalPath = href.split("?")[0];
+          else if (el.tagName === "A" && el.hostname === location.hostname) internalPath = (el.pathname || "").split("?")[0];
+
+          if (internalPath.indexOf("/membership") === 0) {
+            track("event", "registration_click", {
+              button_name: "membership",
+              content_type: "membership",
+              page_path: pathOnly(),
+              page_location: safeLocation()
+            });
+            return;
+          }
+
+          if (internalPath === "/donate-now" || internalPath === "/Contribute-now") {
+            track("event", "cta_click", {
+              button_name: "donate",
+              page_path: pathOnly(),
+              page_location: safeLocation()
+            });
+          }
+        }, true);
+
+        function formName() {
+          var path = pathOnly();
+          if (path === "/") return "home_contact";
+          if (path.indexOf("/contact-us") === 0) return "contact";
+          return "form";
+        }
+
+        document.addEventListener("focusin", function (e) {
+          var form = e.target && e.target.closest && e.target.closest("form");
+          if (!form || form.getAttribute("data-ga-started")) return;
+          form.setAttribute("data-ga-started", "1");
+          applySafePageContext();
+          track("event", "form_start", {
+            form_name: formName(),
+            form_type: "contact",
+            page_path: pathOnly(),
+            page_location: safeLocation()
+          });
+        }, true);
+
+        document.addEventListener("submit", function (e) {
+          var form = e.target;
+          if (!form || form.tagName !== "FORM") return;
+          applySafePageContext();
+          track("event", "form_submit", {
+            form_name: formName(),
+            form_type: "contact",
+            page_path: pathOnly(),
+            page_location: safeLocation()
+          });
+        }, true);
+      })();
+    </script>
     <title>UDIISA | UDI International Sports Association | Sports NGO India</title>
     <meta
       name="description"
