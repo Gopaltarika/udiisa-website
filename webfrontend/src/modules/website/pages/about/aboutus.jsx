@@ -14,6 +14,7 @@ import { BsShieldFillCheck, BsStarFill } from 'react-icons/bs'
 import { GiLaurelCrown, GiTargetArrows } from 'react-icons/gi'
 import PageHero from '../../../../shared/components/PageHero'
 import aboutimg from '@/assets/images/about-img.webp'
+import deepali from '@/assets/images/deepali.webp'
 import SEO from '@/shared/components/SEO'
 import AboutFaqSection, { buildFaqSchema } from './AboutFaqSection'
 /* ═══════════════════════════════════════════════════════
@@ -91,6 +92,18 @@ const VALUES = [
   { icon: <MdSportsCricket className="text-[18px]" />, label: 'Passion',     desc: 'Sport is our language, progress is our game.' },
 ]
 
+const TEAM = [
+  {
+    name: 'Miss Deepali',
+    credential: 'LL.M',
+    role: 'Assistant Manager',
+    org: 'UDIISA',
+    img: deepali,
+    bio: 'With a Master of Laws and a calm, precise way of working, Miss Deepali brings legal clarity and operational discipline to UDIISA. As Assistant Manager she keeps programmes organised, members supported, and partnerships on track — so talented players receive timely guidance, dignity, and a fair chance to grow.',
+    highlights: ['Legal Affairs', 'Operations', 'Member Support'],
+  },
+]
+
 /* Section label pill */
 function SectionLabel({ children }) {
   return (
@@ -143,6 +156,10 @@ export default function AboutUs() {
         .anim-slideRight{animation:slideRight 0.7s ease both}
         .pulse-ring::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid #F05A1A;animation:pulse-ring 2s ease-out infinite}
         .roadmap-line::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#0B1E4B,#F05A1A,#0B1E4B);transform:translateX(-50%)}
+        .team-card{transition:transform .32s cubic-bezier(.16,1,.3,1),box-shadow .32s ease}
+        .team-card:hover{transform:translateY(-6px);box-shadow:0 24px 56px rgba(11,30,75,.14)}
+        .team-photo{transition:transform .45s cubic-bezier(.16,1,.3,1);transform-origin:top center}
+        .team-card:hover .team-photo{transform:scale(1.04)}
       `}</style>
 {/* 1. Hero banner */}
  <PageHero
@@ -217,6 +234,78 @@ growth and pride of the nation.
               </div>
 
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════
+          OUR TEAM
+      ══════════════════════════════════ */}
+      <section className="!py-[72px] !px-[16px] sm:!px-[24px] bg-[#F4F6FB] relative overflow-hidden">
+        <div className="pointer-events-none absolute -top-[80px] -right-[60px] w-[280px] h-[280px] rounded-full bg-[rgba(240,90,26,0.08)]" />
+        <div className="pointer-events-none absolute -bottom-[100px] -left-[80px] w-[320px] h-[320px] rounded-full bg-[rgba(11,30,75,0.06)]" />
+        <div className="max-w-[1100px] !mx-auto relative">
+          <div className="text-center !mb-[40px]">
+            <SectionLabel>Our Team</SectionLabel>
+            <h2 className="text-[clamp(26px,3.5vw,40px)] font-extrabold text-[#0B1E4B] !m-0 leading-[1.2]">
+              The People Who <span className="text-[#F05A1A]">Make It Happen</span>
+            </h2>
+            <p className="text-slate-500 text-[15px] !m-0 !mt-[10px] max-w-[520px] !mx-auto leading-[1.7]">
+              Dedicated professionals who keep UDIISA focused, organised, and close to every player we support.
+            </p>
+          </div>
+
+          <div className={`grid gap-[24px] ${TEAM.length === 1 ? 'grid-cols-1 max-w-[820px] !mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+            {TEAM.map((member) => (
+              <article
+                key={member.name}
+                className="team-card group bg-white rounded-[24px] overflow-hidden border border-slate-100 shadow-[0_8px_32px_rgba(11,30,75,0.08)]"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-[280px_1fr]">
+                  <div className="relative overflow-hidden bg-gradient-to-br from-[#0B1E4B] to-[#152B6B] min-h-[340px] sm:min-h-[380px]">
+                    <img
+                      src={member.img}
+                      alt={`${member.name}, ${member.role} at ${member.org}`}
+                      loading="lazy"
+                      className="team-photo absolute inset-0 w-full h-full object-cover object-top"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B1E4B]/55 via-transparent to-transparent sm:hidden" />
+                    <div className="absolute top-[14px] left-[14px] inline-flex items-center gap-[6px] rounded-full !px-[12px] !py-[5px] bg-gradient-to-r from-[#F05A1A] to-[#FF7D42] text-white text-[10px] font-extrabold tracking-[0.6px] uppercase shadow-[0_4px_14px_rgba(240,90,26,.4)]">
+                      <FaStar className="text-[9px] text-[#FFE4B5]" />
+                      Team
+                    </div>
+                  </div>
+
+                  <div className="!p-[26px] sm:!p-[32px] flex flex-col justify-center">
+                    <div className="flex flex-wrap items-center gap-[8px] !mb-[8px]">
+                      <h3 className="text-[22px] sm:text-[24px] font-extrabold text-[#0B1E4B] !m-0 leading-tight">
+                        {member.name}
+                      </h3>
+                      <span className="inline-flex items-center gap-[4px] rounded-full bg-[#e8ecf8] text-[#0B1E4B] text-[11px] font-extrabold !px-[10px] !py-[3px]">
+                        <MdVerified className="text-[#F05A1A] text-[13px]" />
+                        {member.credential}
+                      </span>
+                    </div>
+                    <p className="text-[#F05A1A] font-bold text-[14px] !m-0 !mb-[16px]">
+                      {member.role} <span className="text-slate-400 font-semibold">·</span> {member.org}
+                    </p>
+                    <p className="text-slate-600 text-[14px] leading-[1.8] !m-0 !mb-[18px]">
+                      {member.bio}
+                    </p>
+                    <div className="flex flex-wrap gap-[8px]">
+                      {member.highlights.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-[rgba(240,90,26,0.18)] bg-[rgba(240,90,26,0.06)] text-[#0B1E4B] text-[11px] font-bold !px-[12px] !py-[5px]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
